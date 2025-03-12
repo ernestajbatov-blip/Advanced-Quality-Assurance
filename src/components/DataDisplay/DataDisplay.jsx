@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {fetchLast10Wells} from "../../axios/wellService";
 import styles from "./DataDisplay.module.css";
 import PumpIcon from "../../assets/pump_icon.png";

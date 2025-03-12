@@ -8,6 +8,7 @@ const Modal = ({children, onClose}) => {
                 <button className={styles.closeButton} onClick={onClose}>
                     &times;
                 </button>
+                {children}
             </div>
         </div>
     );
