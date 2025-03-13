@@ -69,7 +69,7 @@ export default function AppNav() {
                 <div className={styles.divider} />
                 <div className={styles.timeContainer}>
                     <div className={styles.date}>
-                        {currentTime.toLocaleTimeString()}
+                        {currentTime.toLocaleDateString()}
                     </div>
                     <div className={styles.time}>
                         {formattedTime}

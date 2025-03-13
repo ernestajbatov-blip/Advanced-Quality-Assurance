@@ -1,11 +1,16 @@
 import React from "react";
-import { BrowserRouter } from "react-router-dom";
-import AppNav from "./components/AppNav/AppNav"; // Adjust path if needed
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import AppNav from "./components/AppNav/AppNav";
 
 export default function App() {
     return (
         <BrowserRouter>
-            <AppNav />
+            <Routes>
+                <Route index element={
+                    <AppNav />
+                }
+            />
+            </Routes>
         </BrowserRouter>
     );
 }
