@@ -1,0 +1,8 @@
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 0.8fr));
+    gap: 5px;
+    max-height: 0px;
+    margin-bottom: 20px; /* Adds 20px of space below the grid */
+  }
+  
