@@ -38,7 +38,6 @@ export default function AgzuDiagram({filteredWells}) {
                     style={{top: "220px", left: "410px"}}
                 ></div>
                 <Box boxText1="на ППН" top="200px" left="600px" />
-                
             </div>
         </div>
     );
