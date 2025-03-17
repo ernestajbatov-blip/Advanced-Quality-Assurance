@@ -1,7 +1,8 @@
 import React from "react";
 import styles from "./AgzuDiagram.module.css";
 import SchemeAGZU from "../../data/Diagrams/SchemeAGZU.svg";
-import Box from "../Box/Box"; // Import the Box component
+import Box from "../Box/Box";
+import { NavLink } from "react-router-dom";
 
 export default function AgzuDiagram({ filteredWells }) {
   const boxes = new Array(14).fill(null);
@@ -19,7 +20,7 @@ export default function AgzuDiagram({ filteredWells }) {
             key={index}
             boxText1={well?.well || ""}
             boxText2={well?.tr_fluid?.toFixed(2) || ""}
-            top={index < 7 ? "20px" : "360px"} // Adjust top in percentages
+            top={index < 7 ? "20px" : "350px"} // Adjust top in percentages
             left={`${10 + (index % 7) * 139}px`} // Use percentage for horizontal positioning
             number={index + 1} // Box number (1-based index)
           />
@@ -33,7 +34,11 @@ export default function AgzuDiagram({ filteredWells }) {
           className={styles.line}
           style={{ top: "225px", left: "539px" }}
         ></div>
-        <Box boxText1="на ППН" top="207px" left="800px" />
+        
+
+        <NavLink to="/scheme">
+        <Box boxText1="на ППН" top="207px" left="800px"/>
+        </NavLink>
       </div>
     </div>
   );
