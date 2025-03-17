@@ -8,7 +8,7 @@ import styles from "./ABCLayout.module.css";
 import AmChart from "../../components/AmChart/AmChart";
 import WellTable from "../../components/WellTable/WellTable";
 import AChart from "../../components/AChart/AChart";
-import { WellsABCCOntext } from "../../states/WellsABCContext";
+import { WellsABCContext } from "../../states/WellsABCContext";
 
 export default function ABCLayout() {
   const {
@@ -20,7 +20,7 @@ export default function ABCLayout() {
     setWellsGrid,
     wellsChart,
     setWellsChart,
-  } = useContext(WellsABCCOntext);
+  } = useContext(WellsABCContext);
 
   const fieldMappings = {
     leftTop: "well",

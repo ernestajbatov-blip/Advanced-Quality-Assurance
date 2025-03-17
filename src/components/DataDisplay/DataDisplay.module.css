@@ -1,38 +1,47 @@
 .container {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    background-color: #3a3a3a;
-    color: white;
-    border: 1px solid #50505a;
-    padding: 5px;
-    border-radius: 3px;
-    min-width: 180px;
-  }
-  
-  .iconContainer {
-    background-color: #50505a;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 10px;
-    border-right: 1px solid #3a3a3a;
-  }
-  
-  .icon {
-    width: 20px;
-    height: 20px;
-  }
-  
-  .label {
-    flex-grow: 1;
-    font-size: 12px;
-  }
-  
-  .value {
-    font-size: 14px;
-    font-weight: bold;
-    padding-left: 10px;
-  }
-  
+  display: flex;
+  align-items: center;
+  background-color: #3a3a3a;
+  color: white;
+  border: 1px solid #50505a;
+  padding: 8px;
+  border-radius: 6px;
+  min-width: 180px;
+  max-width: 400px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.container:hover {
+  background-color: #464646;
+}
+
+.iconContainer {
+  background-color: #50505a;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+}
+
+.textContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.value {
+  font-size: 14px;
+  font-weight: bold;
+  padding-left: 10px;
+}

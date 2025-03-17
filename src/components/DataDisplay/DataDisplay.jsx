@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {fetchLast10Wells} from "../../axios/wellService";
+import React, { useState } from "react";
+import { fetchLast10Wells } from "../../axios/wellService";
 import styles from "./DataDisplay.module.css";
 import PumpIcon from "../../assets/pump_icon.png";
 import Modal from "../../components/Modal/Modal";
@@ -11,26 +11,29 @@ export default function DataDisplay({ label, value, clickable = false }) {
 
     const handleClick = async () => {
         if (!clickable) return;
-        else {
-            try {
-                const response = await fetchLast10Wells();
-                console.log(response.data);
-                setData(response.data);
-                setIsModalOpen(true);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            }
+        try {
+            const response = await fetchLast10Wells();
+            setData(response.data);
+            setIsModalOpen(true);
+        } catch (error) {
+            console.error("Error fetching data:", error);
         }
     };
 
     return (
         <>
-            <div className={styles.container} onClick={handleClick} style={{cursor: clickable ? "pointer" : "default"}}>
+            <div
+                className={styles.container}
+                onClick={handleClick}
+                style={{ cursor: clickable ? "pointer" : "default" }}
+            >
                 <div className={styles.iconContainer}>
-                    <img src={PumpIcon} alt="Icon" className={styles.icon} />
+                    <img src={PumpIcon} alt="Pump Icon" className={styles.icon} />
                 </div>
-                <div className={styles.label}>{label}</div>
-                <div className={styles.value}>{value}</div>
+                <div className={styles.textContainer}>
+                    <div className={styles.label}>{label}</div>
+                    <div className={styles.value}>{value}</div>
+                </div>
             </div>
 
             {isModalOpen && (

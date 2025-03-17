@@ -27,5 +27,5 @@
       <line x1="900" y1="540" x2="1427" y2="665" stroke="rgb(80, 80, 90)" strokeWidth="2" />
       <line x1="1695" y1="720" x2="1695" y2="665" stroke="rgb(80, 80, 90)" strokeWidth="2" />
       <line x1="900" y1="540" x2="1695" y2="665" stroke="rgb(80, 80, 90)" strokeWidth="2" />
-      <circle cx="900" cy="540" r="155" fill="#50505A"></circle>
+      <circle cx="1175" cy="540" r="155" fill="#50505A"></circle>
     </svg>

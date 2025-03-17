@@ -1,16 +1,42 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import AppNav from "./components/AppNav/AppNav";
+import AppLayout from "./pages/AppLayout/AppLayout";
+import ABCLayout from "./pages/ABC/ABCLayout";
+import Diagram from "./components/Diagram/Diagram";
+import OilLayout from "./pages/OilLayout/OilLayout";
+import { WellsContext, WellsContextProvider } from "./states/WellsContext";
+import { WellsABCContextProvider } from "./states/WellsABCContext";
+import { useContext } from "react";
 
-export default function App() {
-    return (
-        <BrowserRouter>
-            <Routes>
-                <Route index element={
-                    <AppNav />
-                }
-            />
-            </Routes>
-        </BrowserRouter>
-    );
+function App() {
+  const { wells } = useContext(WellsContext);
+  return (
+    <>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            index
+            element={
+              <WellsContextProvider>
+                <AppLayout />
+              </WellsContextProvider>
+            }
+          />
+          <Route
+            path="abc"
+            element={
+              <WellsABCContextProvider>
+                <ABCLayout />
+              </WellsABCContextProvider>
+            }
+          />
+          <Route path="scheme" element={<Diagram />} />
+          {/* <Route path="scheme" element={<AGZU wells={wells} />} /> */}
+
+          <Route path="oil" element={<OilLayout />} />
+        </Routes>
+      </BrowserRouter>
+    </>
+  );
 }
+
+export default App;
