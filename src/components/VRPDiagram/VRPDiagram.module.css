@@ -1,0 +1,43 @@
+.container {
+    position: relative;
+    width: 100%;
+    max-width: 1000px; /* Set a max-width if needed */
+    margin: 0 auto;
+  }
+  
+  .svgImage {
+    width: 100%; /* Responsive width */
+    height: auto;
+  }
+  
+  .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .circle {
+    position: absolute;
+    transform: translate(-50%, -50%); /* To center it perfectly */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column; /* Ensure text is stacked vertically */
+    color: white !important; /* Set text color to white */
+  }
+  
+  .circleText {
+    font-size: 18px;
+    font-weight: bold;
+    align-items: center;
+  }
+  
+  .line {
+    position: absolute;
+    width: 200px;
+    height: 2px;
+    background-color: orange;
+  }
+  
