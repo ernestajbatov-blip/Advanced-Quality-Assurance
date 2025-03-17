@@ -1,0 +1,48 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    height: 100vh;
+  }
+  
+  .mainSection {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+    padding-bottom: 10px; /* Adds space at the bottom */
+  }
+  
+  .row {
+    display: flex;
+    gap: 10px;
+    flex-grow: 1;
+  }
+  
+  .container {
+    flex: 1;
+    background-color: #2d2d32;
+    padding: 20px;
+    gap: 20px;
+    border-radius: 5px;
+    overflow: auto;
+    /* min-width: 0; */
+    /* min-height: 0; */
+  }
+  
+  .containerX {
+    flex: 1;
+    background-color: #2d2d32;
+    padding: 5px 20px 20px 20px;
+    border-radius: 5px;
+    overflow: auto;
+    /* min-width: 0; */
+    /* min-height: 0; */
+  }
+  
+  .legendsAndDetailsContainer {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  

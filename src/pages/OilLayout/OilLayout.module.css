@@ -1,0 +1,34 @@
+.oilLossTable {
+    width: 80%;
+    border-collapse: collapse;
+    margin: auto;
+    text-align: center;
+}
+.flexContainer {
+display: flex;
+flex-direction: row; /* Make the layout row-oriented */
+justify-content: space-between; /* Space between chart and table */
+align-items: flex-start; /* Align chart and table at the top */
+gap: 20px; /* Add some space between chart and table */
+padding: 20px;
+}
+
+.oilLossTable th,
+.oilLossTable td {
+border: 1px solid #ddd;
+padding: 8px;
+}
+
+.oilLossTable th {
+/* background-color: #f2f2f2; */
+font-weight: bold;
+}
+/* 
+.oilLossTable tr:nth-child(even) {
+background-color: #f9f9f9;
+}
+
+.oilLossTable tr:hover {
+background-color: #f1f1f1;
+}
+   */
