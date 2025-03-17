@@ -5,16 +5,18 @@
 }
 
 .svgImage {
-  width: 700px;
-  height: 380px;
+  position: relative;
+  right: 10px;
+  width: 920px;
+  height: 480px;
 }
 
 .overlay {
   position: absolute;
   top: 0;
   left: 0;
-  width: 600px;
-  height: 380px;
+  width: 605px;
+  height: 400px;
 }
 
 .circle {
@@ -35,7 +37,7 @@
 
 .line {
   position: absolute;
-  width: 200px;
+  width: 300px;
   height: 2px;
   background-color: orange;
 }

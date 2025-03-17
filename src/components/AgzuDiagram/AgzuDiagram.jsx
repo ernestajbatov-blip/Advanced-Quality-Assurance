@@ -31,9 +31,9 @@ export default function AgzuDiagram({ filteredWells }) {
         </div>
         <div
           className={styles.line}
-          style={{ top: "220px", left: "517px" }}
+          style={{ top: "225px", left: "539px" }}
         ></div>
-        <Box boxText1="на ППН" top="200px" left="717px" />
+        <Box boxText1="на ППН" top="207px" left="800px" />
       </div>
     </div>
   );
