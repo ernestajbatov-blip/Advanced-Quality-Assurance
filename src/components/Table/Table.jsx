@@ -8,7 +8,7 @@ export default function Table({data}) {
                 {data.map((row,index) => (
                     <div className={styles.tableRow} key={index}>
                         <div className={styles.tableCell}>{row.value}</div>
-                        <div className={styles.tableCell}>{row.value}</div>
+                        <div className={styles.tableCell}>{row.unit}</div>
                     </div>
                 ))}
             </div>

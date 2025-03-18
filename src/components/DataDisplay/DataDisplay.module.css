@@ -38,6 +38,7 @@
 .label {
   font-size: 14px;
   font-weight: 500;
+  padding-left: 10px;
 }
 
 .value {
