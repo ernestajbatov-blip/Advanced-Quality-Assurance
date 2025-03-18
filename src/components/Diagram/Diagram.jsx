@@ -8,6 +8,7 @@ import Pumps from "../Pumps/Pumps";
 import Table from "../Table/Table";
 import SimpleTable from "../SimpleTable/SimpleTable";
 import AppNav from "../AppNav/AppNav";
+import { NavLink } from "react-router-dom";
 
 export default function Diagram() {
   const tableData = [
@@ -429,6 +430,14 @@ export default function Diagram() {
           <Indicator indicatorNumber={69.3} indicatorUnits={"т/ч"} />
           <Indicator indicatorNumber={86.8} indicatorUnits={"м3/ч"} />
           <LabelBox label={"Расходомер"} width={60} height={3} fontSize={10} />
+        </div>
+        <div
+          className={`${styles.box} ${styles.textBox}`}
+          style={{ top: "71%", left: "12%" }}
+        >
+          <NavLink to="/">
+            <LabelBox label={"На главную"} width={60} height={10} fontSize={10}/>
+          </NavLink>
         </div>
       </div>
       
