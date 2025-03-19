@@ -21,8 +21,8 @@
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
    inkscape:zoom="0.64"
-   inkscape:cx="1020.3125"
-   inkscape:cy="544.53125"
+   inkscape:cx="866.40625"
+   inkscape:cy="557.03125"
    inkscape:window-width="1916"
    inkscape:window-height="1038"
    inkscape:window-x="0"
@@ -205,6 +205,7 @@
    stroke="#50505a"
    stroke-width="2.00125"
    id="line22" />
+
 1
       <line
    x1="1181.1539"
@@ -259,7 +260,7 @@
    cy="438"
    fill="#50505a"
    id="circle28"
-   rx="155.19417"
+   style="stroke-width:1.00063"
    ry="155"
-   style="stroke-width:1.00063" />
+   rx="155.19417" />
 </svg>

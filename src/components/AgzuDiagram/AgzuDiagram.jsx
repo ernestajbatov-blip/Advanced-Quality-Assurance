@@ -26,18 +26,18 @@ export default function AgzuDiagram({ filteredWells }) {
           />
         ))}
 
-        <div className={styles.circle} style={{ top: "58%", left: "76%" }}>
+        <div className={styles.circle} style={{ top: "57.5%", left: "77%" }}>
           <div className={styles.circleText}>0 М³/СУТ</div>
           <div className={styles.circleSubText}>0 мПа</div>
         </div>
         <div
           className={styles.line}
-          style={{ top: "225px", left: "539px" }}
+          style={{ top: "57%", left: "90%" }}
         ></div>
         
 
         <NavLink to="/scheme">
-        <Box boxText1="на ППН" top="207px" left="800px"/>
+        <Box boxText1="на ППН" top="52%" left="139.5%"/>
         </NavLink>
       </div>
     </div>

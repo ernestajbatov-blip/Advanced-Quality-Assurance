@@ -433,10 +433,10 @@ export default function Diagram() {
         </div>
         <div
           className={`${styles.box} ${styles.textBox}`}
-          style={{ top: "71%", left: "12%" }}
+          style={{ top: "69%", left: "12%" }}
         >
           <NavLink to="/">
-            <LabelBox label={"На главную"} width={60} height={10} fontSize={10}/>
+            <LabelBox label={"На главную"} width={80} height={30} fontSize={10}/>
           </NavLink>
         </div>
       </div>

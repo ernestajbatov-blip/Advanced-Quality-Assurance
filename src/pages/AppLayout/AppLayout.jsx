@@ -36,7 +36,7 @@ export default function AppLayout() {
       <AppNav />
       <div className={styles.mainSection}>
         <div className={styles.row}>
-          <div className={styles.container}>
+          <div className={styles.chartContainer}>
             <Chart />
           </div>
           <div className={styles.container}>

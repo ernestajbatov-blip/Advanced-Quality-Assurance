@@ -106,7 +106,7 @@ export default function AChart({selectedWell}) {
                 <label htmlFor="oil">Нефть</label>
             </div>
             <LineChart
-                width={600}
+                width={860}
                 height={350}
                 data={selectedData}
                 margin={{top:20, right:20, left:20, bottom:5}}
