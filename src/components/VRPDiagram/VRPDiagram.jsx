@@ -10,7 +10,7 @@ export default function VRPDiagram({ filteredWells }) {
     boxes[well.otvod - 1] = well;
   });
 
-  const getPipeColor = (index) => (boxes[index] ? "green" : "#50505a");
+  const getPipeColor = (index) => (boxes[index] ? "#4caf50" : "#50505a");
 
   const pipes = [
     { x1: 116, y1: 165, x2: 116, y2: 305 },

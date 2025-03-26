@@ -24,6 +24,8 @@ export default function AGZU({ wells }) {
         (well) => well.agzu === activeButton && well.nagn == 0
     );
 
+    console.log("Filtered Wells:", filteredWells);
+
     return (
         <div className={styles.upperDiv}>
             <div className={styles.container}>
