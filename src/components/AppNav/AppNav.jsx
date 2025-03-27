@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styles from "./AppNav.module.css";
 import DataDisplay from "../DataDisplay/DataDisplay";
 import { NavLink } from "react-router-dom";
@@ -7,11 +7,34 @@ import { fetchLast10Wells } from "../../axios/wellService";
 export default function AppNav() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const menuButtonRef = useRef(null);
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        menuButtonRef.current &&
+        !menuButtonRef.current.contains(event.target) // Ignore clicks on menu button
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    if (isDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isDropdownOpen]);
 
   const formattedTime = currentTime.toLocaleTimeString([], {
     hour: "2-digit",
@@ -19,28 +42,22 @@ export default function AppNav() {
   });
 
   const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleDataDisplayClick = async () => {
-    try {
-      const response = await fetchLast10Wells();
-      return response.data;
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      throw error;
-    }
+    setIsDropdownOpen((prev) => !prev);
   };
 
   return (
     <div className={styles.appBar}>
       <div className={styles.toolbar}>
         <div className={styles.iconContainer}>
-          <button className={styles.menuButton} onClick={toggleDropdown}>
+          <button
+            ref={menuButtonRef}
+            className={styles.menuButton}
+            onClick={toggleDropdown}
+          >
             <span className={styles.menuIcon}>&#9776;</span>
           </button>
           {isDropdownOpen && (
-            <div className={styles.dropdownMenu}>
+            <div className={styles.dropdownMenu} ref={dropdownRef}>
               <NavLink to="/" onClick={() => setIsDropdownOpen(false)}>
                 Основная
               </NavLink>

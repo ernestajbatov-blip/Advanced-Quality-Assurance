@@ -269,7 +269,7 @@ export default function Diagram() {
   const progressBarData = [
     {
       top: "25.5%",
-      left: "60.4%",
+      left: "60.45%",
       key: "pbc1L",
       value: 50,
       maxValue: 100,
@@ -282,7 +282,7 @@ export default function Diagram() {
     },
     {
       top: "5.2%",
-      left: "60.4%",
+      left: "60.45%",
       key: "pbc2L",
       value: 50,
       maxValue: 100,

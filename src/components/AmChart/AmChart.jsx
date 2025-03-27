@@ -150,27 +150,30 @@ const AmChart = ({ wellData }) => {
         series.strokes.template.set("visible", false);
 
         let circleTemplate = am5.Template.new({});
-        series.bullets.push((root, series, dataItem) =>
-            am5.Bullet.new(root, {
-                key: `bullet-${dataItem.dataContext.well}-${dataItem.get("valueX")}`,
-                sprite: am5.Circle.new(root, {
+        series.bullets.push(function (root, series, dataItem) {
+            return am5.Bullet.new(root, {
+                sprite: am5.Circle.new(
+                root,
+                {
                     radius: 10,
                     fill: am5.color(0x000000),
                     fillOpacity: 0.6,
                     tooltipText: `Скважина: ${
-                        dataItem.dataContext.well
-                    } Обводненность: ${dataItem.get("valueX").toFixed(2)} Нефть: ${dataItem
-                        .get("valueY")
-                        .toFixed(2)}`,
-                }),
-            })
-        );
+                    dataItem.dataContext.well
+                    } Обводненность: ${dataItem
+                    .get("valueX")
+                    .toFixed(2)} Нефть: ${dataItem.get("valueY").toFixed(2)}`,
+                },
+                circleTemplate
+                ),
+            });
+        });
 
         series.set("heatRules", [
             {
                 target: circleTemplate,
                 min: 3,
-                max: 35,
+                max: 100,
                 dataField: "value",
                 key: "radius",
                 maxValue: 2000,

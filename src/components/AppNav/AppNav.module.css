@@ -96,7 +96,7 @@
 
 .dropdownMenu {
   position: absolute;
-  top: 80px; /* Adjust based on toolbar height */
+  top: 80px;
   left: 10px;
   background-color: #3a3a3f;
   border-radius: 3px;
@@ -116,4 +116,5 @@
 
 .dropdownMenu a:hover {
   background-color: #50505a;
+  color: white;
 }
