@@ -35,7 +35,7 @@ export default function VRPDiagram({ filteredWells }) {
     <div className={styles.container}>
       <svg
         className="svgImage"
-        viewBox="75 10 1700 900"
+        viewBox="80 5 1700 900"
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* Vertical Pipes */}
@@ -86,7 +86,7 @@ export default function VRPDiagram({ filteredWells }) {
       </div>
 
       {/* Line and additional box */}
-      <div className={styles.line} style={{ top: "47%", left: "56.6%" }}></div>
+      <div className={styles.line} style={{ top: "47.3%", left: "56.4%" }}></div>
       <NavLink to="/scheme">
         <Box boxText1="на ППН" top="43%" left="89%" />
       </NavLink>

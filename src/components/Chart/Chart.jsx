@@ -183,7 +183,8 @@ export default function Chart() {
           name="Дебит по тех.режиму"
           stroke="#B22222"
           strokeDasharray="5 5"
-          activeDot={{ r: 8 }}
+          dot={{ r: 1.5 }}
+          activeDot={{ r: 5 }}
         />
         <Line
           type="monotone"
@@ -191,12 +192,16 @@ export default function Chart() {
           name="Дебит за предыдущие сутки"
           stroke="#888888"
           strokeDasharray="3 4 5 2"
+          dot={{ r: 1.5 }}
+          activeDot={{ r: 5 }}
         />
         <Line
           type="monotone"
           dataKey={isNak ? "curr_debit_nak" : "curr_debit"}
           name="Прогнозируемый дебит на конец суток"
           stroke="#228B22"
+          dot={{ r: 1.5 }}
+          activeDot={{ r: 5 }}
         />
       </LineChart>
     </div>

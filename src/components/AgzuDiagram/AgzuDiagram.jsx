@@ -35,7 +35,7 @@ export default function AgzuDiagram({ filteredWells }) {
     <div className={styles.container}>
       <svg
         className="svgImage"
-        viewBox="75 10 1700 900"
+        viewBox="60 5 1700 900"
         xmlns="http://www.w3.org/2000/svg"
       >
         {/* Vertical Pipes (Colored) */}
@@ -80,11 +80,11 @@ export default function AgzuDiagram({ filteredWells }) {
           />
         ))}
 
-        <div className={styles.circle} style={{ top: "58%", left: "74.5%" }}>
+        <div className={styles.circle} style={{ top: "58%", left: "75.5%" }}>
           <div className={styles.circleText}>0 М³/СУТ</div>
           <div className={styles.circleSubText}>0 мПа</div>
         </div>
-        <div className={styles.line} style={{ top: "57%", left: "84.8%" }}></div>
+        <div className={styles.line} style={{ top: "57.3%", left: "86.1%" }}></div>
         <NavLink to="/scheme">
           <Box boxText1="на ППН" top="51.5%" left="134.5%" />
         </NavLink>

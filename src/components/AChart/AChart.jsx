@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useMemo} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
     LineChart,
     Line,
@@ -10,13 +10,13 @@ import {
 } from "recharts";
 import styles from "./AChart.module.css";
 
-const CustomTooltip = ({active, payload, label}) => {
+const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
         return (
-            <div className={styles.CustomTooltip}>
+            <div className={styles.customTooltip}>
                 {payload.map((entry, index) => (
                     <div 
-                        key={`item-$(index)`} 
+                        key={`item-${index}`} 
                         className={`${styles.tooltipItem} ${
                             entry.name === "Обводненность"
                                 ? styles.tooltipGray
@@ -28,17 +28,18 @@ const CustomTooltip = ({active, payload, label}) => {
                         {`${entry.value.toLocaleString("ru-RU")}`}
                     </div>
                 ))}
-                <div className={styles.tooltipDate}>
-                    {label}
-                </div>
+                {label && (
+                    <div className={styles.tooltipDate}>
+                        {label}
+                    </div>
+                )}
             </div>
         );
     }
-
     return null;
 };
 
-export default function AChart({selectedWell}) {
+export default function AChart({ selectedWell }) {
     const [type, setType] = useState("liquid");
     const [data, setData] = useState([]);
 
@@ -67,7 +68,7 @@ export default function AChart({selectedWell}) {
 
     const selectedData = useMemo(() => {
         return data.map((item) => ({
-            date: item.data,
+            date: item.date,  // ✅ Fixed: correctly mapped date
             tm_fluid: item.tm_fluid,
             tm_oil: item.tm_oil,
             tr_water: item.tr_water,
@@ -79,12 +80,12 @@ export default function AChart({selectedWell}) {
     return (
         <div>
             {selectedWell && selectedWell[0] && (
-                <h2 style={{color: "#ffffff", marginBottom: "10px"}}>
+                <h2 style={{ color: "#ffffff", marginBottom: "10px" }}>
                     Скважина: {selectedWell[0].well}
                 </h2>
             )}
 
-            <div style={{display: "flex", gap: "10px", alignItems: "center"}}>
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
                 <input
                     type="radio"
                     id="liquid"
@@ -109,40 +110,42 @@ export default function AChart({selectedWell}) {
                 width={860}
                 height={350}
                 data={selectedData}
-                margin={{top:20, right:20, left:20, bottom:5}}
+                margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
             >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                <XAxis dataKey="data" tick={{fill: "#ffffff"}} />
-                <YAxis tick={{fill: "#ffffff"}} />
+                <XAxis dataKey="date" tick={{ fill: "#ffffff" }} />  {/* ✅ Fixed dataKey */}
+                <YAxis tick={{ fill: "#ffffff" }} />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend
-                    wrapperStyle={
-                        {
-
-                        }
-                    }
-                />
+                <Legend />
                 <Line
                     type="monotone"
                     dataKey={type === "liquid" ? "tm_fluid" : "tm_oil"}
                     name={"Добыча (АГЗУ)"}
                     stroke="#228B22"
+                    dot={{ r: 1.5 }}  // Smaller dot size (default is ~6)
+                    activeDot={{ r: 5 }}  // Smaller active dot
                 />
+
                 <Line
                     type="monotone"
                     dataKey="tr_water"
                     name="Тех. режим обводненности"
                     stroke="#B22222"
                     strokeDasharray="5 5"
-                    activeDot={{r: 8}}
+                    dot={{ r: 1.5 }} 
+                    activeDot={{ r: 5 }}
                 />
+
                 <Line
                     type="monotone"
                     dataKey="tm_water"
                     name="Обводненность"
                     stroke="#888888"
                     strokeDasharray="3 4 5 2"
+                    dot={{ r: 1.5 }} 
+                    activeDot={{ r: 5 }}
                 />
+
             </LineChart>
         </div>
     );
