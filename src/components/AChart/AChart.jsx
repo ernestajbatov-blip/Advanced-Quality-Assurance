@@ -68,7 +68,7 @@ export default function AChart({ selectedWell }) {
 
     const selectedData = useMemo(() => {
         return data.map((item) => ({
-            date: item.date,  // ✅ Fixed: correctly mapped date
+            date: item.date, 
             tm_fluid: item.tm_fluid,
             tm_oil: item.tm_oil,
             tr_water: item.tr_water,
@@ -113,7 +113,7 @@ export default function AChart({ selectedWell }) {
                 margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
             >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                <XAxis dataKey="date" tick={{ fill: "#ffffff" }} />  {/* ✅ Fixed dataKey */}
+                <XAxis dataKey="date" tick={{ fill: "#ffffff" }} />
                 <YAxis tick={{ fill: "#ffffff" }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
@@ -122,8 +122,8 @@ export default function AChart({ selectedWell }) {
                     dataKey={type === "liquid" ? "tm_fluid" : "tm_oil"}
                     name={"Добыча (АГЗУ)"}
                     stroke="#228B22"
-                    dot={{ r: 1.5 }}  // Smaller dot size (default is ~6)
-                    activeDot={{ r: 5 }}  // Smaller active dot
+                    dot={{ r: 1.5 }}
+                    activeDot={{ r: 5 }}
                 />
 
                 <Line
