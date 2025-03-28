@@ -26,7 +26,7 @@
     cursor: pointer;
     display: flex;
     justify-content: center;
-    top: -10px;
+    top: -7px;
   }
   
   .sliderThumb::after {

@@ -74,7 +74,7 @@ export default function AgzuDiagram({ filteredWells }) {
             key={index}
             boxText1={well?.well || ""}
             boxText2={well?.tr_fluid?.toFixed(2) || ""}
-            top={index < 7 ? "20px" : "350px"}
+            top={index < 7 ? "5%" : "90%"}
             left={`${10 + (index % 7) * 139}px`}
             number={index + 1}
           />
