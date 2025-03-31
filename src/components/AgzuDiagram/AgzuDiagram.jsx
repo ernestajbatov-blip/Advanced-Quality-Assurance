@@ -10,8 +10,8 @@ export default function AgzuDiagram({ filteredWells }) {
     boxes[well.otvod - 1] = well;
   });
 
-  const getPipeColor = (index) =>
-    boxes[index] && boxes[index].tr_fluid > 0 ? "#4caf50" : "#50505a";  
+  const getPipeColor = (index, defaultColor) =>
+    boxes[index] && boxes[index].tr_fluid > 0 ? "#4caf50" : defaultColor;  
 
   const pipes = [
     { x1: 116, y1: 165, x2: 116, y2: 305 },
@@ -38,7 +38,7 @@ export default function AgzuDiagram({ filteredWells }) {
         viewBox="60 5 1700 900"
         xmlns="http://www.w3.org/2000/svg"
       >
-        {/* Vertical Pipes (Colored) */}
+        {/* Vertical Pipes */}
         {pipes.map((pipe, index) => (
           <line
             key={`v${index}`}
@@ -46,12 +46,12 @@ export default function AgzuDiagram({ filteredWells }) {
             y1={pipe.y1}
             x2={pipe.x2}
             y2={pipe.y2}
-            stroke={getPipeColor(index)}
+            stroke={getPipeColor(index, "#50505a")}
             strokeWidth="3"
           />
         ))}
 
-        {/* Diagonal Pipes (Colored) */}
+        {/* Diagonal Pipes */}
         {pipes.map((pipe, index) => (
           <line
             key={`d${index}`}
@@ -59,7 +59,7 @@ export default function AgzuDiagram({ filteredWells }) {
             y1="438"
             x2={pipe.x2}
             y2={pipe.y2}
-            stroke={getPipeColor(index)}
+            stroke={getPipeColor(index, "#50505a")}
             strokeWidth="2"
           />
         ))}
@@ -77,6 +77,7 @@ export default function AgzuDiagram({ filteredWells }) {
             top={index < 7 ? "5%" : "90%"}
             left={`${10 + (index % 7) * 139}px`}
             number={index + 1}
+            borderColor={getPipeColor(index)}
           />
         ))}
 
