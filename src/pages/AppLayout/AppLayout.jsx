@@ -73,7 +73,7 @@ export default function AppLayout() {
           </div>
           <div className={styles.container}>
             {fond === 0 ? (
-              <AGZU wells={filteredWells} />
+              <AGZU wells={filteredWells} index={2}/>
             ) : (
               <VRP wells={filteredWells} />
             )}

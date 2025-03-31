@@ -13,7 +13,7 @@ function Button({label, active, onClick}) {
     );
 }
 
-export default function AGZU({ wells }) {
+export default function AGZU({ wells, index }) {
     const [activeButton, setActiveButton] = useState("АГЗУ-1");
 
     const handleButtonClick = (label) => {
@@ -65,7 +65,7 @@ export default function AGZU({ wells }) {
                     onClick={() => handleButtonClick("МФ-4")}
                 />
             </div>
-            <AgzuDiagram filteredWells={filteredWells} />
+            <AgzuDiagram filteredWells={filteredWells} boxIndex={index}/>
         </div>
     );
 }

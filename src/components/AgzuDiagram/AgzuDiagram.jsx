@@ -3,65 +3,36 @@ import styles from "./AgzuDiagram.module.css";
 import Box from "../Box/Box";
 import { NavLink } from "react-router-dom";
 
-export default function AgzuDiagram({ filteredWells }) {
-  const boxes = new Array(14).fill(null);
+export default function AgzuDiagram({ filteredWells, boxIndex }) {
+  const boxes = Array(14).fill(null);
 
   filteredWells.forEach((well) => {
-    boxes[well.otvod - 1] = well;
+    if (well.otvod >= 1 && well.otvod <= 14) {
+      boxes[well.otvod - 1] = well;
+    }
   });
 
-  const getPipeColor = (index, defaultColor) =>
-    boxes[index] && boxes[index].tr_fluid > 0 ? "#4caf50" : defaultColor;  
+  const getPipeColor = (index, defaultColor = "#50505a") =>
+    index === boxIndex ? "#4caf50" : defaultColor;
 
-  const pipes = [
-    { x1: 116, y1: 165, x2: 116, y2: 305 },
-    { x1: 380, y1: 165, x2: 380, y2: 305 },
-    { x1: 648, y1: 165, x2: 648, y2: 305 },
-    { x1: 918, y1: 165, x2: 918, y2: 305 },
-    { x1: 1181, y1: 165, x2: 1181, y2: 305 },
-    { x1: 1445, y1: 165, x2: 1445, y2: 305 },
-    { x1: 1713, y1: 165, x2: 1713, y2: 305 },
-
-    { x1: 116, y1: 693, x2: 116, y2: 563 },
-    { x1: 380, y1: 693, x2: 380, y2: 563 },
-    { x1: 648, y1: 693, x2: 648, y2: 563 },
-    { x1: 918, y1: 693, x2: 918, y2: 563 },
-    { x1: 1181, y1: 693, x2: 1181, y2: 563 },
-    { x1: 1445, y1: 693, x2: 1445, y2: 563 },
-    { x1: 1713, y1: 693, x2: 1713, y2: 563 },
-  ];
+  const pipes = Array.from({ length: 14 }, (_, i) => ({
+    x1: 116 + i % 7 * 264,
+    y1: i < 7 ? 165 : 693,
+    x2: 116 + i % 7 * 264,
+    y2: i < 7 ? 305 : 563,
+  }));
 
   return (
     <div className={styles.container}>
-      <svg
-        className="svgImage"
-        viewBox="60 5 1700 900"
-        xmlns="http://www.w3.org/2000/svg"
-      >
+      <svg className="svgImage" viewBox="60 5 1700 900" xmlns="http://www.w3.org/2000/svg">
         {/* Vertical Pipes */}
         {pipes.map((pipe, index) => (
-          <line
-            key={`v${index}`}
-            x1={pipe.x1}
-            y1={pipe.y1}
-            x2={pipe.x2}
-            y2={pipe.y2}
-            stroke={getPipeColor(index, "#50505a")}
-            strokeWidth="3"
-          />
+          <line key={`v${index}`} {...pipe} stroke={getPipeColor(index)} strokeWidth="3" />
         ))}
 
         {/* Diagonal Pipes */}
         {pipes.map((pipe, index) => (
-          <line
-            key={`d${index}`}
-            x1="918"
-            y1="438"
-            x2={pipe.x2}
-            y2={pipe.y2}
-            stroke={getPipeColor(index, "#50505a")}
-            strokeWidth="2"
-          />
+          <line key={`d${index}`} x1="918" y1="438" x2={pipe.x2} y2={pipe.y2} stroke={getPipeColor(index)} strokeWidth="2" />
         ))}
 
         {/* Center Circle */}
@@ -73,11 +44,11 @@ export default function AgzuDiagram({ filteredWells }) {
           <Box
             key={index}
             boxText1={well?.well || ""}
-            boxText2={well?.tr_fluid?.toFixed(2) || ""}
+            boxText2={well?.tr_fluid ? well.tr_fluid.toFixed(2) : ""}
             top={index < 7 ? "5%" : "90%"}
             left={`${10 + (index % 7) * 139}px`}
             number={index + 1}
-            borderColor={getPipeColor(index)}
+            borderColor={getPipeColor(index, "#FFFFFF")}
           />
         ))}
 
