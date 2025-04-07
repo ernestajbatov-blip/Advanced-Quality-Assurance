@@ -176,6 +176,15 @@ export default function Diagram() {
       size: "10px",
     },
     {
+      top: "8%",
+      left: "64.95%",
+      content: (
+        <>
+          <LabelBox label={""} width={32} height={25} fontSize={10} />
+        </>
+      ),
+    },
+    {
       top: "26%", // Label for PBC-3
       left: "70.5%",
       content: "PBC-3",
