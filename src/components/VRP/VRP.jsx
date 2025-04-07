@@ -45,7 +45,7 @@ export default function VRP({ wells }) {
           onClick={() => handleButtonClick("ВРП-3")}
         />
       </div>
-      <VRPDiagram filteredWells={filteredWells} />
+      <VRPDiagram filteredWells={filteredWells} boxIndex={2} />
     </div>
   );
 }

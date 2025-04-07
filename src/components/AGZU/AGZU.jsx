@@ -65,7 +65,7 @@ export default function AGZU({ wells, index }) {
                     onClick={() => handleButtonClick("МФ-4")}
                 />
             </div>
-            <AgzuDiagram filteredWells={filteredWells} boxIndex={index}/>
+            <AgzuDiagram filteredWells={filteredWells} boxIndex={2}/>
         </div>
     );
 }
