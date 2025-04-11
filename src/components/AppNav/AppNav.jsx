@@ -21,7 +21,7 @@ export default function AppNav() {
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target) &&
         menuButtonRef.current &&
-        !menuButtonRef.current.contains(event.target) // Ignore clicks on menu button
+        !menuButtonRef.current.contains(event.target)
       ) {
         setIsDropdownOpen(false);
       }

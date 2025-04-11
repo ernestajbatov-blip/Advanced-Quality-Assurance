@@ -100,7 +100,7 @@ const AmChart = ({ wellData }) => {
             strokeDasharray: [3, 3],
         });
 
-        const colors = [0xe3853c, 0x48b2b7, 0x91d1da, 0xe8c634];
+        const colors = [0xf54945, 0x339f1b, 0x3959f2, 0x787878];
         const areas = [
             { x1: 0, y1: 0, x2: 50, y2: 50, color: colors[0] },
             { x1: 0, y1: 50, x2: 50, y2: 100, color: colors[1] },
