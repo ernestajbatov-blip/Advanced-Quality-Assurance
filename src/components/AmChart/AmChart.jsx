@@ -8,6 +8,7 @@ import styles from "./AmChart.module.css";
 
 const AmChart = ({ wellData }) => {
     const chartRef = useRef(null);
+    const chartContainerRef = useRef(null);
     const seriesRef = useRef(null);
     const labelRef = useRef(null);
     const xAxisRef = useRef(null);
@@ -47,6 +48,7 @@ const AmChart = ({ wellData }) => {
                 pinchZoomY: true,
             })
         );
+        chartContainerRef.current = chart;
 
         chart.gridContainer.toBack();
 
@@ -55,9 +57,7 @@ const AmChart = ({ wellData }) => {
                 min: -50,
                 max: 50,
                 strictMinMax: true,
-                renderer: am5xy.AxisRendererX.new(root, {
-                    minGridDistance: 50,
-                }),
+                renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 50 }),
                 tooltip: am5.Tooltip.new(root, {}),
             })
         );
@@ -67,9 +67,7 @@ const AmChart = ({ wellData }) => {
                 min: -50,
                 max: 50,
                 strictMinMax: true,
-                renderer: am5xy.AxisRendererY.new(root, {
-                    visible: true,
-                }),
+                renderer: am5xy.AxisRendererY.new(root, { visible: true }),
                 tooltip: am5.Tooltip.new(root, {}),
             })
         );
@@ -132,25 +130,18 @@ const AmChart = ({ wellData }) => {
             })
         );
 
-        series.strokes.template.setAll({
-            visible: false,
-            strokeOpacity: 0,
-        });
+        series.strokes.template.setAll({ visible: false, strokeOpacity: 0 });
 
-        series.bullets.push((root, series, dataItem) => {
-            return am5.Bullet.new(root, {
-                sprite: am5.Circle.new(
-                    root,
-                    {
-                        radius: 10,
-                        fill: am5.color(0x000000),
-                        fillOpacity: 0.6,
-                        tooltipText: `Скважина: ${dataItem.dataContext.well}\nОбводненность: ${dataItem.get("valueX").toFixed(2)}\nНефть: ${dataItem.get("valueY").toFixed(2)}`,
-                    },
-                    circleTemplate
-                ),
-            });
-        });
+        series.bullets.push((root, series, dataItem) =>
+            am5.Bullet.new(root, {
+                sprite: am5.Circle.new(root, {
+                    radius: 10,
+                    fill: am5.color(0x000000),
+                    fillOpacity: 0.6,
+                    tooltipText: `Скважина: ${dataItem.dataContext.well}\nОбводненность: ${dataItem.get("valueX").toFixed(2)}\nНефть: ${dataItem.get("valueY").toFixed(2)}`,
+                }, circleTemplate),
+            })
+        );
 
         series.set("heatRules", [
             {
@@ -174,14 +165,15 @@ const AmChart = ({ wellData }) => {
             })
         );
 
-        seriesRef.current = series;
-        labelRef.current = label;
         xAxisRef.current = xAxis;
         yAxisRef.current = yAxis;
+        seriesRef.current = series;
+        labelRef.current = label;
 
         return () => {
             root.dispose();
             chartRef.current = null;
+            chartContainerRef.current = null;
             seriesRef.current = null;
             xAxisRef.current = null;
             yAxisRef.current = null;
@@ -189,60 +181,97 @@ const AmChart = ({ wellData }) => {
         };
     }, [wellData]);
 
-    const updateSeriesData = (data) => {
-        if (!Array.isArray(data) || !seriesRef.current || !currentDate) return;
-
-        const filteredByDate = data.filter(item => {
-            const itemDate = new Date(item.date).toISOString().split("T")[0];
-            return itemDate === currentDate;
+    const wellHistory = useMemo(() => {
+        const history = {};
+        wellData.forEach(item => {
+            const date = new Date(item.date).toISOString().split("T")[0];
+            if (!history[item.well]) {
+                history[item.well] = {};
+            }
+            history[item.well][date] = item;
         });
+        return history;
+    }, [wellData]);
 
-        const transformed = filteredByDate
-            .filter(item => {
-                const valid = item.tm_oil_prev != null && item.tm_water_prev != null &&
-                    item.tm_oil_prev !== 0 && item.tm_water_prev !== 0;
-                return valid;
-            })
-            .map(item => {
-                const deltaWater = item.tm_water - item.tm_water_prev;
-                const deltaOil = item.tm_oil - item.tm_oil_prev;
-
-                return {
-                    x: deltaWater,
-                    y: deltaOil,
-                    value: item.tr_fluid,
-                    well: item.well,
-                };
-            });
-
-        console.log("Updating chart for:", currentDate, transformed);
-
-        seriesRef.current.data.setAll(transformed);
-
-        if (xAxisRef.current && yAxisRef.current && transformed.length > 0) {
-            const xValues = transformed.map(item => item.x);
-            const yValues = transformed.map(item => item.y);
-
-            const xMin = Math.min(...xValues) - 5;
-            const xMax = Math.max(...xValues) + 5;
-            const yMin = Math.min(...yValues) - 5;
-            const yMax = Math.max(...yValues) + 5;
-
-            xAxisRef.current.set("min", xMin);
-            xAxisRef.current.set("max", xMax);
-            yAxisRef.current.set("min", yMin);
-            yAxisRef.current.set("max", yMax);
-        }
+    const updateSeriesData = () => {
+        const chart = chartContainerRef.current;
+        const root = chartRef.current;
+    
+        if (!chart || !root || root._disposed) return;
+    
+        const toRemove = [];
+        chart.series.each((series) => {
+            if (series.get("name") && series.get("name") !== "main") {
+                toRemove.push(series);
+            }
+        });
+        toRemove.forEach(s => s.dispose());
+    
+        const cutoffDate = new Date(currentDate);
+    
+        Object.entries(wellHistory).forEach(([well, dateMap]) => {
+            const data = Object.entries(dateMap)
+                .filter(([dateStr]) => new Date(dateStr) <= cutoffDate)
+                .map(([, item]) => {
+                    if (
+                        item.tm_oil_prev != null &&
+                        item.tm_water_prev != null &&
+                        item.tm_oil_prev !== 0 &&
+                        item.tm_water_prev !== 0
+                    ) {
+                        return {
+                            x: item.tm_water - item.tm_water_prev,
+                            y: item.tm_oil - item.tm_oil_prev,
+                            well,
+                        };
+                    } else {
+                        return null;
+                    }
+                })
+                .filter(Boolean);
+    
+            if (data.length > 0) {
+                const newSeries = chart.series.push(
+                    am5xy.LineSeries.new(root, {
+                        name: well,
+                        xAxis: xAxisRef.current,
+                        yAxis: yAxisRef.current,
+                        valueXField: "x",
+                        valueYField: "y",
+                        connect: false,
+                    })
+                );
+    
+                newSeries.strokes.template.setAll({
+                    strokeWidth: 0,
+                    visible: false,
+                });
+    
+                newSeries.bullets.push(() =>
+                    am5.Bullet.new(root, {
+                        sprite: am5.Circle.new(root, {
+                            radius: 4, 
+                            fill: am5.color(0x000000),
+                            tooltipText: `Скважина: ${well}`,
+                        }),
+                    })
+                );
+    
+                newSeries.data.setAll(data);
+            }
+        });
     };
-
+    
+    
+    
     useEffect(() => {
-        if (wellData && currentDate) {
-            updateSeriesData(wellData);
+        if (currentDate && chartRef.current && !chartRef.current._disposed) {
+            updateSeriesData();
             if (labelRef.current) {
                 labelRef.current.set("text", currentDate);
             }
         }
-    }, [currentDate, wellData]);
+    }, [currentDate, wellHistory]);    
 
     return (
         <div>
