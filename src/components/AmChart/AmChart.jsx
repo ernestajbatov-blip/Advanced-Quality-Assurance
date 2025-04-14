@@ -196,7 +196,7 @@ const AmChart = ({ wellData }) => {
     const updateSeriesData = () => {
         const chart = chartContainerRef.current;
         const root = chartRef.current;
-    
+        
         if (!chart || !root || root._disposed) return;
     
         const toRemove = [];
@@ -209,6 +209,11 @@ const AmChart = ({ wellData }) => {
     
         const cutoffDate = new Date(currentDate);
     
+        let minX = Infinity;
+        let maxX = -Infinity;
+        let minY = Infinity;
+        let maxY = -Infinity;
+    
         Object.entries(wellHistory).forEach(([well, dateMap]) => {
             const data = Object.entries(dateMap)
                 .filter(([dateStr]) => new Date(dateStr) <= cutoffDate)
@@ -219,9 +224,17 @@ const AmChart = ({ wellData }) => {
                         item.tm_oil_prev !== 0 &&
                         item.tm_water_prev !== 0
                     ) {
+                        const x = item.tm_water - item.tm_water_prev;
+                        const y = item.tm_oil - item.tm_oil_prev;
+    
+                        minX = Math.min(minX, x);
+                        maxX = Math.max(maxX, x);
+                        minY = Math.min(minY, y);
+                        maxY = Math.max(maxY, y);
+    
                         return {
-                            x: item.tm_water - item.tm_water_prev,
-                            y: item.tm_oil - item.tm_oil_prev,
+                            x,
+                            y,
                             well,
                         };
                     } else {
@@ -250,7 +263,7 @@ const AmChart = ({ wellData }) => {
                 newSeries.bullets.push(() =>
                     am5.Bullet.new(root, {
                         sprite: am5.Circle.new(root, {
-                            radius: 4, 
+                            radius: 4,
                             fill: am5.color(0x000000),
                             tooltipText: `Скважина: ${well}`,
                         }),
@@ -260,7 +273,13 @@ const AmChart = ({ wellData }) => {
                 newSeries.data.setAll(data);
             }
         });
+    
+        xAxisRef.current.set("min", minX - 5);  
+        xAxisRef.current.set("max", maxX + 5);  
+        yAxisRef.current.set("min", minY - 5);  
+        yAxisRef.current.set("max", maxY + 5);  
     };
+    
     
     
     
