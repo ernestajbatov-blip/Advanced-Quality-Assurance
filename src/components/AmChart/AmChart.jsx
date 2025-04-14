@@ -194,7 +194,7 @@ const AmChart = ({ wellData }) => {
             radius: 5,
             fill: am5.color(0x000000),
             fillOpacity: 0.6,
-            tooltipText: "Скважина: {well}\nОбводненность: {x}\nНефть: {y}",
+            tooltipText: "Скважина: {well}\nΔОбводненность: {x}\nΔНефть: {y}",
           })
         })
       );
