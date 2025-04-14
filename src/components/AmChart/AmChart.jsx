@@ -213,7 +213,7 @@ const AmChart = ({ wellData }) => {
         height: am5.percent(100),
         verticalCenter: "top",
         horizontalCenter: "left",
-        x: 50,
+        x: 70,
         y: 0
       })
     );
