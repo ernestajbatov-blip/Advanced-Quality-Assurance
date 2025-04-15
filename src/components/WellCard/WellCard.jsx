@@ -43,14 +43,15 @@ export default function WellCard({
     };
 
     let cardColorClass = styles.grayCard;
-
     if (middle > 20) {
         cardColorClass = styles.redCard;
+    } else if (middle < 0) {
+        cardColorClass = styles.greenCard;
     } else if (middle !== 0) {
         const percentageDifference = ((middle - rightTop) / middle) * 100;
-        if (percentageDifference > 10 && percentageDifference <= 20) {
-            cardColorClass = styles.orangeCard;
-        }
+    if (percentageDifference > 10 && percentageDifference <= 20) {
+        cardColorClass = styles.orangeCard;
+    }
     }
 
     const cardClasses = `${styles.wellCard} ${cardColorClass}`;

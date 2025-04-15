@@ -21,6 +21,11 @@
   .grayCard {
     background-color: #50505a;
   }
+
+  .greenCard {
+    background-color: #339f1b;
+    color: white; 
+  }
   
   .wellCard {
     /* background-color: #50505a; */
