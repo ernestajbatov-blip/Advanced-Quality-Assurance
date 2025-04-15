@@ -25,7 +25,7 @@ export default function Details({
                     )}
                     {rightTop && (
                         <div className={styles.textWithRect}>
-                            <div className={styles.rect} style={{backgroundColor: "green"}}></div>
+                            <div className={styles.rect} style={{backgroundColor: "red"}}></div>
                             <p className={styles.text}>{rightTop}</p>
                         </div>
                     )}
@@ -35,7 +35,7 @@ export default function Details({
                 <div className={styles.row}>
                     {leftBottom && (
                         <div className={styles.textWithRect}>
-                            <div className={styles.rect} style={{backgroundColor: "red"}}></div>
+                            <div className={styles.rect} style={{backgroundColor: "green"}}></div>
                             <p className={styles.text}>{leftBottom}</p>
                         </div>
                     )}

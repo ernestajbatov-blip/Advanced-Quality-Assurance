@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Grid.module.css";
 import WellCard from "../WellCard/WellCard";
 
-export default function Grid({wells, fieldMappings, calculateMiddleValue}) {
+export default function Grid({wells, fieldMappings, calculateMiddleValue, setSelectedWell}) {
     return (
         <div className={styles.gridContainer}>
             {wells.map((well, index) => {
@@ -18,6 +18,8 @@ export default function Grid({wells, fieldMappings, calculateMiddleValue}) {
                         middle={middleValue}
                         leftBottom={leftBottomValue}
                         rightBottom={well[fieldMappings.rightBottom]}
+                        wells={wells}
+                        setSelectedWell={setSelectedWell}
                     />
                 );
             })}

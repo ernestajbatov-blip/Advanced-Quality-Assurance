@@ -6,7 +6,7 @@ import am5themes_Dark from "@amcharts/amcharts5/themes/Dark";
 import Slider from "react-slider";
 import styles from "./AmChart.module.css";
 
-const AmChart = ({ wellData }) => {
+const AmChart = ({ wellData, onReset }) => {
   const chartRef = useRef(null);
   const seriesRef = useRef({});
   const rootRef = useRef(null);
@@ -22,10 +22,10 @@ const AmChart = ({ wellData }) => {
   }, [wellData]);
 
   useEffect(() => {
-    if (dates.length > 0 && !currentDate) {
-      setCurrentDate(dates[0]);
+    if (dates.length > 0) {
+      setCurrentDate(dates[dates.length - 1]);
     }
-  }, [dates, currentDate]);
+  }, [dates]);  
 
   const wells = useMemo(() => {
     return Array.from(new Set(wellData.map(item => item.well)));
@@ -285,6 +285,7 @@ const AmChart = ({ wellData }) => {
 
   return (
     <div>
+      
       <div id="yearlyChartDiv" className={styles.chart}></div>
       {dates.length > 0 && (
         <div className={styles.sliderContainer}>
@@ -300,6 +301,13 @@ const AmChart = ({ wellData }) => {
           />
         </div>
       )}
+      <div className={styles.chartHeader}>
+        {onReset && (
+          <button onClick={onReset} className={styles.resetButton}>
+            ↻
+          </button>
+        )}
+      </div>
     </div>
   );
 };

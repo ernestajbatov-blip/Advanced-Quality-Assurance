@@ -5,12 +5,14 @@ import{WellsABCContext} from "../../states/WellsABCContext";
 export default function WellTable({wells, setSelectedWell}) {
     const context = location.pathname === "/abc" ? useContext(WellsABCContext) : null;
 
-    const handleWellClick = (wellName) => {
-        const {wells} = context;
-
+    const handleWellClick = async (wellName) => {
+        const { wells, setWellsChart } = context;
         const filteredWells = wells.filter((well) => well.well === wellName);
+        
         setSelectedWell(filteredWells);
-    };
+        
+        setWellsChart(filteredWells);
+      };
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);

@@ -12,6 +12,7 @@ export default function WellCard({
     middle,
     leftBottom,
     rightBottom,
+    setSelectedWell,
 }) {
     const location = useLocation();
 
@@ -23,17 +24,18 @@ export default function WellCard({
     const handleClick = async () => {
         if (location.pathname === "/abc") {
             try {
-                const { wells, setWellsChart } = context;
-                const response = await fetchWellData(leftTop);
-                const data = response.data;
-
-                const selected = wells.filter((well) => well.well === leftTop);
-                console.log(selected);
-                setWellsChart(selected);
-
-                setWell(data);
+            const { wells, setWellsChart } = context;
+            const response = await fetchWellData(leftTop);
+            const data = response.data;
+            const selected = wells.filter((well) => well.well === leftTop);
+            console.log(selected);
+            setWellsChart(selected);
+            setWell(data);
+            
+            setSelectedWell(selected);
+            
             } catch (err) {
-                console.error("Error getting the 'well' data!", err);
+            console.error("Error getting the 'well' data!", err);
             }
         } else {
             return;
@@ -42,11 +44,11 @@ export default function WellCard({
 
     let cardColorClass = styles.grayCard;
 
-    if (middle < 0) {
+    if (middle > 20) {
         cardColorClass = styles.redCard;
     } else if (middle !== 0) {
         const percentageDifference = ((middle - rightTop) / middle) * 100;
-        if (percentageDifference > 15 && percentageDifference <= 30) {
+        if (percentageDifference > 10 && percentageDifference <= 20) {
             cardColorClass = styles.orangeCard;
         }
     }

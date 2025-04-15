@@ -9,6 +9,10 @@ const WellsABCContextProvider = ({ children }) => {
     const [wells, setWells] = useState([]);
     const [selectedWell, setSelectedWell] = useState([]);
 
+    const resetWellsChart = () => {
+        setWellsChart(wells);
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -54,6 +58,7 @@ const WellsABCContextProvider = ({ children }) => {
                 setWellsGrid,
                 wellsChart,
                 setWellsChart,
+                resetWellsChart
             }}
         >
             {children}

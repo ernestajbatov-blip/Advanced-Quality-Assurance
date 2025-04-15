@@ -20,6 +20,7 @@ export default function ABCLayout() {
     setWellsGrid,
     wellsChart,
     setWellsChart,
+    resetWellsChart
   } = useContext(WellsABCContext);
 
   const fieldMappings = {
@@ -31,7 +32,7 @@ export default function ABCLayout() {
   };
 
   const calculateMiddleValue = (rightTop, leftBottom) => {
-    return rightTop - leftBottom;
+    return ((leftBottom - rightTop) / rightTop) * 100;
   };
 
   return (
@@ -40,7 +41,7 @@ export default function ABCLayout() {
       <div className={styles.mainSection}>
         <div className={styles.row}>
           <div className={styles.container}>
-            <AmChart wellData={wellsChart} />
+            <AmChart wellData={wellsChart} onReset={resetWellsChart} />
           </div>
           <div className={styles.containerX}>
             <AChart selectedWell={selectedWell} />
@@ -52,21 +53,22 @@ export default function ABCLayout() {
               <Legends
                 leftTop={"Номер скважины"}
                 rightTop={"Предыдущий замер"}
-                middle={"Разница замера"}
+                middle={"Разница замеров обводненности (%)"}
                 leftBottom={"Последний замер"}
                 rightBottom={"Лаб. обводненность"}
               />
               <Details
-                leftTop={"от 20% до 50%"}
-                rightTop={"Выше 50%"}
-                leftBottom={"Отрицательная разница"}
-                rightBottom={"от 0 до 20%"}
+                leftTop={"от 10% до 20%"}
+                rightTop={"Повышение Обводненности Выше 20%"}
+                leftBottom={"Снижение обводненности Ниже 0%"}
+                rightBottom={"от 0 до 10%"}
               />
             </div>
             <Grid
               wells={wellsGrid}
               fieldMappings={fieldMappings}
               calculateMiddleValue={calculateMiddleValue}
+              setSelectedWell={setSelectedWell}
             />
           </div>
           <div className={`${styles.container} ${styles.wellTableContainer}`}>
