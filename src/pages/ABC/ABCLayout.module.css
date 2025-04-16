@@ -20,14 +20,15 @@
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   background-color: #2d2d32;
   padding: 20px;
   gap: 20px;
   border-radius: 5px;
   overflow: auto;
-  /* min-width: 0; */
-  /* min-height: 0; */
+  min-height: 0;
 }
 
 .containerX {

@@ -11,21 +11,76 @@ const AmChart = ({ wellData, onReset }) => {
   const seriesRef = useRef({});
   const rootRef = useRef(null);
   const labelRef = useRef(null);
-  const [currentDate, setCurrentDate] = useState(null);
+  const bgSeriesRef = useRef([]);
+  const [currentTimePoint, setCurrentTimePoint] = useState(null);
+  const [viewMode, setViewMode] = useState("daily"); // "daily", "weekly", or "monthly"
 
-  const dates = useMemo(() => {
-    return Array.from(
+  // Russian month names
+  const monthNamesRU = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
+
+  // Process dates based on the view mode
+  const timePoints = useMemo(() => {
+    // Helper function to get week number
+    const getWeekNumber = (d) => {
+      const date = new Date(d);
+      date.setHours(0, 0, 0, 0);
+      date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+      const week1 = new Date(date.getFullYear(), 0, 4);
+      return 1 + Math.round(((date - week1) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+    };
+
+    // Helper function to get the first day of a week
+    const getFirstDayOfWeek = (dateStr) => {
+      const date = new Date(dateStr);
+      const day = date.getDay();
+      const diff = date.getDate() - day + (day === 0 ? -6 : 1);
+      const firstDay = new Date(date.setDate(diff));
+      return firstDay.toISOString().split("T")[0];
+    };
+
+    // Helper function to get month key
+    const getMonthKey = (dateStr) => {
+      const date = new Date(dateStr);
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
+    };
+
+    // Get all unique dates from well data
+    const allDates = Array.from(
       new Set(
         wellData.map((item) => new Date(item.date).toISOString().split("T")[0])
       )
     ).sort((a, b) => new Date(a) - new Date(b));
-  }, [wellData]);
+
+    if (viewMode === "daily") {
+      return allDates;
+    } else if (viewMode === "weekly") {
+      // Group by week
+      const weekMap = {};
+      allDates.forEach(date => {
+        const weekKey = `${new Date(date).getFullYear()}-W${getWeekNumber(date)}`;
+        const firstDayOfWeek = getFirstDayOfWeek(date);
+        weekMap[weekKey] = firstDayOfWeek;
+      });
+      return Object.values(weekMap).sort((a, b) => new Date(a) - new Date(b));
+    } else if (viewMode === "monthly") {
+      // Group by month
+      const monthMap = {};
+      allDates.forEach(date => {
+        const monthKey = getMonthKey(date);
+        const firstDayOfMonth = `${monthKey}-01`;
+        monthMap[monthKey] = firstDayOfMonth;
+      });
+      return Object.values(monthMap).sort((a, b) => new Date(a) - new Date(b));
+    }
+    
+    return allDates;
+  }, [wellData, viewMode]);
 
   useEffect(() => {
-    if (dates.length > 0) {
-      setCurrentDate(dates[dates.length - 1]);
+    if (timePoints.length > 0) {
+      setCurrentTimePoint(timePoints[timePoints.length - 1]);
     }
-  }, [dates]);  
+  }, [timePoints]);  
 
   const wells = useMemo(() => {
     return Array.from(new Set(wellData.map(item => item.well)));
@@ -66,25 +121,144 @@ const AmChart = ({ wellData, onReset }) => {
     return history;
   }, [wellData, wells]);
 
-  const getWellPositionsForDate = (date) => {
+  const getWellPositionsForTimePoint = (timePoint) => {
     const positions = {};
-    const targetDate = new Date(date);
+    const targetDate = new Date(timePoint);
+    
+    // For weekly and monthly views, get end date of the period
+    let endDate = new Date(targetDate);
+    if (viewMode === "weekly") {
+      endDate.setDate(endDate.getDate() + 6); // Last day of the week
+    } else if (viewMode === "monthly") {
+      endDate = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0); // Last day of the month
+    }
     
     wells.forEach(well => {
       let position = { ...wellPositionHistory[well].initialPosition };
       
-      const wellDates = Object.keys(wellPositionHistory[well].positions)
-        .filter(d => new Date(d) <= targetDate)
-        .sort((a, b) => new Date(b) - new Date(a));
+      // Filter dates based on view mode
+      let relevantDates;
       
-      if (wellDates.length > 0) {
-        position = { ...wellPositionHistory[well].positions[wellDates[0]] };
+      if (viewMode === "daily") {
+        // Just get positions up to the selected date
+        relevantDates = Object.keys(wellPositionHistory[well].positions)
+          .filter(d => new Date(d) <= targetDate)
+          .sort((a, b) => new Date(b) - new Date(a));
+      } else {
+        // For weekly/monthly, aggregate data within the period
+        relevantDates = Object.keys(wellPositionHistory[well].positions)
+          .filter(d => {
+            const date = new Date(d);
+            return date >= targetDate && date <= endDate;
+          })
+          .sort((a, b) => new Date(a) - new Date(b));
+        
+        // If no dates in range, get the latest date before the target
+        if (relevantDates.length === 0) {
+          relevantDates = Object.keys(wellPositionHistory[well].positions)
+            .filter(d => new Date(d) < targetDate)
+            .sort((a, b) => new Date(b) - new Date(a));
+        }
+      }
+      
+      if (relevantDates.length > 0) {
+        if (viewMode === "daily") {
+          // For daily view, just use the most recent position
+          position = { ...wellPositionHistory[well].positions[relevantDates[0]] };
+        } else {
+          // For weekly/monthly, aggregate values (sum or average)
+          let sumX = 0;
+          let sumY = 0;
+          
+          relevantDates.forEach(date => {
+            const pos = wellPositionHistory[well].positions[date];
+            sumX += pos.x;
+            sumY += pos.y;
+          });
+          
+          // Decide whether to sum or average
+          // Using sum for now, but you could average by dividing by relevantDates.length
+          position = { 
+            x: sumX, 
+            y: sumY, 
+            well,
+            date: timePoint
+          };
+        }
       }
       
       positions[well] = position;
     });
     
     return positions;
+  };
+
+  // Function to update color zones based on data points
+  const updateColorZones = (minX, maxX, minY, maxY) => {
+    if (!rootRef.current || rootRef.current._disposed) return;
+    
+    const root = rootRef.current;
+    const chart = chartRef.current;
+    
+    if (!chart) return;
+    
+    // Define updated boundaries with some padding
+    const padding = 3;
+    const xMin = Math.min(-15, minX - padding);
+    const xMax = Math.max(15, maxX + padding);
+    const yMin = Math.min(-15, minY - padding);
+    const yMax = Math.max(15, maxY + padding);
+    
+    // Define zones
+    const areas = [
+      { x1: xMin, y1: yMin, x2: 0, y2: 0, color: 0xf54945 }, // Bottom-left (red)
+      { x1: xMin, y1: 0, x2: 0, y2: yMax, color: 0x339f1b }, // Top-left (green)
+      { x1: 0, y1: yMin, x2: xMax, y2: 0, color: 0x3959f2 }, // Bottom-right (blue)
+      { x1: 0, y1: 0, x2: xMax, y2: yMax, color: 0x787878 }, // Top-right (gray)
+    ];
+    
+    // Update or create background series
+    if (bgSeriesRef.current.length === 0) {
+      areas.forEach((area, index) => {
+        const bgSeries = chart.series.push(
+          am5xy.LineSeries.new(root, {
+            xAxis: chart.xAxes.getIndex(0),
+            yAxis: chart.yAxes.getIndex(0),
+            valueXField: "ax",
+            valueYField: "ay",
+            fill: am5.color(area.color),
+          })
+        );
+
+        bgSeries.fills.template.setAll({
+          fillOpacity: 0.5,
+          inside: true,
+          visible: true,
+        });
+        bgSeries.strokes.template.set("forceHidden", true);
+
+        bgSeries.data.setAll([
+          { ax: area.x1, ay: area.y1 },
+          { ax: area.x2, ay: area.y1 },
+          { ax: area.x2, ay: area.y2 },
+          { ax: area.x1, ay: area.y2 },
+        ]);
+        
+        bgSeriesRef.current[index] = bgSeries;
+      });
+    } else {
+      // Update existing series
+      areas.forEach((area, index) => {
+        if (bgSeriesRef.current[index]) {
+          bgSeriesRef.current[index].data.setAll([
+            { ax: area.x1, ay: area.y1 },
+            { ax: area.x2, ay: area.y1 },
+            { ax: area.x2, ay: area.y2 },
+            { ax: area.x1, ay: area.y2 },
+          ]);
+        }
+      });
+    }
   };
 
   useLayoutEffect(() => {
@@ -95,6 +269,12 @@ const AmChart = ({ wellData, onReset }) => {
     root._logo.dispose();
     root.setThemes([am5themes_Animated.new(root), am5themes_Dark.new(root)]);
 
+    // Apply padding to prevent edges from being cut off
+    root.container.set("paddingBottom", 0);
+    root.container.set("paddingTop", 0);
+    root.container.set("paddingLeft", 0);
+    root.container.set("paddingRight", 0);
+
     const chart = root.container.children.push(
       am5xy.XYChart.new(root, {
         panX: true,
@@ -103,6 +283,12 @@ const AmChart = ({ wellData, onReset }) => {
         pinchZoomX: true,
         pinchZoomY: true,
         animationDuration: 600,
+        paddingBottom: 0,
+        paddingLeft: 0,
+        paddingRight: 0,
+        paddingTop: 10, // Keep a small padding at top for the label
+        layout: root.verticalLayout,
+        maxHeight: am5.percent(100)
       })
     );
     chartRef.current = chart;
@@ -113,8 +299,12 @@ const AmChart = ({ wellData, onReset }) => {
       am5xy.ValueAxis.new(root, {
         min: -15, 
         max: 15,  
-        strictMinMax: true,
-        renderer: am5xy.AxisRendererX.new(root, { minGridDistance: 50 }),
+        strictMinMax: false, // Allow auto-adjusting
+        renderer: am5xy.AxisRendererX.new(root, { 
+          minGridDistance: 50,
+          centerY: am5.p50,
+          centerX: am5.p50
+        }),
         tooltip: am5.Tooltip.new(root, {}),
       })
     );
@@ -123,8 +313,12 @@ const AmChart = ({ wellData, onReset }) => {
       am5xy.ValueAxis.new(root, {
         min: -15, 
         max: 15,  
-        strictMinMax: true,
-        renderer: am5xy.AxisRendererY.new(root, { visible: true }),
+        strictMinMax: false, // Allow auto-adjusting
+        renderer: am5xy.AxisRendererY.new(root, { 
+          visible: true,
+          centerY: am5.p50,
+          centerX: am5.p50
+        }),
         tooltip: am5.Tooltip.new(root, {}),
       })
     );
@@ -138,38 +332,8 @@ const AmChart = ({ wellData, onReset }) => {
     xAxis.get("renderer").grid.template.setAll(gridStyles);
     yAxis.get("renderer").grid.template.setAll(gridStyles);
 
-    const areas = [
-      { x1: -15, y1: -15, x2: 0, y2: 0, color: 0xf54945 }, 
-      { x1: -15, y1: 0, x2: 0, y2: 15, color: 0x339f1b },  
-      { x1: 0, y1: -15, x2: 15, y2: 0, color: 0x3959f2 },  
-      { x1: 0, y1: 0, x2: 15, y2: 15, color: 0x787878 },   
-    ];
-
-    areas.forEach((area) => {
-      const bgSeries = chart.series.push(
-        am5xy.LineSeries.new(root, {
-          xAxis,
-          yAxis,
-          valueXField: "ax",
-          valueYField: "ay",
-          fill: am5.color(area.color),
-        })
-      );
-
-      bgSeries.fills.template.setAll({
-        fillOpacity: 0.5,
-        inside: true,
-        visible: true,
-      });
-      bgSeries.strokes.template.set("forceHidden", true);
-
-      bgSeries.data.setAll([
-        { ax: area.x1, ay: area.y1 },
-        { ax: area.x2, ay: area.y1 },
-        { ax: area.x2, ay: area.y2 },
-        { ax: area.x1, ay: area.y2 },
-      ]);
-    });
+    // Color zones will be added later in the updateColorZones function
+    bgSeriesRef.current = [];
 
     wells.forEach(well => {
       const series = chart.series.push(
@@ -206,11 +370,11 @@ const AmChart = ({ wellData, onReset }) => {
 
     const labelContainer = root.container.children.push(
       am5.Container.new(root, {
-        paddingTop: 10,
+        paddingTop: 5,
         paddingLeft: 10,
         layout: root.horizontalLayout,
         width: am5.percent(100),
-        height: am5.percent(100),
+        height: 30,
         verticalCenter: "top",
         horizontalCenter: "left",
         x: 70,
@@ -220,31 +384,43 @@ const AmChart = ({ wellData, onReset }) => {
 
     const label = labelContainer.children.push(
       am5.Label.new(root, {
-        text: currentDate || "",
-        fontSize: "1.5em",
+        text: currentTimePoint || "",
+        fontSize: "1.2em",
         fill: am5.color(0xffffff),
         opacity: 0.7,
-        verticalCenter: "top",
+        verticalCenter: "middle",
         horizontalCenter: "left"
       })
     );
     
     labelRef.current = label;
 
+    // Add a resize listener to ensure chart fits properly
+    const resizeObserver = new ResizeObserver(() => {
+      root.resize();
+    });
+    
+    const chartDiv = document.getElementById("yearlyChartDiv");
+    if (chartDiv) {
+      resizeObserver.observe(chartDiv);
+    }
+
     return () => {
+      resizeObserver.disconnect();
       root.dispose();
       rootRef.current = null;
       chartRef.current = null;
       labelRef.current = null;
       seriesRef.current = {};
+      bgSeriesRef.current = [];
     };
   }, [wellData, wells]);
 
   useEffect(() => {
-    if (!currentDate || !chartRef.current || !rootRef.current || rootRef.current._disposed) return;
+    if (!currentTimePoint || !chartRef.current || !rootRef.current || rootRef.current._disposed) return;
 
     const chart = chartRef.current;
-    const positions = getWellPositionsForDate(currentDate);
+    const positions = getWellPositionsForTimePoint(currentTimePoint);
     let minX = Infinity;
     let maxX = -Infinity;
     let minY = Infinity;
@@ -275,39 +451,82 @@ const AmChart = ({ wellData, onReset }) => {
       xAxis.set("max", Math.max(15, maxX + padding));
       yAxis.set("min", Math.min(-15, minY - padding));
       yAxis.set("max", Math.max(15, maxY + padding));
+      
+      // Update color zones to match the new axis boundaries
+      updateColorZones(minX, maxX, minY, maxY);
     }
 
-    if (labelRef.current) {
-      labelRef.current.set("text", currentDate);
+    // Format the label based on view mode
+    let formattedLabel = currentTimePoint;
+    if (viewMode === "weekly") {
+      const startDate = new Date(currentTimePoint);
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 6);
+      formattedLabel = `${currentTimePoint} - ${endDate.toISOString().split("T")[0]}`;
+    } else if (viewMode === "monthly") {
+      const date = new Date(currentTimePoint);
+      formattedLabel = `${monthNamesRU[date.getMonth()]} ${date.getFullYear()}`;
     }
     
-  }, [currentDate, wellPositionHistory, wells]);
+    if (labelRef.current) {
+      labelRef.current.set("text", formattedLabel);
+    }
+    
+  }, [currentTimePoint, viewMode, wellPositionHistory, wells, monthNamesRU]);
+
+  // Handle view mode change
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    // Reset to the last time point when changing view
+    if (timePoints.length > 0) {
+      setCurrentTimePoint(timePoints[timePoints.length - 1]);
+    }
+  };
 
   return (
-    <div>
-      
+    <div className={styles.chartWrapper}>
+      <div className={styles.chartHeader}>
+        <div className={styles.viewControls}>
+          <button 
+            className={`${styles.viewButton} ${viewMode === "daily" ? styles.activeView : ""}`}
+            onClick={() => handleViewModeChange("daily")}
+          >
+            Ежедневно
+          </button>
+          <button 
+            className={`${styles.viewButton} ${viewMode === "weekly" ? styles.activeView : ""}`}
+            onClick={() => handleViewModeChange("weekly")}
+          >
+            Еженедельно
+          </button>
+          <button 
+            className={`${styles.viewButton} ${viewMode === "monthly" ? styles.activeView : ""}`}
+            onClick={() => handleViewModeChange("monthly")}
+          >
+            Ежемесячно
+          </button>
+          {onReset && (
+            <button onClick={onReset} className={styles.resetButton}>
+              ↻
+            </button>
+          )}
+        </div>
+      </div>
       <div id="yearlyChartDiv" className={styles.chart}></div>
-      {dates.length > 0 && (
+      {timePoints.length > 0 && (
         <div className={styles.sliderContainer}>
           <Slider
             min={0}
-            max={dates.length - 1}
+            max={timePoints.length - 1}
             step={1}
-            value={dates.indexOf(currentDate)}
-            onChange={(value) => setCurrentDate(dates[value])}
+            value={timePoints.indexOf(currentTimePoint)}
+            onChange={(value) => setCurrentTimePoint(timePoints[value])}
             className={styles.slider}
             thumbClassName={styles.sliderThumb}
             trackClassName={styles.sliderTrack}
           />
         </div>
       )}
-      <div className={styles.chartHeader}>
-        {onReset && (
-          <button onClick={onReset} className={styles.resetButton}>
-            ↻
-          </button>
-        )}
-      </div>
     </div>
   );
 };
