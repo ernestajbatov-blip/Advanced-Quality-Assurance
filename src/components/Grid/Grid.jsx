@@ -2,7 +2,7 @@ import React from "react";
 import styles from "./Grid.module.css";
 import WellCard from "../WellCard/WellCard";
 
-export default function Grid({wells, fieldMappings, calculateMiddleValue, setSelectedWell}) {
+export default function Grid({wells, fieldMappings, calculateMiddleValue, setSelectedWell, redThreshold, greenThreshold, orangeThresholdMinPercentage, orangeThresholdMaxPercentage}) {
     return (
         <div className={styles.gridContainer}>
             {wells.map((well, index) => {
@@ -20,6 +20,10 @@ export default function Grid({wells, fieldMappings, calculateMiddleValue, setSel
                         rightBottom={well[fieldMappings.rightBottom]}
                         wells={wells}
                         setSelectedWell={setSelectedWell}
+                        redThreshold={redThreshold}
+                        greenThreshold={greenThreshold}
+                        orangeThresholdMinPercentage={orangeThresholdMinPercentage}
+                        orangeThresholdMaxPercentage={orangeThresholdMaxPercentage}
                     />
                 );
             })}

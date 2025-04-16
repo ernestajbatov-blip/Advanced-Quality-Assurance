@@ -13,11 +13,13 @@ export default function WellCard({
     leftBottom,
     rightBottom,
     setSelectedWell,
+    redThreshold,
+    greenThreshold,
+    orangeThresholdMinPercentage,
+    orangeThresholdMaxPercentage
 }) {
     const location = useLocation();
-
     const context = location.pathname === "/abc" ? useContext(WellsABCContext) : null;
-
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [well, setWell] = useState(null);
 
@@ -41,20 +43,27 @@ export default function WellCard({
             return;
         }
     };
-
+    
     let cardColorClass = styles.grayCard;
-    if (middle > 20) {
-        cardColorClass = styles.redCard;
-    } else if (middle < 0) {
-        cardColorClass = styles.greenCard;
+  
+    if (middle > redThreshold) {
+      cardColorClass = styles.redCard;
+    } else if (middle < greenThreshold) {
+      cardColorClass = styles.greenCard;
     } else if (middle !== 0) {
-        const percentageDifference = ((middle - rightTop) / middle) * 100;
-    if (percentageDifference > 10 && percentageDifference <= 20) {
+      const percentageDifference = middle;
+      if (percentageDifference > orangeThresholdMinPercentage && 
+          percentageDifference <= orangeThresholdMaxPercentage) {
         cardColorClass = styles.orangeCard;
-    }
+      }
     }
 
     const cardClasses = `${styles.wellCard} ${cardColorClass}`;
+
+    // console.log("DEBUG -- leftBottom:", leftBottom);
+    // console.log("DEBUG -- rightTop:", rightTop);
+    // console.log("DEBUG -- middle (percentage):", middle);
+
 
     return (
         <>
@@ -63,7 +72,7 @@ export default function WellCard({
                     <span>{leftTop}</span>
                     <span>{rightTop.toFixed(2)}</span>
                 </div>
-                <h3 className={styles.cardHeader}>{middle.toFixed(1)}</h3>
+                <h3 className={styles.cardHeader}>{middle.toFixed(2)}</h3>
                 <div className={styles.cardRow}>
                     <span>{leftBottom.toFixed(1)}</span>
                     <span>{rightBottom.toFixed(1)}</span>

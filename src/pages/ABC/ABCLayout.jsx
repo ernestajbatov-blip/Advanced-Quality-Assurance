@@ -32,8 +32,8 @@ export default function ABCLayout() {
   };
 
   const calculateMiddleValue = (rightTop, leftBottom) => {
-    return ((leftBottom - rightTop) / rightTop) * 100;
-  };
+    return parseFloat(((leftBottom - rightTop) / rightTop * 100).toFixed(2));
+  };  
 
   return (
     <div className={styles.app}>
@@ -69,6 +69,10 @@ export default function ABCLayout() {
               fieldMappings={fieldMappings}
               calculateMiddleValue={calculateMiddleValue}
               setSelectedWell={setSelectedWell}
+              redThreshold={20}
+              greenThreshold={0}
+              orangeThresholdMinPercentage={10}
+              orangeThresholdMaxPercentage={20}
             />
           </div>
           <div className={`${styles.container} ${styles.wellTableContainer}`}>
