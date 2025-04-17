@@ -12,6 +12,7 @@ const AmChart = ({ wellData, onReset }) => {
   const rootRef = useRef(null);
   const labelRef = useRef(null);
   const bgSeriesRef = useRef([]);
+  const updateTimeoutRef = useRef(null);
   const [currentTimePoint, setCurrentTimePoint] = useState(null);
   const [viewMode, setViewMode] = useState("daily");
 
@@ -183,6 +184,19 @@ const AmChart = ({ wellData, onReset }) => {
     return positions;
   };
 
+  // Debounced update function to prevent multiple rapid updates
+  const debouncedUpdateColorZones = () => {
+    if (updateTimeoutRef.current) {
+      clearTimeout(updateTimeoutRef.current);
+    }
+    
+    updateTimeoutRef.current = setTimeout(() => {
+      updateColorZones();
+      updateTimeoutRef.current = null;
+    }, 100);
+  };
+
+  // Updated function to properly get the current axis ranges
   const updateColorZones = () => {
     if (!rootRef.current || rootRef.current._disposed) return;
     
@@ -194,19 +208,26 @@ const AmChart = ({ wellData, onReset }) => {
     
     if (!xAxis || !yAxis) return;
     
-    const xMin = xAxis.get("min");
-    const xMax = xAxis.get("max");
-    const yMin = yAxis.get("min");
-    const yMax = yAxis.get("max");
+    // Get the current visible range of both axes
+    const xMin = xAxis.getPrivate("min", xAxis.get("min"));
+    const xMax = xAxis.getPrivate("max", xAxis.get("max"));
+    const yMin = yAxis.getPrivate("min", yAxis.get("min"));
+    const yMax = yAxis.getPrivate("max", yAxis.get("max"));
+    
+    // Only update if we have valid values
+    if (!isFinite(xMin) || !isFinite(xMax) || !isFinite(yMin) || !isFinite(yMax)) {
+      return;
+    }
     
     const areas = [
-      { x1: xMin, y1: yMin, x2: 0, y2: 0, color: 0xf54945 },
-      { x1: xMin, y1: 0, x2: 0, y2: yMax, color: 0x339f1b },
-      { x1: 0, y1: yMin, x2: xMax, y2: 0, color: 0x3959f2 },
-      { x1: 0, y1: 0, x2: xMax, y2: yMax, color: 0x787878 },
+      { x1: xMin, y1: yMin, x2: 0, y2: 0, color: 0xf54945 }, // Bottom-left quadrant
+      { x1: xMin, y1: 0, x2: 0, y2: yMax, color: 0x339f1b }, // Top-left quadrant
+      { x1: 0, y1: yMin, x2: xMax, y2: 0, color: 0x3959f2 }, // Bottom-right quadrant
+      { x1: 0, y1: 0, x2: xMax, y2: yMax, color: 0x787878 }, // Top-right quadrant
     ];
     
     if (bgSeriesRef.current.length === 0) {
+      // Create background series for each quadrant if they don't exist
       areas.forEach((area, index) => {
         const bgSeries = chart.series.push(
           am5xy.LineSeries.new(rootRef.current, {
@@ -235,6 +256,7 @@ const AmChart = ({ wellData, onReset }) => {
         bgSeriesRef.current[index] = bgSeries;
       });
     } else {
+      // Update existing background series with new coordinates
       areas.forEach((area, index) => {
         if (bgSeriesRef.current[index]) {
           bgSeriesRef.current[index].data.setAll([
@@ -309,8 +331,10 @@ const AmChart = ({ wellData, onReset }) => {
       })
     );
   
-    xAxis.events.on("rangechanged", updateColorZones);
-    yAxis.events.on("rangechanged", updateColorZones);
+    // Add event listeners for axis range changes to update color zones
+    // But use the debounced version to prevent too many updates
+    xAxis.events.on("rangechanged", debouncedUpdateColorZones);
+    yAxis.events.on("rangechanged", debouncedUpdateColorZones);
 
     const gridStyles = {
       stroke: am5.color(0x444444),
@@ -354,9 +378,14 @@ const AmChart = ({ wellData, onReset }) => {
       seriesRef.current[well] = series;
     });
 
-    chart.set("cursor", am5xy.XYCursor.new(root, { xAxis, yAxis }));
+    const cursor = am5xy.XYCursor.new(root, { xAxis, yAxis });
+    chart.set("cursor", cursor);
 
-    updateColorZones();
+    // Initial call to create color zones
+    // Wait for chart to be fully initialized
+    root.events.on("frameended", () => {
+      updateColorZones();
+    });
 
     const labelContainer = root.container.children.push(
       am5.Container.new(root, {
@@ -386,7 +415,10 @@ const AmChart = ({ wellData, onReset }) => {
     labelRef.current = label;
 
     const resizeObserver = new ResizeObserver(() => {
-      root.resize();
+      if (rootRef.current && !rootRef.current._disposed) {
+        rootRef.current.resize();
+        debouncedUpdateColorZones();
+      }
     });
     
     const chartDiv = document.getElementById("yearlyChartDiv");
@@ -395,6 +427,9 @@ const AmChart = ({ wellData, onReset }) => {
     }
 
     return () => {
+      if (updateTimeoutRef.current) {
+        clearTimeout(updateTimeoutRef.current);
+      }
       resizeObserver.disconnect();
       root.dispose();
       rootRef.current = null;
@@ -404,43 +439,6 @@ const AmChart = ({ wellData, onReset }) => {
       bgSeriesRef.current = [];
     };
   }, [wellData, wells]);
-
-  useEffect(() => {
-    if (!rootRef.current || !chartRef.current) return;
-  
-    const handleResize = () => {
-      if (!chartRef.current) return;
-      
-      const chart = chartRef.current;
-      const xAxis = chart.xAxes.getIndex(0);
-      const yAxis = chart.yAxes.getIndex(0);
-      
-      if (xAxis && yAxis) {
-        const minX = xAxis.get("min");
-        const maxX = xAxis.get("max");
-        const minY = yAxis.get("min");
-        const maxY = yAxis.get("max");
-        
-        updateColorZones(minX, maxX, minY, maxY);
-      }
-    };
-  
-    const resizeObserver = new ResizeObserver(() => {
-      if (rootRef.current && !rootRef.current._disposed) {
-        rootRef.current.resize();
-        handleResize();
-      }
-    });
-    
-    const chartDiv = document.getElementById("yearlyChartDiv");
-    if (chartDiv) {
-      resizeObserver.observe(chartDiv);
-    }
-  
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     if (!currentTimePoint || !chartRef.current || !rootRef.current || rootRef.current._disposed) return;
@@ -478,9 +476,10 @@ const AmChart = ({ wellData, onReset }) => {
       yAxis.set("min", Math.min(-15, minY - padding));
       yAxis.set("max", Math.max(15, maxY + padding));
       
+      // The axes will trigger their own rangechanged events
+      // which will update the color zones via the debounced function
     }
   
-
     let formattedLabel = currentTimePoint;
     if (viewMode === "weekly") {
       const startDate = new Date(currentTimePoint);
