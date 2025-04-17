@@ -183,19 +183,21 @@ const AmChart = ({ wellData, onReset }) => {
     return positions;
   };
 
-  const updateColorZones = (minX, maxX, minY, maxY) => {
+  const updateColorZones = () => {
     if (!rootRef.current || rootRef.current._disposed) return;
     
-    const root = rootRef.current;
     const chart = chartRef.current;
-    
     if (!chart) return;
     
-    const padding = 3;
-    const xMin = Math.min(-15, minX - padding);
-    const xMax = Math.max(15, maxX + padding);
-    const yMin = Math.min(-15, minY - padding);
-    const yMax = Math.max(15, maxY + padding);
+    const xAxis = chart.xAxes.getIndex(0);
+    const yAxis = chart.yAxes.getIndex(0);
+    
+    if (!xAxis || !yAxis) return;
+    
+    const xMin = xAxis.get("min");
+    const xMax = xAxis.get("max");
+    const yMin = yAxis.get("min");
+    const yMax = yAxis.get("max");
     
     const areas = [
       { x1: xMin, y1: yMin, x2: 0, y2: 0, color: 0xf54945 },
@@ -207,22 +209,22 @@ const AmChart = ({ wellData, onReset }) => {
     if (bgSeriesRef.current.length === 0) {
       areas.forEach((area, index) => {
         const bgSeries = chart.series.push(
-          am5xy.LineSeries.new(root, {
-            xAxis: chart.xAxes.getIndex(0),
-            yAxis: chart.yAxes.getIndex(0),
+          am5xy.LineSeries.new(rootRef.current, {
+            xAxis: xAxis,
+            yAxis: yAxis,
             valueXField: "ax",
             valueYField: "ay",
             fill: am5.color(area.color),
           })
         );
-
+  
         bgSeries.fills.template.setAll({
           fillOpacity: 0.5,
           inside: true,
           visible: true,
         });
         bgSeries.strokes.template.set("forceHidden", true);
-
+  
         bgSeries.data.setAll([
           { ax: area.x1, ay: area.y1 },
           { ax: area.x2, ay: area.y1 },
@@ -248,7 +250,7 @@ const AmChart = ({ wellData, onReset }) => {
 
   useLayoutEffect(() => {
     if (!wellData || wellData.length === 0 || rootRef.current) return;
-
+  
     const root = am5.Root.new("yearlyChartDiv");
     rootRef.current = root;
     root._logo.dispose();
@@ -267,9 +269,9 @@ const AmChart = ({ wellData, onReset }) => {
         pinchZoomX: true,
         pinchZoomY: true,
         animationDuration: 600,
-        paddingBottom: 0,
-        paddingLeft: 0,
-        paddingRight: 0,
+        paddingBottom: 10,
+        paddingLeft: 10,
+        paddingRight: 10,
         paddingTop: 10,
         layout: root.verticalLayout,
         maxHeight: am5.percent(100)
@@ -292,7 +294,7 @@ const AmChart = ({ wellData, onReset }) => {
         tooltip: am5.Tooltip.new(root, {}),
       })
     );
-
+  
     const yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
         min: -15, 
@@ -306,6 +308,9 @@ const AmChart = ({ wellData, onReset }) => {
         tooltip: am5.Tooltip.new(root, {}),
       })
     );
+  
+    xAxis.events.on("rangechanged", updateColorZones);
+    yAxis.events.on("rangechanged", updateColorZones);
 
     const gridStyles = {
       stroke: am5.color(0x444444),
@@ -350,6 +355,8 @@ const AmChart = ({ wellData, onReset }) => {
     });
 
     chart.set("cursor", am5xy.XYCursor.new(root, { xAxis, yAxis }));
+
+    updateColorZones();
 
     const labelContainer = root.container.children.push(
       am5.Container.new(root, {
@@ -399,15 +406,52 @@ const AmChart = ({ wellData, onReset }) => {
   }, [wellData, wells]);
 
   useEffect(() => {
-    if (!currentTimePoint || !chartRef.current || !rootRef.current || rootRef.current._disposed) return;
+    if (!rootRef.current || !chartRef.current) return;
+  
+    const handleResize = () => {
+      if (!chartRef.current) return;
+      
+      const chart = chartRef.current;
+      const xAxis = chart.xAxes.getIndex(0);
+      const yAxis = chart.yAxes.getIndex(0);
+      
+      if (xAxis && yAxis) {
+        const minX = xAxis.get("min");
+        const maxX = xAxis.get("max");
+        const minY = yAxis.get("min");
+        const maxY = yAxis.get("max");
+        
+        updateColorZones(minX, maxX, minY, maxY);
+      }
+    };
+  
+    const resizeObserver = new ResizeObserver(() => {
+      if (rootRef.current && !rootRef.current._disposed) {
+        rootRef.current.resize();
+        handleResize();
+      }
+    });
+    
+    const chartDiv = document.getElementById("yearlyChartDiv");
+    if (chartDiv) {
+      resizeObserver.observe(chartDiv);
+    }
+  
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
+  useEffect(() => {
+    if (!currentTimePoint || !chartRef.current || !rootRef.current || rootRef.current._disposed) return;
+  
     const chart = chartRef.current;
     const positions = getWellPositionsForTimePoint(currentTimePoint);
     let minX = Infinity;
     let maxX = -Infinity;
     let minY = Infinity;
     let maxY = -Infinity;
-
+  
     wells.forEach(well => {
       const series = seriesRef.current[well];
       if (series) {
@@ -423,19 +467,19 @@ const AmChart = ({ wellData, onReset }) => {
         }
       }
     });
-
+  
     if (isFinite(minX) && isFinite(maxX) && isFinite(minY) && isFinite(maxY)) {
       const padding = 3;
       const xAxis = chart.xAxes.getIndex(0);
       const yAxis = chart.yAxes.getIndex(0);
-
+  
       xAxis.set("min", Math.min(-15, minX - padding));
       xAxis.set("max", Math.max(15, maxX + padding));
       yAxis.set("min", Math.min(-15, minY - padding));
       yAxis.set("max", Math.max(15, maxY + padding));
       
-      updateColorZones(minX, maxX, minY, maxY);
     }
+  
 
     let formattedLabel = currentTimePoint;
     if (viewMode === "weekly") {
