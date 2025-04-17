@@ -13,10 +13,14 @@ export default function WellCard({
     leftBottom,
     rightBottom,
     setSelectedWell,
-    redThreshold,
-    greenThreshold,
-    orangeThresholdMinPercentage,
-    orangeThresholdMaxPercentage
+    maxThreshold,
+    colorMax,
+    minThreshold,
+    colorMin,
+    inBetweenThresholdMin,
+    inBetweenColor,
+    inBetweenThresholdMax,
+    realMiddle
 }) {
     const location = useLocation();
     const context = location.pathname === "/abc" ? useContext(WellsABCContext) : null;
@@ -46,15 +50,15 @@ export default function WellCard({
     
     let cardColorClass = styles.grayCard;
   
-    if (middle > redThreshold) {
-      cardColorClass = styles.redCard;
-    } else if (middle < greenThreshold) {
-      cardColorClass = styles.greenCard;
+    if (middle > maxThreshold) {
+      cardColorClass = styles[colorMax];
+    } else if (middle <= minThreshold) {
+      cardColorClass = styles[colorMin];
     } else if (middle !== 0) {
       const percentageDifference = middle;
-      if (percentageDifference > orangeThresholdMinPercentage && 
-          percentageDifference <= orangeThresholdMaxPercentage) {
-        cardColorClass = styles.orangeCard;
+      if (percentageDifference > inBetweenThresholdMin && 
+          percentageDifference <= inBetweenThresholdMax) {
+        cardColorClass = styles[inBetweenColor];
       }
     }
 
@@ -72,7 +76,7 @@ export default function WellCard({
                     <span>{leftTop}</span>
                     <span>{rightTop.toFixed(2)}</span>
                 </div>
-                <h3 className={styles.cardHeader}>{middle.toFixed(2)}</h3>
+                <h3 className={styles.cardHeader}>{realMiddle.toFixed(2)}</h3>
                 <div className={styles.cardRow}>
                     <span>{leftBottom.toFixed(1)}</span>
                     <span>{rightBottom.toFixed(1)}</span>

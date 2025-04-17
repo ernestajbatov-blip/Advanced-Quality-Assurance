@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from "react";
-import { fetchWellsABC, fetchWellData } from "../../axios/wellService";
 import AppNav from "../../components/AppNav/AppNav";
 import Legends from "../../components/Legends/Legends";
 import Details from "../../components/Details/Details";
@@ -31,8 +30,8 @@ export default function ABCLayout() {
     rightBottom: "tm_water",
   };
 
-  const calculateMiddleValue = (rightTop, leftBottom) => {
-    return parseFloat(((leftBottom - rightTop) / rightTop * 100).toFixed(2));
+  const calculateMiddleValue = (wells, values) => {
+    return parseFloat(((values.leftBottom - values.rightTop) / values.rightTop * 100).toFixed(2));
   };  
 
   return (
@@ -69,10 +68,14 @@ export default function ABCLayout() {
               fieldMappings={fieldMappings}
               calculateMiddleValue={calculateMiddleValue}
               setSelectedWell={setSelectedWell}
-              redThreshold={20}
-              greenThreshold={0}
-              orangeThresholdMinPercentage={10}
-              orangeThresholdMaxPercentage={20}
+              maxThreshold={20}
+              colorMax={'redCard'}
+              minThreshold={0}
+              colorMin={'greenCard'}
+              inBetweenThresholdMin={10}
+              inBetweenColor={'orangeCard'}
+              inBetweenThresholdMax={20}
+              realMiddle={false}
             />
           </div>
           <div className={`${styles.container} ${styles.wellTableContainer}`}>

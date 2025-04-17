@@ -23,6 +23,10 @@ export default function AppLayout() {
     rightBottom: "tr_water",
   };
 
+  const calculateMiddleValue = (wells, values) => {
+    return parseFloat(((values.middle - values.leftBottom) / values.leftBottom * 100).toFixed(2));
+  };
+
   const filteredWells = useMemo(() => {
     if (fond === 0) {
       return wells.filter((well) => well.nagn === 0);
@@ -61,15 +65,27 @@ export default function AppLayout() {
               )}
               <SelectFond setFond={setFond} />
               {fond == 0 ? (<Details
-                leftTop={"-30% откл. от ТР"}
-                rightTop={"15% прев. над ТР"}
+                leftTop={"-15% откл. от ТР"}
+                rightTop={"-30% откл. от ТР"}
                 leftBottom={"более 30%"}
                 rightBottom={"в пределах нормы"}
               />) :
               (<Details leftBottom={"-30% откл. от cнижение замерной добычи"}/>
                 )}
             </div>
-            <Grid wells={filteredWells} fieldMappings={fieldMappings} />
+            <Grid 
+            wells={filteredWells} 
+            fieldMappings={fieldMappings}
+            calculateMiddleValue={calculateMiddleValue}
+            maxThreshold={15}
+            colorMax={'greenCard'}
+            minThreshold={-30}
+            colorMin={'redCard'}
+            inBetweenThresholdMin={-30}
+            inBetweenColor={'orangeCard'}
+            inBetweenThresholdMax={-15}
+            realMiddle={true}
+            />
           </div>
           <div className={styles.container}>
             {fond === 0 ? (

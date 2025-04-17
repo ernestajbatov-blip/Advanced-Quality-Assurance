@@ -13,9 +13,8 @@ const AmChart = ({ wellData, onReset }) => {
   const labelRef = useRef(null);
   const bgSeriesRef = useRef([]);
   const [currentTimePoint, setCurrentTimePoint] = useState(null);
-  const [viewMode, setViewMode] = useState("daily"); // "daily", "weekly", or "monthly"
+  const [viewMode, setViewMode] = useState("daily");
 
-  // Russian month names
   const monthNamesRU = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
 
   // Process dates based on the view mode
@@ -125,7 +124,6 @@ const AmChart = ({ wellData, onReset }) => {
     const positions = {};
     const targetDate = new Date(timePoint);
     
-    // For weekly and monthly views, get end date of the period
     let endDate = new Date(targetDate);
     if (viewMode === "weekly") {
       endDate.setDate(endDate.getDate() + 6); // Last day of the week
@@ -136,16 +134,13 @@ const AmChart = ({ wellData, onReset }) => {
     wells.forEach(well => {
       let position = { ...wellPositionHistory[well].initialPosition };
       
-      // Filter dates based on view mode
       let relevantDates;
       
       if (viewMode === "daily") {
-        // Just get positions up to the selected date
         relevantDates = Object.keys(wellPositionHistory[well].positions)
           .filter(d => new Date(d) <= targetDate)
           .sort((a, b) => new Date(b) - new Date(a));
       } else {
-        // For weekly/monthly, aggregate data within the period
         relevantDates = Object.keys(wellPositionHistory[well].positions)
           .filter(d => {
             const date = new Date(d);
@@ -153,7 +148,6 @@ const AmChart = ({ wellData, onReset }) => {
           })
           .sort((a, b) => new Date(a) - new Date(b));
         
-        // If no dates in range, get the latest date before the target
         if (relevantDates.length === 0) {
           relevantDates = Object.keys(wellPositionHistory[well].positions)
             .filter(d => new Date(d) < targetDate)
@@ -163,10 +157,8 @@ const AmChart = ({ wellData, onReset }) => {
       
       if (relevantDates.length > 0) {
         if (viewMode === "daily") {
-          // For daily view, just use the most recent position
           position = { ...wellPositionHistory[well].positions[relevantDates[0]] };
         } else {
-          // For weekly/monthly, aggregate values (sum or average)
           let sumX = 0;
           let sumY = 0;
           
@@ -176,8 +168,6 @@ const AmChart = ({ wellData, onReset }) => {
             sumY += pos.y;
           });
           
-          // Decide whether to sum or average
-          // Using sum for now, but you could average by dividing by relevantDates.length
           position = { 
             x: sumX, 
             y: sumY, 
@@ -193,7 +183,6 @@ const AmChart = ({ wellData, onReset }) => {
     return positions;
   };
 
-  // Function to update color zones based on data points
   const updateColorZones = (minX, maxX, minY, maxY) => {
     if (!rootRef.current || rootRef.current._disposed) return;
     
@@ -202,22 +191,19 @@ const AmChart = ({ wellData, onReset }) => {
     
     if (!chart) return;
     
-    // Define updated boundaries with some padding
     const padding = 3;
     const xMin = Math.min(-15, minX - padding);
     const xMax = Math.max(15, maxX + padding);
     const yMin = Math.min(-15, minY - padding);
     const yMax = Math.max(15, maxY + padding);
     
-    // Define zones
     const areas = [
-      { x1: xMin, y1: yMin, x2: 0, y2: 0, color: 0xf54945 }, // Bottom-left (red)
-      { x1: xMin, y1: 0, x2: 0, y2: yMax, color: 0x339f1b }, // Top-left (green)
-      { x1: 0, y1: yMin, x2: xMax, y2: 0, color: 0x3959f2 }, // Bottom-right (blue)
-      { x1: 0, y1: 0, x2: xMax, y2: yMax, color: 0x787878 }, // Top-right (gray)
+      { x1: xMin, y1: yMin, x2: 0, y2: 0, color: 0xf54945 },
+      { x1: xMin, y1: 0, x2: 0, y2: yMax, color: 0x339f1b },
+      { x1: 0, y1: yMin, x2: xMax, y2: 0, color: 0x3959f2 },
+      { x1: 0, y1: 0, x2: xMax, y2: yMax, color: 0x787878 },
     ];
     
-    // Update or create background series
     if (bgSeriesRef.current.length === 0) {
       areas.forEach((area, index) => {
         const bgSeries = chart.series.push(
@@ -247,7 +233,6 @@ const AmChart = ({ wellData, onReset }) => {
         bgSeriesRef.current[index] = bgSeries;
       });
     } else {
-      // Update existing series
       areas.forEach((area, index) => {
         if (bgSeriesRef.current[index]) {
           bgSeriesRef.current[index].data.setAll([
@@ -269,7 +254,6 @@ const AmChart = ({ wellData, onReset }) => {
     root._logo.dispose();
     root.setThemes([am5themes_Animated.new(root), am5themes_Dark.new(root)]);
 
-    // Apply padding to prevent edges from being cut off
     root.container.set("paddingBottom", 0);
     root.container.set("paddingTop", 0);
     root.container.set("paddingLeft", 0);
@@ -286,7 +270,7 @@ const AmChart = ({ wellData, onReset }) => {
         paddingBottom: 0,
         paddingLeft: 0,
         paddingRight: 0,
-        paddingTop: 10, // Keep a small padding at top for the label
+        paddingTop: 10,
         layout: root.verticalLayout,
         maxHeight: am5.percent(100)
       })
@@ -299,7 +283,7 @@ const AmChart = ({ wellData, onReset }) => {
       am5xy.ValueAxis.new(root, {
         min: -15, 
         max: 15,  
-        strictMinMax: false, // Allow auto-adjusting
+        strictMinMax: false,
         renderer: am5xy.AxisRendererX.new(root, { 
           minGridDistance: 50,
           centerY: am5.p50,
@@ -313,7 +297,7 @@ const AmChart = ({ wellData, onReset }) => {
       am5xy.ValueAxis.new(root, {
         min: -15, 
         max: 15,  
-        strictMinMax: false, // Allow auto-adjusting
+        strictMinMax: false,
         renderer: am5xy.AxisRendererY.new(root, { 
           visible: true,
           centerY: am5.p50,
@@ -332,7 +316,6 @@ const AmChart = ({ wellData, onReset }) => {
     xAxis.get("renderer").grid.template.setAll(gridStyles);
     yAxis.get("renderer").grid.template.setAll(gridStyles);
 
-    // Color zones will be added later in the updateColorZones function
     bgSeriesRef.current = [];
 
     wells.forEach(well => {
@@ -395,7 +378,6 @@ const AmChart = ({ wellData, onReset }) => {
     
     labelRef.current = label;
 
-    // Add a resize listener to ensure chart fits properly
     const resizeObserver = new ResizeObserver(() => {
       root.resize();
     });
@@ -452,11 +434,9 @@ const AmChart = ({ wellData, onReset }) => {
       yAxis.set("min", Math.min(-15, minY - padding));
       yAxis.set("max", Math.max(15, maxY + padding));
       
-      // Update color zones to match the new axis boundaries
       updateColorZones(minX, maxX, minY, maxY);
     }
 
-    // Format the label based on view mode
     let formattedLabel = currentTimePoint;
     if (viewMode === "weekly") {
       const startDate = new Date(currentTimePoint);
@@ -474,10 +454,8 @@ const AmChart = ({ wellData, onReset }) => {
     
   }, [currentTimePoint, viewMode, wellPositionHistory, wells, monthNamesRU]);
 
-  // Handle view mode change
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
-    // Reset to the last time point when changing view
     if (timePoints.length > 0) {
       setCurrentTimePoint(timePoints[timePoints.length - 1]);
     }
