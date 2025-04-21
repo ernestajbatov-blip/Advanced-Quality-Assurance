@@ -184,7 +184,6 @@ const AmChart = ({ wellData, onReset }) => {
     return positions;
   };
 
-  // Debounced update function to prevent multiple rapid updates
   const debouncedUpdateColorZones = () => {
     if (updateTimeoutRef.current) {
       clearTimeout(updateTimeoutRef.current);
@@ -196,7 +195,6 @@ const AmChart = ({ wellData, onReset }) => {
     }, 100);
   };
 
-  // Updated function to properly get the current axis ranges
   const updateColorZones = () => {
     if (!rootRef.current || rootRef.current._disposed) return;
     
@@ -208,13 +206,11 @@ const AmChart = ({ wellData, onReset }) => {
     
     if (!xAxis || !yAxis) return;
     
-    // Get the current visible range of both axes
     const xMin = xAxis.getPrivate("min", xAxis.get("min"));
     const xMax = xAxis.getPrivate("max", xAxis.get("max"));
     const yMin = yAxis.getPrivate("min", yAxis.get("min"));
     const yMax = yAxis.getPrivate("max", yAxis.get("max"));
     
-    // Only update if we have valid values
     if (!isFinite(xMin) || !isFinite(xMax) || !isFinite(yMin) || !isFinite(yMax)) {
       return;
     }
@@ -227,7 +223,6 @@ const AmChart = ({ wellData, onReset }) => {
     ];
     
     if (bgSeriesRef.current.length === 0) {
-      // Create background series for each quadrant if they don't exist
       areas.forEach((area, index) => {
         const bgSeries = chart.series.push(
           am5xy.LineSeries.new(rootRef.current, {
@@ -256,7 +251,6 @@ const AmChart = ({ wellData, onReset }) => {
         bgSeriesRef.current[index] = bgSeries;
       });
     } else {
-      // Update existing background series with new coordinates
       areas.forEach((area, index) => {
         if (bgSeriesRef.current[index]) {
           bgSeriesRef.current[index].data.setAll([
@@ -331,8 +325,6 @@ const AmChart = ({ wellData, onReset }) => {
       })
     );
   
-    // Add event listeners for axis range changes to update color zones
-    // But use the debounced version to prevent too many updates
     xAxis.events.on("rangechanged", debouncedUpdateColorZones);
     yAxis.events.on("rangechanged", debouncedUpdateColorZones);
 
@@ -381,8 +373,6 @@ const AmChart = ({ wellData, onReset }) => {
     const cursor = am5xy.XYCursor.new(root, { xAxis, yAxis });
     chart.set("cursor", cursor);
 
-    // Initial call to create color zones
-    // Wait for chart to be fully initialized
     root.events.on("frameended", () => {
       updateColorZones();
     });
@@ -475,9 +465,6 @@ const AmChart = ({ wellData, onReset }) => {
       xAxis.set("max", Math.max(15, maxX + padding));
       yAxis.set("min", Math.min(-15, minY - padding));
       yAxis.set("max", Math.max(15, maxY + padding));
-      
-      // The axes will trigger their own rangechanged events
-      // which will update the color zones via the debounced function
     }
   
     let formattedLabel = currentTimePoint;
