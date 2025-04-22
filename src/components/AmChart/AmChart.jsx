@@ -155,7 +155,7 @@ const AmChart = ({ wellData, onReset }) => {
             .sort((a, b) => new Date(b) - new Date(a));
         }
       }
-      
+
       if (relevantDates.length > 0) {
         if (viewMode === "daily") {
           position = { ...wellPositionHistory[well].positions[relevantDates[0]] };
