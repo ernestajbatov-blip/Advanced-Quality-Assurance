@@ -8,7 +8,7 @@
    viewBox="0 0 5760 1960"
    id="svg17788"
    sodipodi:docname="SchemeMain.svg"
-   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   inkscape:version="1.4.2 (ebf0e940d0, 2025-05-08)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -21,11 +21,11 @@
    inkscape:pageopacity="0.0"
    inkscape:pagecheckerboard="0"
    inkscape:deskcolor="#d1d1d1"
-   inkscape:zoom="0.76996072"
-   inkscape:cx="4213.8513"
-   inkscape:cy="1351.3676"
-   inkscape:window-width="1916"
-   inkscape:window-height="1038"
+   inkscape:zoom="0.67371563"
+   inkscape:cx="2652.4544"
+   inkscape:cy="376.27152"
+   inkscape:window-width="1920"
+   inkscape:window-height="1012"
    inkscape:window-x="0"
    inkscape:window-y="0"
    inkscape:window-maximized="1"
@@ -595,8 +595,9 @@
   </g>
   <polygon
    class="fil0"
-   points="5214.23,23.64 2570.37,23.64 2570.37,19.05 5214.23,19.05 "
-   id="polygon61" />
+   points="2570.37,23.64 2570.37,19.05 5214.23,19.05 5214.23,23.64 "
+   id="polygon61"
+   transform="matrix(1.2035521,0,0,1.2035521,-1061.3675,-4.3448196)" />
   <polygon
    class="fil0"
    points="4067.33,1502.41 4067.33,814.76 4071.96,814.76 4071.96,1502.41 "
@@ -32135,8 +32136,9 @@
   </g>
   <polygon
    class="fil0"
-   points="3245.84,419.63 2811.43,419.63 2811.43,415 3245.84,415 "
-   id="polygon7921" />
+   points="2811.43,419.63 2811.43,415 3245.84,415 3245.84,419.63 "
+   id="polygon7921"
+   transform="matrix(2.2377472,0,0,1,-4017.5294,0)" />
   <polygon
    class="fil0"
    points="5214.23,126.52 5214.23,19.05 5209.6,19.05 5209.6,126.52 "
@@ -32271,8 +32273,9 @@
    transform="matrix(1.642302,0,0,1,-2823.232,0)" />
   <polygon
    class="fil0"
-   points="2574.99,19.05 2574.99,300.84 2570.37,300.84 2570.37,19.05 "
-   id="polygon7941" />
+   points="2570.37,300.84 2570.37,19.05 2574.99,19.05 2574.99,300.84 "
+   id="polygon7941"
+   transform="translate(-540.37)" />
   <g
    id="_2759614387376"
    transform="translate(-250)">
@@ -39622,18 +39625,19 @@
    id="polygon9733"
    transform="translate(-250)" />
   <g
-   id="_2069114475824_15_4">
+   id="_2069114475824_15_4"
+   transform="translate(-540.79,-1.8367347)">
    <polygon
    class="fil0"
-   points="2565.27,214.68 2563.76,213.41 2562.29,212.17 2571.34,193.86 2574.26,196.38 "
+   points="2562.29,212.17 2571.34,193.86 2574.26,196.38 2565.27,214.68 2563.76,213.41 "
    id="polygon9734" />
    <polygon
    class="fil0"
-   points="2572.78,190.88 2574.26,193.86 2571.34,193.86 "
+   points="2574.26,193.86 2571.34,193.86 2572.78,190.88 "
    id="polygon9735" />
    <polygon
    class="fil0"
-   points="2571.34,196.38 2574.26,196.38 2571.34,193.86 2574.26,193.86 2583.37,212.13 2580.39,214.61 "
+   points="2574.26,196.38 2571.34,193.86 2574.26,193.86 2583.37,212.13 2580.39,214.61 2571.34,196.38 "
    id="polygon9736" />
   </g>
   <g
@@ -72669,7 +72673,7 @@
    transform="matrix(2.112752,0,0,1,-3653.2925,0)" />
   <rect
    class="fil2 str7"
-   x="2338.55"
+   x="1802.2235"
    y="300.84"
    width="472.89001"
    height="205.58"
@@ -72852,5 +72856,95 @@
    points="4395.49,1330.45 4395.49,1335.07 4316.63,1335.07 4316.63,1330.45 "
    id="polygon7940-9"
    style="clip-rule:evenodd;fill:#00a9f4;fill-rule:nonzero;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
-   transform="matrix(0.5199087,0,0,1,1969.729,166.17941)" /></g>
+   transform="matrix(0.5199087,0,0,1,1969.729,166.17941)" /><g
+   id="g9747-2"
+   style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+   transform="translate(-506.90319,-1008.3462)">
+    <path
+   class="fil139 str2"
+   d="m 2935.73,1374.2 -52.36,1.2 -2.08,-5.22 -5.7,0.4 c -1.37,12.37 0.17,6.67 -5.33,11.83 -14.14,13.31 -13.17,23.26 -12.57,45.56 0.24,8.74 3.19,17.66 9.52,23.33 8.15,7.3 8.68,8.91 23.33,11.23 1.18,3.48 -2.55,7.64 13.95,5.39 1.07,-3.82 -0.61,-4.39 2.21,-5.46 h 122.18 c 2.82,1.07 1.14,1.67 2.21,5.46 16.43,2.25 12.68,-1.67 13.95,-5.39 5.06,-0.81 8.95,-1.45 13.21,-3.39 10.89,-5.03 19.1,-17.13 19.61,-30.34 1.17,-30.83 -0.04,-35.76 -17.07,-49.84 l -0.57,-8.25 -5.83,-0.73 -2.24,5.39 -52.33,-1.17 c -0.67,-11.87 3.42,-13.04 -9.15,-14.35 -7.51,-0.77 -15.39,-1.04 -22.93,-1 -7.44,0.03 -15.55,0.2 -22.86,0.97 -12.6,1.34 -8.55,2.51 -9.22,14.38 z"
+   id="path9745-2"
+   style="fill:#2e5f6a;stroke:#ffffff;stroke-miterlimit:22.9256" />
+    <line
+   class="fil2 str0"
+   x1="2891.1101"
+   y1="1463.46"
+   x2="2891.1101"
+   y2="1375.24"
+   id="line9746-8"
+   style="fill:none;stroke:#fefefe;stroke-miterlimit:22.9256" />
+    <line
+   class="fil2 str0"
+   x1="3044.3401"
+   y1="1463.46"
+   x2="3044.3401"
+   y2="1375.24"
+   id="line9747-9"
+   style="fill:none;stroke:#fefefe;stroke-miterlimit:22.9256" />
+   </g><text
+   x="2396.0764"
+   y="423.88132"
+   class="fil82 fnt12"
+   id="text17787-3"
+   style="font-weight:normal;font-size:40.45px;font-family:Tahoma;clip-rule:evenodd;fill:#ffffff;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision">ЕП-1</text><g
+   id="g9747-2-1"
+   style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+   transform="translate(-206.90319,-1008.3462)">
+    <path
+   class="fil139 str2"
+   d="m 2935.73,1374.2 -52.36,1.2 -2.08,-5.22 -5.7,0.4 c -1.37,12.37 0.17,6.67 -5.33,11.83 -14.14,13.31 -13.17,23.26 -12.57,45.56 0.24,8.74 3.19,17.66 9.52,23.33 8.15,7.3 8.68,8.91 23.33,11.23 1.18,3.48 -2.55,7.64 13.95,5.39 1.07,-3.82 -0.61,-4.39 2.21,-5.46 h 122.18 c 2.82,1.07 1.14,1.67 2.21,5.46 16.43,2.25 12.68,-1.67 13.95,-5.39 5.06,-0.81 8.95,-1.45 13.21,-3.39 10.89,-5.03 19.1,-17.13 19.61,-30.34 1.17,-30.83 -0.04,-35.76 -17.07,-49.84 l -0.57,-8.25 -5.83,-0.73 -2.24,5.39 -52.33,-1.17 c -0.67,-11.87 3.42,-13.04 -9.15,-14.35 -7.51,-0.77 -15.39,-1.04 -22.93,-1 -7.44,0.03 -15.55,0.2 -22.86,0.97 -12.6,1.34 -8.55,2.51 -9.22,14.38 z"
+   id="path9745-2-2"
+   style="fill:#2e5f6a;stroke:#ffffff;stroke-miterlimit:22.9256" />
+    <line
+   class="fil2 str0"
+   x1="2891.1101"
+   y1="1463.46"
+   x2="2891.1101"
+   y2="1375.24"
+   id="line9746-8-9"
+   style="fill:none;stroke:#fefefe;stroke-miterlimit:22.9256" />
+    <line
+   class="fil2 str0"
+   x1="3044.3401"
+   y1="1463.46"
+   x2="3044.3401"
+   y2="1375.24"
+   id="line9747-9-3"
+   style="fill:none;stroke:#fefefe;stroke-miterlimit:22.9256" />
+   </g><text
+   x="2696.0764"
+   y="424.28583"
+   class="fil82 fnt12"
+   id="text17787-3-1"
+   style="font-weight:normal;font-size:40.45px;font-family:Tahoma;clip-rule:evenodd;fill:#ffffff;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision">ЕП-2</text><g
+   id="g9747-2-4"
+   style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+   transform="translate(93.096806,-1008.3462)">
+    <path
+   class="fil139 str2"
+   d="m 2935.73,1374.2 -52.36,1.2 -2.08,-5.22 -5.7,0.4 c -1.37,12.37 0.17,6.67 -5.33,11.83 -14.14,13.31 -13.17,23.26 -12.57,45.56 0.24,8.74 3.19,17.66 9.52,23.33 8.15,7.3 8.68,8.91 23.33,11.23 1.18,3.48 -2.55,7.64 13.95,5.39 1.07,-3.82 -0.61,-4.39 2.21,-5.46 h 122.18 c 2.82,1.07 1.14,1.67 2.21,5.46 16.43,2.25 12.68,-1.67 13.95,-5.39 5.06,-0.81 8.95,-1.45 13.21,-3.39 10.89,-5.03 19.1,-17.13 19.61,-30.34 1.17,-30.83 -0.04,-35.76 -17.07,-49.84 l -0.57,-8.25 -5.83,-0.73 -2.24,5.39 -52.33,-1.17 c -0.67,-11.87 3.42,-13.04 -9.15,-14.35 -7.51,-0.77 -15.39,-1.04 -22.93,-1 -7.44,0.03 -15.55,0.2 -22.86,0.97 -12.6,1.34 -8.55,2.51 -9.22,14.38 z"
+   id="path9745-2-7"
+   style="fill:#2e5f6a;stroke:#ffffff;stroke-miterlimit:22.9256" />
+    <line
+   class="fil2 str0"
+   x1="2891.1101"
+   y1="1463.46"
+   x2="2891.1101"
+   y2="1375.24"
+   id="line9746-8-8"
+   style="fill:none;stroke:#fefefe;stroke-miterlimit:22.9256" />
+    <line
+   class="fil2 str0"
+   x1="3044.3401"
+   y1="1463.46"
+   x2="3044.3401"
+   y2="1375.24"
+   id="line9747-9-4"
+   style="fill:none;stroke:#fefefe;stroke-miterlimit:22.9256" />
+   </g><text
+   x="2996.0764"
+   y="424.28583"
+   class="fil82 fnt12"
+   id="text17787-3-5"
+   style="font-weight:normal;font-size:40.45px;font-family:Tahoma;clip-rule:evenodd;fill:#ffffff;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision">ЕП-3</text></g>
 </svg>

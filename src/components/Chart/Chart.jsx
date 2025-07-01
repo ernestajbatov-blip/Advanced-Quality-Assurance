@@ -167,7 +167,7 @@ export default function Chart() {
         <label htmlFor="oil">Нефть</label>
       </div>
       <LineChart
-        width={900}
+        width={800}
         height={350}
         data={selectedData}
         margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
