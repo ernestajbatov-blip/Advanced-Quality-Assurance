@@ -1,6 +1,7 @@
 import React from "react";
 import OilLossChart from "../../components/OilLossChart/OilLossChart";
 import AppNav from "../../components/AppNav/AppNav";
+import OilMap from "../../components/Map/OilMap"
 import styles from "./OilLayout.module.css";
 
 export default function OilLayout() {
@@ -21,39 +22,41 @@ export default function OilLayout() {
   ];
 
   return (
-    <div style={{ width: "100%"}}>
+    <div style={{ width: "100%" }}>
       <AppNav />
-      <div className={styles.flexContainer}>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-around",
-          gap: "200px",
-          alignContent: "start",
-        }}
-      >
-        <OilLossChart />
-      </div>
 
-      <table className={styles.oilLossTable}>
-        <thead>
-          <tr>
-            {tableHeaders.map((header, index) => (
-              <th key={index}>{header}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {tableData.map((row, rowIndex) => (
-            <tr key={rowIndex}>
-              {row.map((cell, cellIndex) => (
-                <td key={cellIndex}>{cell}</td>
+      <div className={styles.flexContainer}>
+        <div style={{ flex: 1 }}>
+          <OilLossChart />
+        </div>
+
+        <table className={styles.oilLossTable}>
+          <thead>
+            <tr>
+              {tableHeaders.map((header, index) => (
+                <th key={index}>{header}</th>
               ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {tableData.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {row.map((cell, cellIndex) => (
+                  <td key={cellIndex}>{cell}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
+
+      <div className={styles.mapSection}>
+        <OilMap />
+      </div>
+
+      
+
     </div>
+
   );
 }

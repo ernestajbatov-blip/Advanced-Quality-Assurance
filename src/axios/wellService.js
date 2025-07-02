@@ -1,29 +1,37 @@
 import api from "./api";
 
 export const fetchWells = () => {
-    return api.get("/wells");
+  return api.get("/wells");
 };
 
 export const fetch2Hours = () => {
-    return api.get("/2hours");
+  return api.get("/2hours");
 };
 
 export const fetchWellsABC = () => {
-    return api.get("/wells/abc");
+  return api.get("/wells/abc");
 };
 
 export const fetchABCByWell = () => {
-    return api.get("/wells/abc/");
+  return api.get("/wells/abc/");
 };
 
 export const fetchLast10Wells = () => {
-    return api.get("well/last10");
+  return api.get("/well/last10");
 };
 
 export const fetchWellData = (wellName) => {
-    return api.get("/well/data", {
-        params: {
-            well: wellName,
-        },
-    });
+  return api.get("/well/data", {
+    params: {
+      well: wellName,
+    },
+  });
+};
+
+export const fetchBSKWells = () => {
+  return api.get("/wells/bsk");
+};
+
+export const fetchProgressOil = () => {
+  return api.get("/progress-oil");
 };

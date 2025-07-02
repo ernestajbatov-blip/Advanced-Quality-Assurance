@@ -75,7 +75,7 @@ export default function WellCard({
     <>
       <div className={cardClasses} onClick={handleClick}>
         {/* Status circle in top-right */}
-        {working && (
+        {[1, 2, 3].includes(working) && (
           <div
             className={`${styles.statusCircle} ${
               working === 1 ? styles.green :
