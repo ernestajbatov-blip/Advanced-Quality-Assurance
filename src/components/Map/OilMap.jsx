@@ -4,7 +4,6 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { fetchBSKWells, fetchWellData } from "../../axios/wellService";
 
-// Create simple colored circle icons using SVG data URIs
 const createColoredIcon = (color) => {
   const svgIcon = `
     <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -71,7 +70,7 @@ export default function OilMap() {
           .map((well, index) => {
             // Determine well status based on 'Работа' field
             // 1 = Active, 2 = No Data (Maintenance), 3 = Inactive
-            let wellType = "Inactive"; // default
+            let wellType = "Inactive";
             const isWorking = well['Работа'];
             
             console.log(`Well ${well['Скважина']}: Работа value =`, isWorking, typeof isWorking);
@@ -79,11 +78,11 @@ export default function OilMap() {
             if (isWorking === 1 || isWorking === "1") {
               wellType = "Active";
             } else if (isWorking === 2 || isWorking === "2") {
-              wellType = "Maintenance"; // No data available
+              wellType = "Maintenance";
             } else if (isWorking === 3 || isWorking === "3") {
               wellType = "Inactive";
             } else {
-              wellType = "Inactive"; // Default for null/undefined/other values
+              wellType = "Inactive";
             }
 
             return {
@@ -116,35 +115,24 @@ export default function OilMap() {
     fetchWellsData();
   }, []);
 
-  // Filter wells based on selected filter - with null checks
   const filteredWells = filter === "All" 
     ? wells 
     : wells.filter((well) => well && well.type === filter);
 
-  // Calculate counts for each status - with null checks
   const counts = {
     Active: wells.filter((w) => w && w.type === "Active").length,
     Inactive: wells.filter((w) => w && w.type === "Inactive").length,
     Maintenance: wells.filter((w) => w && w.type === "Maintenance").length,
   };
 
-  // Handle well click - SIMPLIFIED WITHOUT SIDEBAR
   const handleWellClick = async (well, e) => {
-    // No sidebar logic needed anymore
+    
   };
 
-  // Handle map click to close popups - REMOVED (let Leaflet handle it naturally)
   const handleMapClick = (e) => {
-    // Only clear the sidebar selection, don't interfere with popup behavior
-    // The popups will close naturally due to autoClose=true
+ 
   };
 
-  // Handle popup close event - REMOVED STATE MANAGEMENT
-  const handlePopupClose = () => {
-    // Don't manage popup state, let Leaflet handle it naturally
-  };
-
-  // Get appropriate icon based on well status - with null checks
   const getWellIcon = (well) => {
     if (!well || !well.type) {
       console.log("Well or well.type is undefined:", well);
@@ -198,9 +186,9 @@ export default function OilMap() {
       <div style={{ marginBottom: "20px", paddingLeft: "20px" }}>
         <h2 style={{ marginBottom: "10px" }}>Карта скважин</h2>
         <div style={{ display: "flex", gap: "20px", fontSize: "1rem" }}>
-          <span style={{ color: "green" }}>Активные: {counts.Active}</span>
+          <span style={{ color: "green" }}>В сети: {counts.Active}</span>
           <span style={{ color: "orange" }}>Нет данных: {counts.Maintenance}</span>
-          <span style={{ color: "red" }}>Неактивные: {counts.Inactive}</span>
+          <span style={{ color: "red" }}>Не в сети: {counts.Inactive}</span>
           <span style={{ color: "white" }}>Всего: {wells.length}</span>
         </div>
       </div>
@@ -232,8 +220,8 @@ export default function OilMap() {
             }}
           >
             <option value="All">Все</option>
-            <option value="Active">Активная</option>
-            <option value="Inactive">Неактивная</option>
+            <option value="Active">В сети</option>
+            <option value="Inactive">Не в сети</option>
             <option value="Maintenance">Нет данных</option>
           </select>
         </div>
@@ -250,7 +238,6 @@ export default function OilMap() {
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
               <MapClickHandler onMapClick={handleMapClick} />
               {filteredWells.map((well) => {
-                // Extra safety check before rendering each marker
                 if (!well || !well.coords || !Array.isArray(well.coords) || well.coords.length !== 2) {
                   console.log("Skipping invalid well:", well);
                   return null;
@@ -294,8 +281,8 @@ export default function OilMap() {
                         </div>
                         <div style={{ marginBottom: "5px" }}>
                           <strong>Статус контроллера:</strong> {
-                            well.type === "Active" ? "Активная" : 
-                            well.type === "Inactive" ? "Неактивная" : 
+                            well.type === "Active" ? "В сети" : 
+                            well.type === "Inactive" ? "Не в сети" : 
                             "Нет данных"
                           }
                         </div>
@@ -313,6 +300,9 @@ export default function OilMap() {
                         </div>
                         <div style={{ marginBottom: "10px" }}>
                           <strong>Скорость:</strong> {well.speed || 0} об/мин
+                        </div>
+                        <div style={{ marginBottom: "10px" }}>
+                          <strong>Координаты:</strong> {well.coords ? `${well.coords[0].toFixed(6)}°N, ${well.coords[1].toFixed(6)}°E` : 'Не указаны'}
                         </div>
                       </div>
                     </Popup>
