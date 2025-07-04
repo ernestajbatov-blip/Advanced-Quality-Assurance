@@ -40,9 +40,15 @@ export default function OilMap() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState("All");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const [openPopupId, setOpenPopupId] = useState(null);
   const mapRef = useRef(null);
   const markerRefs = useRef({});
+  const searchInputRef = useRef(null);
+  const searchContainerRef = useRef(null);
 
   // Fetch all wells data
   useEffect(() => {
@@ -115,6 +121,39 @@ export default function OilMap() {
     fetchWellsData();
   }, []);
 
+  // Search functionality
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setSearchResults([]);
+      setShowSearchResults(false);
+      setSelectedSuggestionIndex(-1);
+      return;
+    }
+
+    const filtered = wells.filter(well => 
+      well.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    setSearchResults(filtered);
+    setShowSearchResults(true);
+    setSelectedSuggestionIndex(-1); // Reset selection when results change
+  }, [searchTerm, wells]);
+
+  // Click outside handler
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        setShowSearchResults(false);
+        setSelectedSuggestionIndex(-1);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   const filteredWells = filter === "All" 
     ? wells 
     : wells.filter((well) => well && well.type === filter);
@@ -131,6 +170,91 @@ export default function OilMap() {
 
   const handleMapClick = (e) => {
  
+  };
+
+  // Clear filters function
+  const handleClearFilters = () => {
+    setFilter("All");
+    setSearchTerm("");
+    setShowSearchResults(false);
+    setSelectedSuggestionIndex(-1);
+  };
+
+  // Handle search result selection
+  const handleSearchResultClick = (well) => {
+    // Set the selected well name in the search bar
+    setSearchTerm(well.name);
+    
+    if (mapRef.current && well.coords) {
+      // Center map on selected well
+      mapRef.current.setView(well.coords, 15);
+      
+      // Open popup for the selected well with a small delay to ensure map has settled
+      setTimeout(() => {
+        const marker = markerRefs.current[well.id];
+        if (marker) {
+          marker.openPopup();
+        }
+      }, 300); // 300ms delay to allow map animation to complete
+    }
+    
+    // Hide search results and reset selection
+    setShowSearchResults(false);
+    setSelectedSuggestionIndex(-1);
+  };
+
+  // Handle search input change
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  // Handle search input focus
+  const handleSearchFocus = () => {
+    if (searchTerm.trim() !== "" && searchResults.length > 0) {
+      setShowSearchResults(true);
+    }
+  };
+
+  // Handle search input click
+  const handleSearchClick = () => {
+    if (searchTerm.trim() !== "" && searchResults.length > 0) {
+      setShowSearchResults(true);
+    }
+  };
+
+  // Handle keyboard navigation and enter key press
+  const handleSearchKeyDown = (e) => {
+    if (!showSearchResults || searchResults.length === 0) {
+      return;
+    }
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setSelectedSuggestionIndex(prev => 
+          prev < searchResults.length - 1 ? prev + 1 : 0
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setSelectedSuggestionIndex(prev => 
+          prev > 0 ? prev - 1 : searchResults.length - 1
+        );
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < searchResults.length) {
+          handleSearchResultClick(searchResults[selectedSuggestionIndex]);
+        } else if (searchResults.length > 0) {
+          // If no suggestion is selected, select the first one
+          handleSearchResultClick(searchResults[0]);
+        }
+        break;
+      case 'Escape':
+        setShowSearchResults(false);
+        setSelectedSuggestionIndex(-1);
+        break;
+    }
   };
 
   const getWellIcon = (well) => {
@@ -205,9 +329,100 @@ export default function OilMap() {
             height: "500px",
             boxSizing: "border-box",
             backgroundColor: "dark grey",
+            position: "relative"
           }}
         >
           <h3>Фильтры скважин</h3>
+          
+          {/* Search Input */}
+          <div style={{ marginBottom: "1rem" }} ref={searchContainerRef}>
+            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+              Поиск скважины:
+            </label>
+            <input
+              ref={searchInputRef}
+              type="text"
+              value={searchTerm}
+              onChange={handleSearchChange}
+              onFocus={handleSearchFocus}
+              onClick={handleSearchClick}
+              onKeyDown={handleSearchKeyDown}
+              placeholder="Введите название скважины"
+              style={{
+                width: "100%",
+                padding: "0.5rem",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                boxSizing: "border-box"
+              }}
+            />
+            
+            {/* Search Results Dropdown */}
+            {showSearchResults && searchResults.length > 0 && (
+              <div style={{
+                position: "absolute",
+                top: "150px",
+                left: "1rem",
+                right: "1rem",
+                backgroundColor: "#4b5563",
+                color: "white",
+                border: "1px solid #374151",
+                borderRadius: "4px",
+                maxHeight: "200px",
+                overflowY: "auto",
+                zIndex: 1000,
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+              }}>
+                {searchResults.map((well, index) => (
+                  <div
+                    key={well.id}
+                    onClick={() => handleSearchResultClick(well)}
+                    style={{
+                      padding: "0.5rem",
+                      cursor: "pointer",
+                      borderBottom: "1px solid #6b7280",
+                      fontSize: "0.875rem",
+                      backgroundColor: selectedSuggestionIndex === index ? "#6b7280" : "transparent"
+                    }}
+                    onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                    onMouseLeave={() => setSelectedSuggestionIndex(-1)}
+                  >
+                    <div style={{ fontWeight: "bold" }}>
+                      {well.name}
+                    </div>
+                    <div style={{ color: "#d1d5db", fontSize: "0.75rem" }}>
+                      Статус: {
+                        well.type === "Active" ? "В сети" : 
+                        well.type === "Inactive" ? "Не в сети" : 
+                        "Нет данных"
+                      }
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            
+            {/* No Results Message */}
+            {showSearchResults && searchResults.length === 0 && searchTerm.trim() !== "" && (
+              <div style={{
+                position: "absolute",
+                top: "150px",
+                left: "1rem",
+                right: "1rem",
+                backgroundColor: "#4b5563",
+                color: "white",
+                border: "1px solid #374151",
+                borderRadius: "4px",
+                padding: "0.5rem",
+                fontSize: "0.875rem",
+                zIndex: 1000,
+                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+              }}>
+                Скважины не найдены
+              </div>
+            )}
+          </div>
+          
           <label>Статус контроллера:</label>
           <select
             value={filter}
@@ -224,6 +439,31 @@ export default function OilMap() {
             <option value="Inactive">Не в сети</option>
             <option value="Maintenance">Нет данных</option>
           </select>
+          
+          {/* Clear Filters Button */}
+          <button
+            onClick={handleClearFilters}
+            style={{
+              marginTop: "1rem",
+              padding: "0.5rem 1rem",
+              backgroundColor: "#6b7280",
+              color: "white",
+              border: "none",
+              borderRadius: "4px",
+              cursor: "pointer",
+              width: "100%",
+              fontSize: "0.875rem",
+              fontWeight: "500",
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = "#4b5563";
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = "#6b7280";
+            }}
+          >
+            Очистить фильтры
+          </button>
         </div>
 
         {/* Map Container */}
@@ -278,6 +518,9 @@ export default function OilMap() {
                       <div style={{ minWidth: "200px" }}>
                         <div style={{ marginBottom: "10px" }}>
                           <b>{well.name || 'Unknown Well'}</b>
+                        </div>
+                        <div style={{ marginBottom: "5px" }}>
+                          <strong>ID:</strong> {well.id}
                         </div>
                         <div style={{ marginBottom: "5px" }}>
                           <strong>Статус контроллера:</strong> {
