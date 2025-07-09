@@ -3,6 +3,37 @@ import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMapEvents } from "r
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { fetchBSKWells, fetchWellData } from "../../axios/wellService";
+import styles from "./OilMap.module.css";
+
+// Custom offline tile layer component
+const OfflineTileLayer = ({ url, ...props }) => {
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  const tileUrl = isOnline ? url : url;
+  
+  return (
+    <TileLayer 
+      url={tileUrl}
+      {...props}
+      crossOrigin="anonymous"
+      maxZoom={18}
+      minZoom={6}
+    />
+  );
+};
 
 const createColoredIcon = (color) => {
   const svgIcon = `
@@ -21,10 +52,10 @@ const createColoredIcon = (color) => {
 };
 
 const icons = {
-  active: createColoredIcon('#22c55e'),     // green
-  inactive: createColoredIcon('#ef4444'),   // red  
-  maintenance: createColoredIcon('#f97316'), // orange
-  default: createColoredIcon('#6b7280')     // gray
+  active: createColoredIcon('#22c55e'),
+  inactive: createColoredIcon('#ef4444'),
+  maintenance: createColoredIcon('#f97316'),
+  default: createColoredIcon('#6b7280')
 };
 
 // Component to handle map clicks for closing popups
@@ -35,6 +66,84 @@ function MapClickHandler({ onMapClick }) {
   return null;
 }
 
+// Enhanced popup component
+const EnhancedPopup = ({ well }) => {
+  const getStatusClass = (type) => {
+    switch (type) {
+      case "Active":
+        return styles.statusActive;
+      case "Inactive":
+        return styles.statusInactive;
+      case "Maintenance":
+        return styles.statusMaintenance;
+      default:
+        return styles.statusInactive;
+    }
+  };
+
+  const getStatusText = (type) => {
+    switch (type) {
+      case "Active":
+        return "В сети";
+      case "Inactive":
+        return "Не в сети";
+      case "Maintenance":
+        return "Нет данных";
+      default:
+        return "Неизвестно";
+    }
+  };
+
+  return (
+    <div className={styles.enhancedPopup}>
+      <div className={styles.popupHeader}>
+        <h3 className={styles.popupTitle}>{well.name || 'Unknown Well'}</h3>
+        <div className={`${styles.popupStatus} ${getStatusClass(well.type)}`}>
+          {getStatusText(well.type)}
+        </div>
+      </div>
+      
+      <div className={styles.popupBody}>
+        <div className={styles.popupSection}>
+          <div className={styles.sectionTitle}>Технические параметры</div>
+          <div className={styles.metricsGrid}>
+            <div className={styles.metricItem}>
+              <div className={styles.metricLabel}>Напряжение</div>
+              <div className={styles.metricValue}>{well.voltage || 0} В</div>
+            </div>
+            <div className={styles.metricItem}>
+              <div className={styles.metricLabel}>Мощность</div>
+              <div className={styles.metricValue}>{well.power || 0} кВт</div>
+            </div>
+            <div className={styles.metricItem}>
+              <div className={styles.metricLabel}>Частота</div>
+              <div className={styles.metricValue}>{well.frequency || 0} Гц</div>
+            </div>
+            <div className={styles.metricItem}>
+              <div className={styles.metricLabel}>Ток</div>
+              <div className={styles.metricValue}>{well.current || 0} А</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className={styles.popupSection}>
+          <div className={styles.sectionTitle}>Скорость двигателя</div>
+          <div className={styles.metricItem}>
+            <div className={styles.metricValue}>{well.speed || 0} об/мин</div>
+          </div>
+        </div>
+        
+        <div className={styles.popupSection}>
+          <div className={styles.sectionTitle}>Координаты</div>
+          <div className={styles.coordinates}>
+            {well.coords ? `${well.coords[0].toFixed(6)}°N, ${well.coords[1].toFixed(6)}°E` : 'Не указаны'}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export default function OilMap() {
   const [wells, setWells] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,17 +153,51 @@ export default function OilMap() {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
-  const [openPopupId, setOpenPopupId] = useState(null);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
+  const [showConnectionStatus, setShowConnectionStatus] = useState(false);
   const mapRef = useRef(null);
   const markerRefs = useRef({});
   const searchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
 
-  // Fetch all wells data
+  // Network status monitoring
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      setShowConnectionStatus(true);
+      setTimeout(() => setShowConnectionStatus(false), 3000);
+    };
+    
+    const handleOffline = () => {
+      setIsOnline(false);
+      setShowConnectionStatus(true);
+    };
+    
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  // Fetch all wells data with offline support
   useEffect(() => {
     const fetchWellsData = async () => {
       try {
         setLoading(true);
+        
+        // Try to get cached data first if offline
+        if (!navigator.onLine) {
+          const cachedData = localStorage.getItem('wellsData');
+          if (cachedData) {
+            const parsedData = JSON.parse(cachedData);
+            setWells(parsedData);
+            setLoading(false);
+            return;
+          }
+        }
         
         const response = await fetchBSKWells();
         const wellsData = response.data || [];
@@ -64,30 +207,22 @@ export default function OilMap() {
         // Transform the wells data with proper null/undefined checks
         const transformedWells = wellsData
           .filter(well => {
-            // Filter out invalid wells
             if (!well || !well['Скважина']) return false;
             
             const lat = parseFloat(well['Широта']);
             const lng = parseFloat(well['Долгота']);
             
-            // Check for valid coordinates
             return !isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0;
           })
           .map((well, index) => {
-            // Determine well status based on 'Работа' field
-            // 1 = Active, 2 = No Data (Maintenance), 3 = Inactive
             let wellType = "Inactive";
             const isWorking = well['Работа'];
-            
-            console.log(`Well ${well['Скважина']}: Работа value =`, isWorking, typeof isWorking);
             
             if (isWorking === 1 || isWorking === "1") {
               wellType = "Active";
             } else if (isWorking === 2 || isWorking === "2") {
               wellType = "Maintenance";
             } else if (isWorking === 3 || isWorking === "3") {
-              wellType = "Inactive";
-            } else {
               wellType = "Inactive";
             }
 
@@ -108,11 +243,24 @@ export default function OilMap() {
             };
           });
 
-        console.log("Transformed wells:", transformedWells);
         setWells(transformedWells);
+        
+        // Cache the data for offline use
+        if (navigator.onLine) {
+          localStorage.setItem('wellsData', JSON.stringify(transformedWells));
+        }
+        
       } catch (err) {
         console.error("Error fetching wells data:", err);
-        setError("Failed to load wells data");
+        
+        // Try to load cached data on error
+        const cachedData = localStorage.getItem('wellsData');
+        if (cachedData) {
+          const parsedData = JSON.parse(cachedData);
+          setWells(parsedData);
+        } else {
+          setError("Failed to load wells data");
+        }
       } finally {
         setLoading(false);
       }
@@ -136,7 +284,7 @@ export default function OilMap() {
 
     setSearchResults(filtered);
     setShowSearchResults(true);
-    setSelectedSuggestionIndex(-1); // Reset selection when results change
+    setSelectedSuggestionIndex(-1);
   }, [searchTerm, wells]);
 
   // Click outside handler
@@ -164,15 +312,10 @@ export default function OilMap() {
     Maintenance: wells.filter((w) => w && w.type === "Maintenance").length,
   };
 
-  const handleWellClick = async (well, e) => {
-    
-  };
-
   const handleMapClick = (e) => {
- 
+    // Handle map click if needed
   };
 
-  // Clear filters function
   const handleClearFilters = () => {
     setFilter("All");
     setSearchTerm("");
@@ -180,49 +323,34 @@ export default function OilMap() {
     setSelectedSuggestionIndex(-1);
   };
 
-  // Handle search result selection
   const handleSearchResultClick = (well) => {
-    // Set the selected well name in the search bar
     setSearchTerm(well.name);
     
     if (mapRef.current && well.coords) {
-      // Center map on selected well
       mapRef.current.setView(well.coords, 15);
       
-      // Open popup for the selected well with a small delay to ensure map has settled
       setTimeout(() => {
         const marker = markerRefs.current[well.id];
         if (marker) {
           marker.openPopup();
         }
-      }, 300); // 300ms delay to allow map animation to complete
+      }, 300);
     }
     
-    // Hide search results and reset selection
     setShowSearchResults(false);
     setSelectedSuggestionIndex(-1);
   };
 
-  // Handle search input change
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Handle search input focus
   const handleSearchFocus = () => {
     if (searchTerm.trim() !== "" && searchResults.length > 0) {
       setShowSearchResults(true);
     }
   };
 
-  // Handle search input click
-  const handleSearchClick = () => {
-    if (searchTerm.trim() !== "" && searchResults.length > 0) {
-      setShowSearchResults(true);
-    }
-  };
-
-  // Handle keyboard navigation and enter key press
   const handleSearchKeyDown = (e) => {
     if (!showSearchResults || searchResults.length === 0) {
       return;
@@ -246,7 +374,6 @@ export default function OilMap() {
         if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < searchResults.length) {
           handleSearchResultClick(searchResults[selectedSuggestionIndex]);
         } else if (searchResults.length > 0) {
-          // If no suggestion is selected, select the first one
           handleSearchResultClick(searchResults[0]);
         }
         break;
@@ -259,7 +386,6 @@ export default function OilMap() {
 
   const getWellIcon = (well) => {
     if (!well || !well.type) {
-      console.log("Well or well.type is undefined:", well);
       return icons.default;
     }
     
@@ -277,66 +403,59 @@ export default function OilMap() {
 
   if (loading) {
     return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        height: "500px",
-        fontSize: "18px"
-      }}>
-        Загрузка карты скважин...
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingText}>Загрузка карты скважин...</div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        height: "500px",
-        fontSize: "18px",
-        color: "red"
-      }}>
-        Ошибка: {error}
+      <div className={styles.errorContainer}>
+        <div className={styles.errorText}>Ошибка: {error}</div>
       </div>
     );
   }
 
   return (
-    <div style={{ width: "100%", marginBottom: "50px" }}>
+    <div className={styles.oilMapContainer}>
+      {/* Network Status Indicators */}
+      {showConnectionStatus && (
+        <div className={isOnline ? styles.onlineIndicator : styles.offlineIndicator}>
+          {isOnline ? "🟢 Подключение восстановлено" : "🔴 Работа в автономном режиме"}
+        </div>
+      )}
+      
+      {!isOnline && (
+        <div className={styles.offlineIndicator}>
+          🔴 Автономный режим
+        </div>
+      )}
+
       {/* Header */}
-      <div style={{ marginBottom: "20px", paddingLeft: "20px" }}>
-        <h2 style={{ marginBottom: "10px" }}>Карта скважин</h2>
-        <div style={{ display: "flex", gap: "20px", fontSize: "1rem" }}>
-          <span style={{ color: "green" }}>В сети: {counts.Active}</span>
-          <span style={{ color: "orange" }}>Нет данных: {counts.Maintenance}</span>
-          <span style={{ color: "red" }}>Не в сети: {counts.Inactive}</span>
-          <span style={{ color: "white" }}>Всего: {wells.length}</span>
+      <div className={styles.header}>
+        <h2 className={styles.headerTitle}>
+          Карта скважин {!isOnline && "(Автономный режим)"}
+        </h2>
+        <div className={styles.headerStats}>
+          <span className={styles.statActive}>В сети: {counts.Active}</span>
+          <span className={styles.statMaintenance}>Нет данных: {counts.Maintenance}</span>
+          <span className={styles.statInactive}>Не в сети: {counts.Inactive}</span>
+          <span className={styles.statTotal}>Всего: {wells.length}</span>
         </div>
       </div>
 
-      {/* Filters and Map layout */}
-      <div style={{ display: "flex", gap: "20px" }}>
-        {/* Sidebar Filter UI */}
-        <div
-          style={{
-            width: "250px",
-            padding: "1rem",
-            border: "1px solid #ccc",
-            borderRadius: "8px",
-            height: "500px",
-            boxSizing: "border-box",
-            backgroundColor: "dark grey",
-            position: "relative"
-          }}
-        >
-          <h3>Фильтры скважин</h3>
+      {/* Main Content */}
+      <div className={styles.mainContent}>
+        {/* Sidebar */}
+        <div className={styles.sidebar} ref={searchContainerRef}>
+          <div className={styles.sidebarHeader}>
+            <h3>Фильтры скважин</h3>
+          </div>
           
           {/* Search Input */}
-          <div style={{ marginBottom: "1rem" }} ref={searchContainerRef}>
-            <label style={{ display: "block", marginBottom: "0.5rem" }}>
+          <div className={styles.searchContainer}>
+            <label className={styles.searchLabel}>
               Поиск скважины:
             </label>
             <input
@@ -345,52 +464,28 @@ export default function OilMap() {
               value={searchTerm}
               onChange={handleSearchChange}
               onFocus={handleSearchFocus}
-              onClick={handleSearchClick}
               onKeyDown={handleSearchKeyDown}
               placeholder="Введите название скважины"
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                boxSizing: "border-box"
-              }}
+              className={styles.searchInput}
             />
             
             {/* Search Results Dropdown */}
             {showSearchResults && searchResults.length > 0 && (
-              <div style={{
-                position: "absolute",
-                top: "150px",
-                left: "1rem",
-                right: "1rem",
-                backgroundColor: "#4b5563",
-                color: "white",
-                border: "1px solid #374151",
-                borderRadius: "4px",
-                maxHeight: "200px",
-                overflowY: "auto",
-                zIndex: 1000,
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-              }}>
+              <div className={styles.searchDropdown}>
                 {searchResults.map((well, index) => (
                   <div
                     key={well.id}
                     onClick={() => handleSearchResultClick(well)}
-                    style={{
-                      padding: "0.5rem",
-                      cursor: "pointer",
-                      borderBottom: "1px solid #6b7280",
-                      fontSize: "0.875rem",
-                      backgroundColor: selectedSuggestionIndex === index ? "#6b7280" : "transparent"
-                    }}
+                    className={`${styles.searchResultItem} ${
+                      selectedSuggestionIndex === index ? styles.searchResultItemSelected : ''
+                    }`}
                     onMouseEnter={() => setSelectedSuggestionIndex(index)}
                     onMouseLeave={() => setSelectedSuggestionIndex(-1)}
                   >
-                    <div style={{ fontWeight: "bold" }}>
+                    <div className={styles.searchResultName}>
                       {well.name}
                     </div>
-                    <div style={{ color: "#d1d5db", fontSize: "0.75rem" }}>
+                    <div className={styles.searchResultStatus}>
                       Статус: {
                         well.type === "Active" ? "В сети" : 
                         well.type === "Inactive" ? "Не в сети" : 
@@ -404,70 +499,38 @@ export default function OilMap() {
             
             {/* No Results Message */}
             {showSearchResults && searchResults.length === 0 && searchTerm.trim() !== "" && (
-              <div style={{
-                position: "absolute",
-                top: "150px",
-                left: "1rem",
-                right: "1rem",
-                backgroundColor: "#4b5563",
-                color: "white",
-                border: "1px solid #374151",
-                borderRadius: "4px",
-                padding: "0.5rem",
-                fontSize: "0.875rem",
-                zIndex: 1000,
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
-              }}>
+              <div className={styles.noResultsMessage}>
                 Скважины не найдены
               </div>
             )}
           </div>
           
-          <label>Статус контроллера:</label>
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            style={{
-              display: "block",
-              marginTop: "0.5rem",
-              padding: "0.5rem",
-              width: "100%",
-            }}
-          >
-            <option value="All">Все</option>
-            <option value="Active">В сети</option>
-            <option value="Inactive">Не в сети</option>
-            <option value="Maintenance">Нет данных</option>
-          </select>
+          {/* Filter Select */}
+          <div className={styles.filterContainer}>
+            <label className={styles.filterLabel}>Статус контроллера:</label>
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className={styles.filterSelect}
+            >
+              <option value="All">Все</option>
+              <option value="Active">В сети</option>
+              <option value="Inactive">Не в сети</option>
+              <option value="Maintenance">Нет данных</option>
+            </select>
+          </div>
           
           {/* Clear Filters Button */}
           <button
             onClick={handleClearFilters}
-            style={{
-              marginTop: "1rem",
-              padding: "0.5rem 1rem",
-              backgroundColor: "#6b7280",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              width: "100%",
-              fontSize: "0.875rem",
-              fontWeight: "500",
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = "#4b5563";
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = "#6b7280";
-            }}
+            className={styles.clearFiltersButton}
           >
             Очистить фильтры
           </button>
         </div>
 
         {/* Map Container */}
-        <div style={{ flex: 1, height: "500px" }}>
+        <div className={styles.mapContainer}>
           {wells.length > 0 ? (
             <MapContainer
               center={wells.length > 0 ? wells[0].coords : [48.447964, 57.18]}
@@ -475,17 +538,18 @@ export default function OilMap() {
               style={{ height: "100%", width: "100%" }}
               ref={mapRef}
             >
-              <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              <OfflineTileLayer 
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              />
               <MapClickHandler onMapClick={handleMapClick} />
               {filteredWells.map((well) => {
                 if (!well || !well.coords || !Array.isArray(well.coords) || well.coords.length !== 2) {
-                  console.log("Skipping invalid well:", well);
                   return null;
                 }
                 
                 const [lat, lng] = well.coords;
                 if (isNaN(lat) || isNaN(lng)) {
-                  console.log("Skipping well with invalid coordinates:", well);
                   return null;
                 }
                 
@@ -499,69 +563,30 @@ export default function OilMap() {
                         markerRefs.current[well.id] = ref;
                       }
                     }}
-                    eventHandlers={{
-                      click: (e) => handleWellClick(well, e)
-                    }}
                   >
                     <Tooltip direction="top" offset={[0, -10]} opacity={0.9}>
-                      <div style={{ fontSize: "12px", fontWeight: "bold" }}>
+                      <div className={styles.tooltipContent}>
                         {well.name || 'Unknown Well'}
                       </div>
                     </Tooltip>
                     <Popup
+                      className={styles.customPopup}
                       closeButton={true}
                       autoClose={true}
                       closeOnClick={true}
                       closeOnEscapeKey={true}
                       keepInView={true}
+                      maxWidth={320}
+                      minWidth={280}
                     >
-                      <div style={{ minWidth: "200px" }}>
-                        <div style={{ marginBottom: "10px" }}>
-                          <b>{well.name || 'Unknown Well'}</b>
-                        </div>
-                        <div style={{ marginBottom: "5px" }}>
-                          <strong>ID:</strong> {well.id}
-                        </div>
-                        <div style={{ marginBottom: "5px" }}>
-                          <strong>Статус контроллера:</strong> {
-                            well.type === "Active" ? "В сети" : 
-                            well.type === "Inactive" ? "Не в сети" : 
-                            "Нет данных"
-                          }
-                        </div>
-                        <div style={{ marginBottom: "5px" }}>
-                          <strong>Напряжение:</strong> {well.voltage || 0} В
-                        </div>
-                        <div style={{ marginBottom: "5px" }}>
-                          <strong>Мощность:</strong> {well.power || 0} кВт
-                        </div>
-                        <div style={{ marginBottom: "5px" }}>
-                          <strong>Частота:</strong> {well.frequency || 0} Гц
-                        </div>
-                        <div style={{ marginBottom: "5px" }}>
-                          <strong>Ток:</strong> {well.current || 0} А
-                        </div>
-                        <div style={{ marginBottom: "10px" }}>
-                          <strong>Скорость:</strong> {well.speed || 0} об/мин
-                        </div>
-                        <div style={{ marginBottom: "10px" }}>
-                          <strong>Координаты:</strong> {well.coords ? `${well.coords[0].toFixed(6)}°N, ${well.coords[1].toFixed(6)}°E` : 'Не указаны'}
-                        </div>
-                      </div>
+                      <EnhancedPopup well={well} />
                     </Popup>
                   </Marker>
                 );
               })}
             </MapContainer>
           ) : (
-            <div style={{ 
-              display: "flex", 
-              justifyContent: "center", 
-              alignItems: "center", 
-              height: "100%",
-              backgroundColor: "dark grey",
-              borderRadius: "8px"
-            }}>
+            <div className={styles.noDataContainer}>
               Нет данных для отображения
             </div>
           )}
