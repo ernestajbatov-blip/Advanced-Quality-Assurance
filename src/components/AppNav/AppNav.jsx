@@ -68,7 +68,7 @@ export default function AppNav() {
                 ABC
               </NavLink>
               <NavLink to="/oil" onClick={() => setIsDropdownOpen(false)}>
-                Нефть
+                Oil Loss
               </NavLink>
             </div>
           )}

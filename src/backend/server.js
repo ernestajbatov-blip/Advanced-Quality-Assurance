@@ -168,6 +168,7 @@ app.get("/api/progress-oil", (req, res) => {
 
 const distPath = path.join(__dirname, "../../dist");
 app.use(express.static(distPath));
+app.use('/public/tiles', express.static(path.join(__dirname, 'tiles')));
 
 app.get("*", (req, res) => {
   if (req.path.startsWith("/api/")) {
@@ -189,6 +190,6 @@ app.get("*", (req, res) => {
 });
 
 app.listen(port, "0.0.0.0", () => {
-  console.log(`Server running on http://26.110.70.236:${port}`);
+  console.log(`Server running on http://192.168.1.42:${port}`);
   console.log(`Looking for frontend files in: ${distPath}`);
 });

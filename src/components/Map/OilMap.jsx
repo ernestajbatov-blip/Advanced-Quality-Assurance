@@ -2,38 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { fetchBSKWells, fetchWellData } from "../../axios/wellService";
+import { fetchBSKWells } from "../../axios/wellService";
 import styles from "./OilMap.module.css";
-
-// Custom offline tile layer component
-const OfflineTileLayer = ({ url, ...props }) => {
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  const tileUrl = isOnline ? url : url;
-  
-  return (
-    <TileLayer 
-      url={tileUrl}
-      {...props}
-      crossOrigin="anonymous"
-      maxZoom={18}
-      minZoom={6}
-    />
-  );
-};
 
 const createColoredIcon = (color) => {
   const svgIcon = `
@@ -153,51 +123,16 @@ export default function OilMap() {
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
-  const [showConnectionStatus, setShowConnectionStatus] = useState(false);
   const mapRef = useRef(null);
   const markerRefs = useRef({});
   const searchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
 
-  // Network status monitoring
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      setShowConnectionStatus(true);
-      setTimeout(() => setShowConnectionStatus(false), 3000);
-    };
-    
-    const handleOffline = () => {
-      setIsOnline(false);
-      setShowConnectionStatus(true);
-    };
-    
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-    
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
-
-  // Fetch all wells data with offline support
+  // Fetch all wells data
   useEffect(() => {
     const fetchWellsData = async () => {
       try {
         setLoading(true);
-        
-        // Try to get cached data first if offline
-        if (!navigator.onLine) {
-          const cachedData = localStorage.getItem('wellsData');
-          if (cachedData) {
-            const parsedData = JSON.parse(cachedData);
-            setWells(parsedData);
-            setLoading(false);
-            return;
-          }
-        }
         
         const response = await fetchBSKWells();
         const wellsData = response.data || [];
@@ -245,22 +180,9 @@ export default function OilMap() {
 
         setWells(transformedWells);
         
-        // Cache the data for offline use
-        if (navigator.onLine) {
-          localStorage.setItem('wellsData', JSON.stringify(transformedWells));
-        }
-        
       } catch (err) {
         console.error("Error fetching wells data:", err);
-        
-        // Try to load cached data on error
-        const cachedData = localStorage.getItem('wellsData');
-        if (cachedData) {
-          const parsedData = JSON.parse(cachedData);
-          setWells(parsedData);
-        } else {
-          setError("Failed to load wells data");
-        }
+        setError("Failed to load wells data");
       } finally {
         setLoading(false);
       }
@@ -419,24 +341,9 @@ export default function OilMap() {
 
   return (
     <div className={styles.oilMapContainer}>
-      {/* Network Status Indicators */}
-      {showConnectionStatus && (
-        <div className={isOnline ? styles.onlineIndicator : styles.offlineIndicator}>
-          {isOnline ? "🟢 Подключение восстановлено" : "🔴 Работа в автономном режиме"}
-        </div>
-      )}
-      
-      {!isOnline && (
-        <div className={styles.offlineIndicator}>
-          🔴 Автономный режим
-        </div>
-      )}
-
       {/* Header */}
       <div className={styles.header}>
-        <h2 className={styles.headerTitle}>
-          Карта скважин {!isOnline && "(Автономный режим)"}
-        </h2>
+        <h2 className={styles.headerTitle}>Карта скважин</h2>
         <div className={styles.headerStats}>
           <span className={styles.statActive}>В сети: {counts.Active}</span>
           <span className={styles.statMaintenance}>Нет данных: {counts.Maintenance}</span>
@@ -533,14 +440,16 @@ export default function OilMap() {
         <div className={styles.mapContainer}>
           {wells.length > 0 ? (
             <MapContainer
-              center={wells.length > 0 ? wells[0].coords : [48.447964, 57.18]}
+              center={wells.length > 0 ? wells[0].coords : [45, 55.23]}
               zoom={12}
               style={{ height: "100%", width: "100%" }}
               ref={mapRef}
             >
-              <OfflineTileLayer 
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              <TileLayer 
+                url="/tiles/{z}/{x}/{y}.png"
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                maxZoom={18}
+                minZoom={6}
               />
               <MapClickHandler onMapClick={handleMapClick} />
               {filteredWells.map((well) => {
