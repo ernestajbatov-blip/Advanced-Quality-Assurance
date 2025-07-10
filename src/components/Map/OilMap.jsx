@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Popup, Tooltip, useMapEvents } from "react-leaflet";
+import { PieChart, Pie, Cell, Tooltip as RechartsTooltip } from "recharts";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { fetchBSKWells } from "../../axios/wellService";
@@ -36,7 +37,7 @@ function MapClickHandler({ onMapClick }) {
   return null;
 }
 
-// Enhanced popup component
+// Enhanced popup component with pie chart
 const EnhancedPopup = ({ well }) => {
   const getStatusClass = (type) => {
     switch (type) {
@@ -64,6 +65,15 @@ const EnhancedPopup = ({ well }) => {
     }
   };
 
+  // Oil loss data for the pie chart
+  const oilLossData = [
+    { name: "ΔQH(t)", value: Math.abs(-9.8) },
+    { name: "ΔQH(N)", value: Math.abs(-13.4) },
+    { name: "ΔQH(qж)", value: 3.0 },
+  ];
+
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
+
   return (
     <div className={styles.enhancedPopup}>
       <div className={styles.popupHeader}>
@@ -75,31 +85,37 @@ const EnhancedPopup = ({ well }) => {
       
       <div className={styles.popupBody}>
         <div className={styles.popupSection}>
-          <div className={styles.sectionTitle}>Технические параметры</div>
-          <div className={styles.metricsGrid}>
-            <div className={styles.metricItem}>
-              <div className={styles.metricLabel}>Напряжение</div>
-              <div className={styles.metricValue}>{well.voltage || 0} В</div>
+          <div className={styles.sectionTitle}>Анализ потерь нефти</div>
+          <div className={styles.chartContainer}>
+            <PieChart width={280} height={160}>
+              <RechartsTooltip />
+              <Pie
+                data={oilLossData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                outerRadius={70}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {oilLossData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+            </PieChart>
+            <div className={styles.chartLegend}>
+              {oilLossData.map((entry, index) => (
+                <div key={`legend-${index}`} className={styles.legendItem}>
+                  <div 
+                    className={styles.legendColor} 
+                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  ></div>
+                  <span className={styles.legendText}>
+                    {entry.name}
+                  </span>
+                </div>
+              ))}
             </div>
-            <div className={styles.metricItem}>
-              <div className={styles.metricLabel}>Мощность</div>
-              <div className={styles.metricValue}>{well.power || 0} кВт</div>
-            </div>
-            <div className={styles.metricItem}>
-              <div className={styles.metricLabel}>Частота</div>
-              <div className={styles.metricValue}>{well.frequency || 0} Гц</div>
-            </div>
-            <div className={styles.metricItem}>
-              <div className={styles.metricLabel}>Ток</div>
-              <div className={styles.metricValue}>{well.current || 0} А</div>
-            </div>
-          </div>
-        </div>
-        
-        <div className={styles.popupSection}>
-          <div className={styles.sectionTitle}>Скорость двигателя</div>
-          <div className={styles.metricItem}>
-            <div className={styles.metricValue}>{well.speed || 0} об/мин</div>
           </div>
         </div>
         
@@ -169,11 +185,6 @@ export default function OilMap() {
                 parseFloat(well['Долгота'])
               ],
               type: wellType,
-              voltage: well['Напряжение'] || 0,
-              power: well['Мощность'] || 0,
-              frequency: well['Частота'] || 0,
-              current: well['Ток'] || 0,
-              speed: well['Скорость двигателя'] || 0,
               working: well['Работа'] || 0
             };
           });
@@ -441,7 +452,7 @@ export default function OilMap() {
           {wells.length > 0 ? (
             <MapContainer
               center={wells.length > 0 ? wells[0].coords : [45, 55.23]}
-              zoom={12}
+              zoom={14}
               style={{ height: "100%", width: "100%" }}
               ref={mapRef}
             >
