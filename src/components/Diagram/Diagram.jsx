@@ -77,7 +77,16 @@ export default function Diagram() {
     // ep
     "ARM_ZN_EP1_LT": "cм",
     "ARM_ZN_EP2_LT": "cм",
-    "ARM_ZN_EP3_LT": "cм"    
+    "ARM_ZN_EP3_LT": "cм",
+
+    // Uzel ucheta units
+    "overpressure": "атм",
+    "temperature": "°C",
+    "volumetric_flow": "м³/ч",
+    "volume": "м³",
+    "consumption_brutto": "т/ч",
+    "quantity_brutto": "т",
+    "moisture_volume": "%"
   };
 
   // New mapping for tag descriptions
@@ -128,7 +137,37 @@ export default function Diagram() {
     // ep
     "ARM_ZN_EP1_LT": "Уровень",
     "ARM_ZN_EP2_LT": "Уровень",
-    "ARM_ZN_EP3_LT": "Уровень"    
+    "ARM_ZN_EP3_LT": "Уровень",
+
+    // Uzel ucheta descriptions
+    "overpressure": "Избыточное давление",
+    "temperature": "Температура",
+    "volumetric_flow": "Объемный расход (брутто)",
+    "volume": "Объем (брутто)",
+    "consumption_brutto": "Расход (брутто)",
+    "quantity_brutto": "Количество (брутто)",
+    "consumption_netto": "Расход (нетто)",
+    "quantity_netto": "Количество (нетто)",
+    "normal_operating_time": "Время штатной работы",
+    "time_nonstandard_situations": "Время нештатных ситуаций",
+    "density_petroleum_liquid": "Плотность нефтяной жидкости в р.у.",
+    "density_oil_20": "Плотность нефти в ст.у. 20°С",
+    "density_oil_15": "Плотность нефти в ст.у. 15°С",
+    "moisture_volume": "Влагосодержание объемное",
+    "moisture_weight": "Влагосодержание массовое",
+    "viscosity": "Вязкость",
+    "last_full_hour": "Последний полный часовой период",
+    "volume_brutto_1": "Объем (брутто) - час",
+    "quantity_brutto_1": "Количество (брутто) - час",
+    "quantity_netto_1": "Количество (нетто) - час",
+    "last_full_dayli": "Последний полный суточный период",
+    "volume_brutto_2": "Объем (брутто) - сутки",
+    "quantity_brutto_2": "Количество (брутто) - сутки",
+    "quantity_netto_2": "Количество (нетто) - сутки",
+    "last_full_shift": "Последний полный сменный период",
+    "volume_brutto_3": "Объем (брутто) - смена",
+    "quantity_brutto_3": "Количество (брутто) - смена",
+    "quantity_netto_3": "Количество (нетто) - смена"
   };
 
   const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
@@ -155,6 +194,34 @@ export default function Diagram() {
     setShowTable(true);
   };
 
+  // Handle Uzel Ucheta click to show all related data
+  const handleUzelUchetaClick = () => {
+    const uzelUchetaTags = [
+      "overpressure", "temperature", "volumetric_flow", "volume", "consumption_brutto", 
+      "quantity_brutto", "consumption_netto", "quantity_netto", "normal_operating_time",
+      "time_nonstandard_situations", "density_petroleum_liquid", "density_oil_20", 
+      "density_oil_15", "moisture_volume", "moisture_weight", "viscosity", 
+      "last_full_hour", "volume_brutto_1", "quantity_brutto_1", "quantity_netto_1",
+      "last_full_dayli", "volume_brutto_2", "quantity_brutto_2", "quantity_netto_2",
+      "last_full_shift", "volume_brutto_3", "quantity_brutto_3", "quantity_netto_3"
+    ];
+    
+    const transformedData = oilProgressData
+      .filter(item => uzelUchetaTags.includes(item.tag_key))
+      .map(item => {
+        // Handle both possible field names from your inconsistent data structure
+        const value = item.value || item.tag_value || "";
+        return {
+          "Параметр": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+          "Значение": value === "" ? "—" : `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim()
+        };
+      });
+    
+    setTableData(transformedData);
+    setTableTitle("Узел учета");
+    setShowTable(true);
+  };
+
   const handleCloseTable = () => {
     setShowTable(false);
   };
@@ -166,21 +233,38 @@ export default function Diagram() {
     "p выход: 0.0кг/см²",
   ];
 
-  const data = [
-    { value: "73.03", unit: "т/ч" },
-    { value: "90.50", unit: "м³/ч" },
-    { value: "15.51", unit: "°C" },
-    { value: "0", unit: "м³" },
-    { value: "635 665", unit: "т" },
-    { value: "73.13", unit: "%" },
-  ];
+  // Get real data for the main 7 displayed values
+  const getRealUzelUchetaData = () => {
+    const displayTags = [
+      "overpressure",
+      "temperature", 
+      "volumetric_flow",
+      "volume",
+      "consumption_brutto",
+      "quantity_brutto",
+      "moisture_volume"
+    ];
+
+    return displayTags.map(tag => {
+      const item = oilProgressData.find(d => d.tag_key === tag);
+      if (!item) return { value: "0", unit: TAG_UNITS[tag] || "" };
+      
+      // Handle both possible field names
+      const value = item.value || item.tag_value || "0";
+      const unit = TAG_UNITS[tag] || "";
+      
+      return { value, unit };
+    });
+  };
+
+  const realUzelUchetaData = getRealUzelUchetaData();
 
   // Array of objects for dynamically creating LabelBox + Table/Indicator/Pumps components with percentage positions
   const componentData = [
-    { top: "6.5%", left: "10.5%", content: "КУУГ" },
+    { top: "3.5%", left: "95%", content: "ГПС-1" },
     {
       top: "16.2%",
-      left: "22%",
+      left: "84.6%",
       content: (
         <>
           <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
@@ -190,7 +274,7 @@ export default function Diagram() {
     },
     {
       top: "16.2%",
-      left: "13%",
+      left: "75.8%",
       content: (
         <>
           <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
@@ -198,27 +282,38 @@ export default function Diagram() {
         </>
       ),
     },
-    { top: "28%", left: "10.5%", content: "ЦППГ" },
+    { top: "14.5%", left: "95%", content: "ГПС-2" },
+    { top: "25%", left: "95%", content: "ГПС-3" },
     {
-      top: "5.6%",
-      left: "85.5%",
+      top: "54%",
+      left: "18%",
       content: (
         <>
-          <LabelBox
+          <div 
+            onClick={handleUzelUchetaClick}
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+            <LabelBox
               label={"Узел учета"}
               width={175}
               height={18}
               fontSize={10}
             />
-            <div style={{transform: "scale(1.3)", transformOrigin: "top left"}}>
-              <Table data={data} />
-            </div>                      
+            <div style={{transform: "scale(1.3)", transformOrigin: "top center"}}>
+              <Table data={realUzelUchetaData} />
+            </div>
+          </div>                    
         </>
       ),
     },
     {
-      top: "68.7%",
-      left: "54%",
+      top: "27%",
+      left: "50.35%",
       content: (
         <>
             <div style={{ flex: 0.5, width: "100%", fontSize: "11px" }}>
@@ -232,8 +327,8 @@ export default function Diagram() {
       )
     },
     {
-      top: "68.7%",
-      left: "59.5%",
+      top: "27%",
+      left: "55.75%",
       content: (
         <>
   
@@ -246,21 +341,6 @@ export default function Diagram() {
         </>
 
       )
-    },
-    {
-      top: "14.6%",
-      left: "30.9%",
-      content: (
-        <>
-          <Pumps numberOfSquares={2} activeIndex={0} width={85} height={50} />
-          <LabelBox
-            label={"Насосная циркуляция нефти"}
-            width={150}
-            height={10}
-            fontSize={10}
-          />
-        </>
-      ),
     },
     {
       top: "85%",
@@ -278,8 +358,8 @@ export default function Diagram() {
       ),
     },
     {
-      top: "69%",
-      left: "35.05%",
+      top: "27%",
+      left: "31.2%",
       content: (
         <>
           <Pumps numberOfSquares={2} activeIndex={0} width={85} height={50} />
@@ -293,81 +373,57 @@ export default function Diagram() {
       ),
     },
     {
-      top: "47%",
-      left: "73.5%",
-      content: (
-        <>
-          <Pumps numberOfSquares={2} activeIndex={0} width={85} height={50} />
-          <LabelBox
-            label={"Насосная циркуляция воды"}
-            width={150}
-            height={10}
-            fontSize={10}
-          />
-        </>
-      ),
-    },
-    {
-      top: "26%", // Label for PBC-1
-      left: "58%",
+      top: "54%", // Label for PBC-1
+      left: "52%",
       content: "PBC-1",
       color: "#000",
       size: "11px",
     },
     {
-      top: "34%", // Label for PBC-1
-      left: "58%",
+      top: "58%", // Label for PBC-1
+      left: "52%",
       content: "V 1000м³",
       color: "#000",
       size: "10px",
     },
     {
-      top: "6%", // Label for PBC-2
-      left: "58%",
+      top: "74%", // Label for PBC-2
+      left: "52%",
       content: "PBC-2",
       color: "#000",
       size: "11px",
     },
     {
-      top: "13%", // Label for PBC-2
-      left: "58%",
+      top: "78%", // Label for PBC-2
+      left: "52%",
       content: "V 1000м³",
       color: "#000",
       size: "10px",
     },
     {
-      top: "8%",
-      left: "64.95%",
-      content: (
-        <>
-          <LabelBox label={""} width={32} height={25} fontSize={10} />
-        </>
-      ),
-    },
-    {
-      top: "26%", // Label for PBC-3
-      left: "70.5%",
+      top: "54%", // Label for PBC-3
+      left: "64.5%",
       content: "PBC-3",
       color: "#000",
       size: "11px",
     },
     {
-      top: "34%", // Label for PBC-3
-      left: "70.5%",
+      top: "58%", // Label for PBC-3
+      left: "64.5%",
       content: "V 1000м³",
       color: "#000",
       size: "10px",
     },
     {
-      top: "13%", // Label for PBC-4
-      left: "70.5%",
+      top: "78%", // Label for PBC-4
+      left: "64.5%",
       content: "V 1000м³",
       color: "#000",
       size: "10px",
     },
     {
-      top: "6%", // Label for PBC-4
-      left: "70.5%",
+      top: "74%", // Label for PBC-4
+      left: "64.5%",
       content: "PBC-4",
       color: "#000",
       size: "11px",
@@ -434,8 +490,8 @@ export default function Diagram() {
     },
     //Tables
     {
-      top: "80%",
-      left: "28.48%",
+      top: "38%",
+      left: "24.6%",
       content: (
         <div 
           onClick={() => handleTableClick(
@@ -448,15 +504,15 @@ export default function Diagram() {
             left: "28.48%",
             width: "40px",
             height: "20px",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         />
 
       ),
     },
     {
-      top: "65%",
-      left: "28.48%",
+      top: "23.4%",
+      left: "24.6%",
       content: (
         <div 
           onClick={() => handleTableClick(
@@ -469,15 +525,15 @@ export default function Diagram() {
             left: "28.48%",
             width: "40px",
             height: "20px",
-            cursor: "pointer"
+            cursor: "pointer",
           }}
         />
 
       ),
     },
     {
-      top: "53%",
-      left: "50.2%",
+      top: "11%",
+      left: "46.5%",
       content: (
         <div 
           onClick={() => handleTableClick(
@@ -491,15 +547,14 @@ export default function Diagram() {
             width: "80px",
             height: "50px",
             cursor: "pointer",
-            // backgroundColor: "black"
           }}
         />
 
       ),
     },
     {
-      top: "53%",
-      left: "59.75%",
+      top: "11%",
+      left: "56.2%",
       content: (
         <div 
           onClick={() => handleTableClick(
@@ -513,15 +568,14 @@ export default function Diagram() {
             width: "80px",
             height: "50px",
             cursor: "pointer",
-            // backgroundColor: "black"
           }}
         />
 
       ),
     },
     {
-      top: "70%",
-      left: "30.9%",
+      top: "28.3%",
+      left: "27.2%",
       content: (
         <div 
           onClick={() => handleTableClick(
@@ -535,15 +589,14 @@ export default function Diagram() {
             width: "29px",
             height: "55px",
             cursor: "pointer",
-            // backgroundColor: "black"
           }}
         />
 
       ),
     },
     {
-      top: "60%",
-      left: "67.4%",
+      top: "18%",
+      left: "63.7%",
       content: (
         <div 
           onClick={() => handleTableClick(
@@ -557,41 +610,18 @@ export default function Diagram() {
             width: "38px",
             height: "105px",
             cursor: "pointer",
-            // backgroundColor: "black"
           }}
         />
 
       ),
-    },
-    {
-      top: "60%",
-      left: "71.6%",
-      content: (
-        <div 
-          onClick={() => handleTableClick(
-            ["ARM_ZN_BPV_LS", "ARM_ZN_BPV_LS_H2O", "ARM_ZN_BPV_PT", "ARM_ZN_BPV_TT"], 
-            "БПВ"
-          )}
-          style={{
-            position: "absolute",
-            top: "80%",
-            left: "28.48%",
-            width: "38px",
-            height: "105px",
-            cursor: "pointer",
-            // backgroundColor: "black"
-          }}
-        />
-
-      ),
-    },
+    }
   ];
 
   // Array for ProgressBars with percentage positions
   const progressBarData = [
     {
-      top: "25.5%",
-      left: "60.4%",
+      top: "52.7%",
+      left: "54.7%",
       key: "rvs-1",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS1_LT")?.value || 0),
       maxValue: 1000,
@@ -603,8 +633,8 @@ export default function Diagram() {
       labelLeft: "60.3%",
     },
     {
-      top: "5.2%",
-      left: "60.4%",
+      top: "73%",
+      left: "54.7%",
       key: "rvs-2",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS2_LT")?.value || 0),
       maxValue: 1000,
@@ -616,8 +646,8 @@ export default function Diagram() {
       labelLeft: "89%",
     },
     {
-      top: "25.4%",
-      left: "72.99%",
+      top: "52.7%",
+      left: "67.3%",
       key: "rvs-3",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS7_LT")?.value || 0),
       maxValue: 1000,
@@ -629,8 +659,8 @@ export default function Diagram() {
       labelLeft: "107%",
     },
     {
-      top: "5.1%",
-      left: "72.99%",
+      top: "73%",
+      left: "67.3%",
       key: "rvs-4",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS8_LT")?.value || 0),
       maxValue: 1000,
@@ -698,8 +728,8 @@ export default function Diagram() {
     },
     // progress bars for EP-1,2,3
     {
-      top: "17.8%",
-      left: "43.3%",
+      top: "65.5%",
+      left: "37.7%",
       key: "ep1",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_EP1_LT")?.value || 0),
       maxValue: 500,
@@ -711,8 +741,8 @@ export default function Diagram() {
       labelLeft: "60%",
     },
     {
-      top: "17.8%",
-      left: "48.5%",
+      top: "65.5%",
+      left: "42.9%",
       key: "ep3",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_EP2_LT")?.value || 0),
       maxValue: 500,
@@ -724,8 +754,8 @@ export default function Diagram() {
       labelLeft: "60%",
     },
     {
-      top: "17.8%",
-      left: "53.7%",
+      top: "65.5%",
+      left: "48.1%",
       key: "ep3",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_EP3_LT")?.value || 0),
       maxValue: 500,
@@ -782,7 +812,7 @@ export default function Diagram() {
 
         <div
           className={`${styles.box} ${styles.textBox}`}
-          style={{ top: "78%", left: "68.655%" }}
+          style={{ top: "48%", left: "78.4%" }}
         >
           <Indicator indicatorNumber={69.3} indicatorUnits={"т/ч"} />
           <Indicator indicatorNumber={86.8} indicatorUnits={"м3/ч"} />
@@ -790,7 +820,7 @@ export default function Diagram() {
         </div>
         <div
           className={`${styles.box} ${styles.textBox}`}
-          style={{ top: "69%", left: "12%" }}
+          style={{ top: "27%", left: "12%" }}
         >
           <NavLink to="/">
             <LabelBox label={"На главную"} width={80} height={30} fontSize={10}/>
