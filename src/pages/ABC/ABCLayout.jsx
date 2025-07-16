@@ -24,10 +24,10 @@ export default function ABCLayout() {
 
   const fieldMappings = {
     leftTop: "well",
-    rightTop: "tm_fluid",
+    rightTop: "tm_water_prev",
     middle: "tm_fluid",
-    leftBottom: "tm_fluid_prev",
-    rightBottom: "tm_water",
+    leftBottom: "tm_water",
+    rightBottom: "tr_water",
   };
 
   const calculateMiddleValue = (wells, values) => {
@@ -52,7 +52,7 @@ export default function ABCLayout() {
               <Legends
                 leftTop={"Номер скважины"}
                 rightTop={"Предыдущий замер"}
-                middle={"Разница замеров обводненности (%)"}
+                middle={"Разница обводненности (%)"}
                 leftBottom={"Последний замер"}
                 rightBottom={"Лаб. обводненность"}
               />

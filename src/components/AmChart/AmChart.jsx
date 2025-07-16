@@ -102,12 +102,12 @@ const AmChart = ({ wellData, onReset }) => {
         const date = new Date(item.date).toISOString().split("T")[0];
         const { well } = item;
         
-        if (item.tm_oil_prev != null && 
+        if (item.tm_fluid_prev != null && 
             item.tm_water_prev != null && 
-            item.tm_oil_prev !== 0 && 
+            item.tm_fluid_prev !== 0 && 
             item.tm_water_prev !== 0) {
           const x = item.tm_water - item.tm_water_prev;
-          const y = item.tm_oil - item.tm_oil_prev;
+          const y = item.tm_fluid - item.tm_fluid_prev;
           
           history[well].positions[date] = { 
             x, 
@@ -362,7 +362,7 @@ const AmChart = ({ wellData, onReset }) => {
             radius: 5,
             fill: am5.color(0x000000),
             fillOpacity: 0.6,
-            tooltipText: "Скважина: {well}\nΔОбводненность: {x}\nΔНефть: {y}",
+            tooltipText: "Скважина: {well}\nΔОбводненность: {x}\nΔЖидкость: {y}",
           })
         })
       );

@@ -22,6 +22,7 @@ export default function Diagram() {
 
   useEffect(() => {
     axios.get("http://localhost:3000/api/progress-oil")
+    // axios.get("http://192.168.1.42:3000/api/progress-oil")
       .then(res => {
         setOilProgressData(res.data);
       })
@@ -80,7 +81,7 @@ export default function Diagram() {
     "ARM_ZN_EP3_LT": "cм",
 
     // Uzel ucheta units
-    "overpressure": "атм",
+    "overpressure": "МПа",
     "temperature": "°C",
     "volumetric_flow": "м³/ч",
     "volume": "м³",
@@ -213,7 +214,7 @@ export default function Diagram() {
         const value = item.value || item.tag_value || "";
         return {
           "Параметр": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
-          "Значение": value === "" ? "—" : `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim()
+          "Значение": value === "" ? "—" : `${Math.round(parseFloat(value) * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim()
         };
       });
     
