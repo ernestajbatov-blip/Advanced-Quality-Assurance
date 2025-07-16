@@ -15,6 +15,7 @@ const AmChart = ({ wellData, onReset }) => {
   const updateTimeoutRef = useRef(null);
   const [currentTimePoint, setCurrentTimePoint] = useState(null);
   const [viewMode, setViewMode] = useState("daily");
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const monthNamesRU = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
 
@@ -310,6 +311,13 @@ const AmChart = ({ wellData, onReset }) => {
         tooltip: am5.Tooltip.new(root, {}),
       })
     );
+
+    xAxis.set("title", am5.Label.new(root, {
+      text: "ΔОбводненность",
+      fontSize: "1em",
+      fill: am5.color(0xffffff),
+      opacity: 0.8
+    }));
   
     const yAxis = chart.yAxes.push(
       am5xy.ValueAxis.new(root, {
@@ -324,6 +332,13 @@ const AmChart = ({ wellData, onReset }) => {
         tooltip: am5.Tooltip.new(root, {}),
       })
     );
+
+    yAxis.set("title", am5.Label.new(root, {
+      text: "ΔЖидкость", 
+      fontSize: "1em",
+      fill: am5.color(0xffffff),
+      opacity: 0.8
+    }));
   
     xAxis.events.on("rangechanged", debouncedUpdateColorZones);
     yAxis.events.on("rangechanged", debouncedUpdateColorZones);
@@ -491,6 +506,18 @@ const AmChart = ({ wellData, onReset }) => {
     }
   };
 
+  const formatDateForDisplay = (dateStr) => {
+    const date = new Date(dateStr);
+    if (viewMode === "weekly") {
+      const endDate = new Date(date);
+      endDate.setDate(endDate.getDate() + 6);
+      return `${dateStr} - ${endDate.toISOString().split("T")[0]}`;
+    } else if (viewMode === "monthly") {
+      return `${monthNamesRU[date.getMonth()]} ${date.getFullYear()}`;
+    }
+    return dateStr;
+  };
+
   return (
     <div className={styles.chartWrapper}>
       <div className={styles.chartHeader}>
@@ -513,12 +540,40 @@ const AmChart = ({ wellData, onReset }) => {
           >
             Ежемесячно
           </button>
+          <button 
+            className={styles.datePickerButton}
+            onClick={() => setShowDatePicker(!showDatePicker)}
+          >
+            Выбрать дату
+          </button>
           {onReset && (
             <button onClick={onReset} className={styles.resetButton}>
               ↻
             </button>
           )}
         </div>
+        {showDatePicker && (
+          <div className={styles.datePickerDropdown}>
+            <div className={styles.datePickerHeader}>
+              <span>Выберите дату:</span>
+              <button onClick={() => setShowDatePicker(false)}>×</button>
+            </div>
+            <div className={styles.datePickerList}>
+              {timePoints.map((date, index) => (
+                <button
+                  key={index}
+                  className={`${styles.datePickerItem} ${date === currentTimePoint ? styles.selectedDate : ""}`}
+                  onClick={() => {
+                    setCurrentTimePoint(date);
+                    setShowDatePicker(false);
+                  }}
+                >
+                  {formatDateForDisplay(date)}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
       <div id="yearlyChartDiv" className={styles.chart}></div>
       {timePoints.length > 0 && (

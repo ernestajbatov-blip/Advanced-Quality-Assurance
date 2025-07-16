@@ -67,9 +67,9 @@ const EnhancedPopup = ({ well }) => {
 
   // Oil loss data for the pie chart
   const oilLossData = [
-    { name: "ΔQH(t)", value: Math.abs(-9.8) },
-    { name: "ΔQH(N)", value: Math.abs(-13.4) },
-    { name: "ΔQH(qж)", value: 3.0 },
+    { name: "Время работы", value: Math.abs(-9.8) },
+    { name: "Обводненность", value: Math.abs(-13.4) },
+    { name: "Дебит жидкости", value: 3.0 },
   ];
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
@@ -355,12 +355,12 @@ export default function OilMap() {
       {/* Header */}
       <div className={styles.header}>
         <h2 className={styles.headerTitle}>Карта скважин</h2>
-        <div className={styles.headerStats}>
+        {/* <div className={styles.headerStats}>
           <span className={styles.statActive}>В сети: {counts.Active}</span>
           <span className={styles.statMaintenance}>Нет данных: {counts.Maintenance}</span>
           <span className={styles.statInactive}>Не в сети: {counts.Inactive}</span>
           <span className={styles.statTotal}>Всего: {wells.length}</span>
-        </div>
+        </div> */}
       </div>
 
       {/* Main Content */}

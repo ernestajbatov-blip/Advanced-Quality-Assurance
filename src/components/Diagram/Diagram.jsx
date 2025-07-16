@@ -21,8 +21,8 @@ export default function Diagram() {
   const [tableTitle, setTableTitle] = useState("Sensor Data");
 
   useEffect(() => {
-    axios.get("http://localhost:3000/api/progress-oil")
-    // axios.get("http://192.168.1.42:3000/api/progress-oil")
+    // axios.get("http://localhost:3000/api/progress-oil")
+    axios.get("http://192.168.1.42:3000/api/progress-oil")
       .then(res => {
         setOilProgressData(res.data);
       })
@@ -234,7 +234,6 @@ export default function Diagram() {
     "p выход: 0.0кг/см²",
   ];
 
-  // Get real data for the main 7 displayed values
   const getRealUzelUchetaData = () => {
     const displayTags = [
       "overpressure",
@@ -248,10 +247,11 @@ export default function Diagram() {
 
     return displayTags.map(tag => {
       const item = oilProgressData.find(d => d.tag_key === tag);
-      if (!item) return { value: "0", unit: TAG_UNITS[tag] || "" };
+      if (!item) return { value: "0.00", unit: TAG_UNITS[tag] || "" };
       
-      // Handle both possible field names
-      const value = item.value || item.tag_value || "0";
+      // Handle both possible field names and round to 2 decimal places
+      const rawValue = item.value || item.tag_value || 0;
+      const value = Number(rawValue).toFixed(2);
       const unit = TAG_UNITS[tag] || "";
       
       return { value, unit };

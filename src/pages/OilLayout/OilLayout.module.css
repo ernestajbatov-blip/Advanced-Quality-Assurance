@@ -1,44 +1,113 @@
-.oilLossTable {
-    width: 80%;
-    border-collapse: collapse;
-    margin: auto;
-    text-align: center;
+/* Main input field styling */
+.inputField {
+  padding: 8px 12px;
+  border: 1px solid #666;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #333;
+  color: #fff;
 }
+
+.inputField:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+/* Style for select dropdown options */
+.inputField option {
+  background-color: #333;
+  color: #fff;
+}
+
+/* Specific styling for date inputs */
+.inputField[type="date"] {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #666;
+}
+
+/* Date input calendar button styling */
+.inputField[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+  filter: invert(1); /* This inverts the calendar icon to make it visible on dark background */
+}
+
+/* Date input text color */
+.inputField[type="date"]::-webkit-datetime-edit {
+  color: #fff;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  background-color: #333;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit-text {
+  color: #fff;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit-month-field,
+.inputField[type="date"]::-webkit-datetime-edit-day-field,
+.inputField[type="date"]::-webkit-datetime-edit-year-field {
+  color: #fff;
+}
+
+/* For Firefox */
+.inputField[type="date"]::-moz-placeholder {
+  color: #ccc;
+}
+
+/* Labels styling */
+.inputLabel {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #000;
+}
+
+/* Rest of your existing styles */
+.oilLossTable {
+  width: 80%;
+  border-collapse: collapse;
+  margin: auto;
+  text-align: center;
+}
+
 .flexContainer {
-display: flex;
-flex-direction: row; /* Make the layout row-oriented */
-justify-content: space-between; /* Space between chart and table */
-align-items: flex-start; /* Align chart and table at the top */
-gap: 20px; /* Add some space between chart and table */
-padding: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
 }
 
 .oilLossTable th,
 .oilLossTable td {
-border: 1px solid #ddd;
-padding: 8px;
+  border: 1px solid #ddd;
+  padding: 8px;
 }
 
 .mapSection {
   margin-top: 40px;
-  /* margin-bottom: 5%; */
   width: 90%;
   margin-left: 100px;
   height: 100%;
   padding-bottom: 20px;
 }
 
-
 .oilLossTable th {
-/* background-color: #f2f2f2; */
-font-weight: bold;
-}
-/* 
-.oilLossTable tr:nth-child(even) {
-background-color: #f9f9f9;
+  font-weight: bold;
 }
 
-.oilLossTable tr:hover {
-background-color: #f1f1f1;
+.inputField[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: #333;
+  color: #fff;
+  filter: invert(1);
 }
-   */
+
+/* Force dark theme for calendar popup */
+.inputField[type="date"]::-webkit-calendar-picker-indicator:hover {
+  background-color: #555;
+}

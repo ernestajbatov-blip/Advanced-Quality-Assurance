@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef, useEffect } from "react";
 import OilLossChart from "../../components/OilLossChart/OilLossChart";
 import AppNav from "../../components/AppNav/AppNav";
 import OilMap from "../../components/Map/OilMap";
@@ -8,6 +8,9 @@ export default function OilLayout() {
   const [selectedWell, setSelectedWell] = useState("all");
   const [startDate, setStartDate] = useState("2024-01-01");
   const [endDate, setEndDate] = useState("2024-12-31");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
 
   // Sample data for multiple wells and dates
   const allTableData = {
@@ -53,16 +56,51 @@ export default function OilLayout() {
     return Object.keys(allTableData).sort();
   }, []);
 
-  // Filter table data based on selected filters
+  // Filter wells based on search term
+  const filteredWells = useMemo(() => {
+    if (!searchTerm) return uniqueWells;
+    return uniqueWells.filter(well => 
+      well.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [uniqueWells, searchTerm]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Handle well selection
+  const handleWellSelect = (well) => {
+    setSelectedWell(well);
+    setSearchTerm("");
+    setIsDropdownOpen(false);
+  };
+
+  // Get display text for selected well
+  const getDisplayText = () => {
+    if (selectedWell === "all") return "Все";
+    return selectedWell;
+  };
+
+  // Filter table data based on selected filters - MOVED BEFORE chartData
   const filteredTableData = useMemo(() => {
     if (selectedWell === "all") {
       // Aggregate all data for all wells
       const aggregated = [
-        ["Нач. добыча", "0", "0", "0", "0", "0"],
-        ["0", "0", "0", "0", "0"],
-        ["0", "0", "0", "0", "0"],
-        ["Мин", "0", "0", "0", "0", "0"],
-        ["Макс", "0", "0", "0", "0", "0"],
+        ["Нач. добыча", 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0],
+        ["Мин", 0, 0, 0, 0, 0],
+        ["Макс", 0, 0, 0, 0, 0],
       ];
 
       Object.keys(allTableData).forEach(well => {
@@ -74,20 +112,20 @@ export default function OilLayout() {
           if (wellDate >= start && wellDate <= end) {
             const data = allTableData[well][date];
             data.forEach((row, rowIndex) => {
-              if (rowIndex === 0) { // "Нач. добыча" row
-                row.forEach((cell, cellIndex) => {
-                  if (cellIndex > 0) { // Skip first column (labels)
-                    aggregated[rowIndex][cellIndex] = 
-                      (parseInt(aggregated[rowIndex][cellIndex]) + parseInt(cell)).toString();
-                  }
-                });
-              }
+              row.forEach((cell, cellIndex) => {
+                if (cellIndex > 0 && !isNaN(parseInt(cell))) { // Skip first column (labels) and handle only numeric values
+                  aggregated[rowIndex][cellIndex] = aggregated[rowIndex][cellIndex] + parseInt(cell);
+                }
+              });
             });
           }
         });
       });
 
-      return aggregated;
+      // Convert numbers back to strings for display
+      return aggregated.map(row => 
+        row.map((cell, index) => index === 0 ? cell : cell.toString())
+      );
     } else {
       // Find data for selected well within date range
       const wellData = allTableData[selectedWell];
@@ -106,7 +144,50 @@ export default function OilLayout() {
       const latestDate = validDates.sort().reverse()[0];
       return wellData[latestDate];
     }
-  }, [selectedWell, startDate, endDate, allTableData]);
+  }, [selectedWell, startDate, endDate]);
+
+  // Prepare chart data using the same logic as the table - MOVED AFTER filteredTableData
+  const chartData = useMemo(() => {
+    if (filteredTableData.length === 0) return [];
+    
+    // Convert table data to chart format
+    // Extract numeric values from the filtered table data
+    const chartPoints = [];
+    
+    if (selectedWell === "all") {
+      // For "all" wells, use the aggregated data
+      filteredTableData.forEach((row, index) => {
+        if (index === 0) { // "Нач. добыча" row
+          row.forEach((cell, cellIndex) => {
+            if (cellIndex > 0) { // Skip first column (labels)
+              chartPoints.push({
+                name: tableHeaders[cellIndex - 1],
+                value: parseInt(cell) || 0,
+                well: "all"
+              });
+            }
+          });
+        }
+      });
+    } else {
+      // For individual wells, use the specific well data
+      filteredTableData.forEach((row, index) => {
+        if (index === 0) { // "Нач. добыча" row
+          row.forEach((cell, cellIndex) => {
+            if (cellIndex > 0) { // Skip first column (labels)
+              chartPoints.push({
+                name: tableHeaders[cellIndex - 1],
+                value: parseInt(cell) || 0,
+                well: selectedWell
+              });
+            }
+          });
+        }
+      });
+    }
+    
+    return chartPoints;
+  }, [filteredTableData, selectedWell, tableHeaders]);
 
   return (
     <div style={{ width: "100%" }}>
@@ -120,60 +201,129 @@ export default function OilLayout() {
         display: "flex",
         gap: "20px",
         alignItems: "center",
-        flexWrap: "wrap"
+        flexWrap: "wrap",
+        justifyContent: "center"
       }}>
-        <div>
-          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+        <div style={{ position: "relative" }} ref={dropdownRef}>
+          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold", color: "#ccc" }}>
             Выбрать скважину:
           </label>
-          <select
-            value={selectedWell}
-            onChange={(e) => setSelectedWell(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              fontSize: "14px"
-            }}
-          >
-            <option value="all">Все</option>
-            {uniqueWells.map(well => (
-              <option key={well} value={well}>{well}</option>
-            ))}
-          </select>
+          <div style={{ position: "relative" }}>
+            <input
+              type="text"
+              value={isDropdownOpen ? searchTerm : getDisplayText()}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                if (!isDropdownOpen) setIsDropdownOpen(true);
+              }}
+              onFocus={() => {
+                setIsDropdownOpen(true);
+                setSearchTerm("");
+              }}
+              placeholder="Поиск скважины..."
+              className={styles.inputField}
+              style={{ 
+                paddingRight: "30px",
+                cursor: "pointer"
+              }}
+            />
+            <span
+              style={{
+                position: "absolute",
+                right: "10px",
+                top: "50%",
+                transform: "translateY(-50%)",
+                cursor: "pointer",
+                fontSize: "12px",
+                color: "#ccc"
+              }}
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+            >
+              {isDropdownOpen ? "▲" : "▼"}
+            </span>
+          </div>
+          
+          {isDropdownOpen && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                right: 0,
+                backgroundColor: "#333",
+                border: "1px solid #666",
+                borderRadius: "4px",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+                zIndex: 1000,
+                maxHeight: "200px",
+                overflowY: "auto"
+              }}
+            >
+              <div
+                style={{
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                  borderBottom: "1px solid #555",
+                  backgroundColor: selectedWell === "all" ? "#555" : "transparent",
+                  color: "#ccc"
+                }}
+                onClick={() => handleWellSelect("all")}
+                onMouseEnter={(e) => e.target.style.backgroundColor = "#555"}
+                onMouseLeave={(e) => e.target.style.backgroundColor = selectedWell === "all" ? "#555" : "transparent"}
+              >
+                Все
+              </div>
+              {filteredWells.map(well => (
+                <div
+                  key={well}
+                  style={{
+                    padding: "8px 12px",
+                    cursor: "pointer",
+                    borderBottom: "1px solid #555",
+                    backgroundColor: selectedWell === well ? "#555" : "transparent",
+                    color: "#ccc"
+                  }}
+                  onClick={() => handleWellSelect(well)}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = "#555"}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = selectedWell === well ? "#555" : "transparent"}
+                >
+                  {well}
+                </div>
+              ))}
+              {filteredWells.length === 0 && searchTerm && (
+                <div style={{ 
+                  padding: "8px 12px", 
+                  color: "#ccc", 
+                  fontStyle: "italic" 
+                }}>
+                  Не найдено
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div>
-          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold", color: "#ccc" }}>
             Начало:
           </label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              fontSize: "14px"
-            }}
+            className={styles.inputField}
           />
         </div>
 
         <div>
-          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold", color: "#ccc" }}>
             Конец:
           </label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
-            style={{
-              padding: "8px 12px",
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              fontSize: "14px"
-            }}
+            className={styles.inputField}
           />
         </div>
       </div>
@@ -181,6 +331,7 @@ export default function OilLayout() {
       <div className={styles.flexContainer}>
         <div style={{ flex: 1 }}>
           <OilLossChart 
+            chartData={chartData}
             selectedWell={selectedWell}
             startDate={startDate}
             endDate={endDate}
