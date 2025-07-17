@@ -14,8 +14,9 @@ export default function Grid({
   inBetweenColor,
   inBetweenThresholdMax,
   realMiddle,
-  onWellClick, // New prop for handling well clicks
-  setSelectedWell
+  onWellClick,
+  setSelectedWell,
+  hideWorkingStatus = false // New prop to hide working status
 }) {
   return (
     <div className={styles.gridContainer}>
@@ -39,27 +40,27 @@ export default function Grid({
         const middleValue = realMiddle === true ? wellValues.middle : calculatedMiddleValue;
 
         return (
-        <WellCard
-          key={index}
-          leftTop={wellValues.leftTop}
-          rightTop={wellValues.rightTop}
-          middle={calculatedMiddleValue}
-          leftBottom={wellValues.leftBottom}
-          rightBottom={wellValues.rightBottom}
-          wells={wells}
-          setSelectedWell={setSelectedWell}
-          maxThreshold={maxThreshold}
-          colorMax={colorMax}
-          minThreshold={minThreshold}
-          colorMin={colorMin}
-          inBetweenThresholdMin={inBetweenThresholdMin}
-          inBetweenColor={inBetweenColor}
-          inBetweenThresholdMax={inBetweenThresholdMax}
-          realMiddle={middleValue}
-          onWellClick={onWellClick}
-          working={well.working}
-        />
-
+          <WellCard
+            key={index}
+            leftTop={wellValues.leftTop}
+            rightTop={wellValues.rightTop}
+            middle={calculatedMiddleValue}
+            leftBottom={wellValues.leftBottom}
+            rightBottom={wellValues.rightBottom}
+            wells={wells}
+            setSelectedWell={setSelectedWell}
+            maxThreshold={maxThreshold}
+            colorMax={colorMax}
+            minThreshold={minThreshold}
+            colorMin={colorMin}
+            inBetweenThresholdMin={inBetweenThresholdMin}
+            inBetweenColor={inBetweenColor}
+            inBetweenThresholdMax={inBetweenThresholdMax}
+            realMiddle={middleValue}
+            onWellClick={onWellClick}
+            working={well.working}
+            hideWorkingStatus={hideWorkingStatus}
+          />
         );
       })}
     </div>

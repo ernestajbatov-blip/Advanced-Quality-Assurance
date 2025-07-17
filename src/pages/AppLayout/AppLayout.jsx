@@ -126,7 +126,9 @@ const handleWellClick = async (wellNumber) => {
                   middle={"Закачка"}
                 />
               )}
-              <SelectFond setFond={setFond} wells={filteredWells} />
+              
+              <SelectFond setFond={setFond} wells={filteredWells} hideWorkingStatusLegend={fond === 1} />
+              
               {fond == 0 ? (
                 <Details
                   leftTop={"-15% откл. от ТР"}
@@ -150,7 +152,8 @@ const handleWellClick = async (wellNumber) => {
               inBetweenColor={'orangeCard'}
               inBetweenThresholdMax={-15}
               realMiddle={true}
-              onWellClick={handleWellClick}
+              onWellClick={fond === 0 ? handleWellClick : undefined} // Disable well clicks in VRP mode
+              hideWorkingStatus={fond === 1} // Hide working status for injection wells (VRP)
             />
           </div>
           <div className={styles.container}>

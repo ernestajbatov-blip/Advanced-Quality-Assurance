@@ -1,7 +1,7 @@
 import React from "react";
 import styles from "./SelectFond.module.css";
 
-export default function SelectFond({ setFond, wells = [] }) {
+export default function SelectFond({ setFond, wells = [], hideWorkingStatusLegend = false }) {
   // Count wells by working status
   const statusCounts = wells.reduce(
     (acc, well) => {
@@ -22,12 +22,15 @@ export default function SelectFond({ setFond, wells = [] }) {
         <option value="0">Добывающий фонд</option>
         <option value="1">Нагнетательный фонд</option>
       </select>
-
-      <div className={styles.legend}>
-        <LegendRow color="green" label="В сети" count={statusCounts.working} />
-        <LegendRow color="yellow" label="Нет данных" count={statusCounts.noData} />
-        <LegendRow color="red" label="Не в сети" count={statusCounts.notWorking} />
-      </div>
+      
+      {/* Only show working status legend if hideWorkingStatusLegend is false */}
+      {!hideWorkingStatusLegend && (
+        <div className={styles.legend}>
+          <LegendRow color="green" label="В сети" count={statusCounts.working} />
+          <LegendRow color="yellow" label="Нет данных" count={statusCounts.noData} />
+          <LegendRow color="red" label="Не в сети" count={statusCounts.notWorking} />
+        </div>
+      )}
     </div>
   );
 }

@@ -22,7 +22,8 @@ export default function WellCard({
   inBetweenThresholdMax,
   realMiddle,
   onWellClick,
-  working
+  working,
+  hideWorkingStatus = false // New prop to hide working status circle
 }) {
   const location = useLocation();
   const context = location.pathname === "/abc" ? useContext(WellsABCContext) : null;
@@ -74,8 +75,8 @@ export default function WellCard({
   return (
     <>
       <div className={cardClasses} onClick={handleClick}>
-        {/* Status circle in top-right */}
-        {[1, 2, 3].includes(working) && (
+        {/* Status circle in top-right - only show if hideWorkingStatus is false */}
+        {!hideWorkingStatus && [1, 2, 3].includes(working) && (
           <div
             className={`${styles.statusCircle} ${
               working === 1 ? styles.green :
@@ -89,7 +90,6 @@ export default function WellCard({
             }
           />
         )}
-        
         <div className={styles.cardRow}>
           <span>{leftTop}</span>
           <span>{rightTop.toFixed(2)}</span>
@@ -100,7 +100,6 @@ export default function WellCard({
           <span>{rightBottom.toFixed(1)}</span>
         </div>
       </div>
-
     </>
   );
 }

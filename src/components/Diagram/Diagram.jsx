@@ -21,8 +21,8 @@ export default function Diagram() {
   const [tableTitle, setTableTitle] = useState("Sensor Data");
 
   useEffect(() => {
-    // axios.get("http://localhost:3000/api/progress-oil")
-    axios.get("http://192.168.1.42:3000/api/progress-oil")
+    axios.get("http://localhost:3000/api/progress-oil")
+    // axios.get("http://192.168.1.42:3000/api/progress-oil")
       .then(res => {
         setOilProgressData(res.data);
       })
@@ -33,10 +33,11 @@ export default function Diagram() {
 
   const TAG_UNITS = {
     // tfs-1
+    "ARM_TFS_LC1_L": "см",
     "ARM_LSA2_TFS": "см",
     "ARM_PT1_TFS": "атм",
     "ARM_TFS_LC1_H2O": "см",
-    "ARM_TFS_LC1_L": "см",
+    
     "ARM_TT1_TFS": "°C",
 
     // tfs-2
@@ -93,19 +94,19 @@ export default function Diagram() {
   // New mapping for tag descriptions
   const TAG_DESCRIPTIONS = {
     // tfs-1
-    "ARM_LSA2_TFS": "Уровень",
+    "ARM_TFS_LC1_L": "Общий Уровень",
+    "ARM_LSA2_TFS": "Уровень Нефти",
+    "ARM_TFS_LC1_H2O": "Уровень Воды",
     "ARM_PT1_TFS": "Давление",
-    "ARM_TFS_LC1_H2O": "Уровень",
-    "ARM_TFS_LC1_L": "Уровень",
     "ARM_TT1_TFS": "Температура",
 
     // tfs-2
+    "ARM_LC_L_TFS2": "Общий Уровень",
+    "ARM_LSA2_TFS2": "Уровень Нефти",
+    "ARM_LC_I_TFS2": "Уровень Воды",
     "ARM_PT1_TFS2": "Давление",
     "ARM_TT1_TFS2": "Температура",
-    "ARM_LC_I_TFS2": "Уровень",
-    "ARM_LC_L_TFS2": "Уровень",
-    "ARM_LSA2_TFS2": "Уровень",
-
+    
     // ogn
     "ARM_OGN_LC2_H2O": "Уровень",
     "ARM_OGN_LC2_L": "Уровень",
@@ -173,27 +174,32 @@ export default function Diagram() {
 
   const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
     let transformedData;
-    
+
     if (filterTags && filterTags.length > 0) {
-      // Filter data based on specific tag keys and use descriptions
-      transformedData = oilProgressData
-        .filter(item => filterTags.includes(item.tag_key))
-        .map(item => ({
-          "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
-          "Показание": `${Math.round(item.value * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim()
-        }));
+      // First filter
+      const filtered = oilProgressData.filter(item => filterTags.includes(item.tag_key));
+
+      // Sort by the order of filterTags array
+      const sorted = filterTags.map(tag =>
+        filtered.find(item => item.tag_key === tag)
+      ).filter(Boolean); // remove any undefined if tag not found
+
+      transformedData = sorted.map(item => ({
+        "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+        "Показание": `${Math.round(item.value * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim()
+      }));
     } else {
-      // Show all data if no filter specified
       transformedData = oilProgressData.map(item => ({
         "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
         "Показание": `${Math.round((item.tag_value || item.value) * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim()
       }));
     }
-    
+
     setTableData(transformedData);
     setTableTitle(buttonTitle);
     setShowTable(true);
   };
+
 
   // Handle Uzel Ucheta click to show all related data
   const handleUzelUchetaClick = () => {
@@ -262,7 +268,7 @@ export default function Diagram() {
 
   // Array of objects for dynamically creating LabelBox + Table/Indicator/Pumps components with percentage positions
   const componentData = [
-    { top: "3.5%", left: "95%", content: "ГПС-1" },
+    { top: "2.5%", left: "22.5%", content: "ГПС-1" },
     {
       top: "16.2%",
       left: "84.6%",
@@ -270,6 +276,16 @@ export default function Diagram() {
         <>
           <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
           <LabelBox label={"Расходомер"} width={60} height={5} fontSize={10} />
+        </>
+      ),
+    },
+    {
+      top: "36.1%",
+      left: "19.9%",
+      content: (
+        <>
+          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
+          <LabelBox label={"Влагомер"} width={60} height={5} fontSize={10} />
         </>
       ),
     },
@@ -283,11 +299,11 @@ export default function Diagram() {
         </>
       ),
     },
-    { top: "14.5%", left: "95%", content: "ГПС-2" },
-    { top: "25%", left: "95%", content: "ГПС-3" },
+    { top: "10.5%", left: "22.5%", content: "ГПС-2" },
+    { top: "18%", left: "22.5%", content: "ГПС-3" },
     {
       top: "54%",
-      left: "18%",
+      left: "30.75%",
       content: (
         <>
           <div 
@@ -312,37 +328,37 @@ export default function Diagram() {
         </>
       ),
     },
-    {
-      top: "27%",
-      left: "50.35%",
-      content: (
-        <>
-            <div style={{ flex: 0.5, width: "100%", fontSize: "11px" }}>
-              <SimpleTable data={tableDataStatic.slice(0, 2)} />
-            </div>
+    // {
+    //   top: "27%",
+    //   left: "50.35%",
+    //   content: (
+    //     <>
+    //         <div style={{ flex: 0.5, width: "100%", fontSize: "11px" }}>
+    //           <SimpleTable data={tableDataStatic.slice(0, 2)} />
+    //         </div>
       
 
-          <LabelBox label={"Печь"} width={205} height={10} fontSize={12} />
-        </>
+    //       <LabelBox label={"Печь"} width={205} height={10} fontSize={12} />
+    //     </>
 
-      )
-    },
-    {
-      top: "27%",
-      left: "55.75%",
-      content: (
-        <>
+    //   )
+    // },
+    // {
+    //   top: "27%",
+    //   left: "55.75%",
+    //   content: (
+    //     <>
   
-            <div style={{ flex: 0.5, width: "100%", display: "flex", justifyContent: "flex-end", fontSize: "11px" }}>
-              <SimpleTable data={tableDataStatic.slice(2, 4)} />
-            </div>
+    //         <div style={{ flex: 0.5, width: "100%", display: "flex", justifyContent: "flex-end", fontSize: "11px" }}>
+    //           <SimpleTable data={tableDataStatic.slice(2, 4)} />
+    //         </div>
          
 
           
-        </>
+    //     </>
 
-      )
-    },
+    //   )
+    // },
     {
       top: "85%",
       left: "83.7%",
@@ -461,14 +477,14 @@ export default function Diagram() {
       size: "8px",
     },
     {
-      top: "70.2%", // Label for PBC-3
+      top: "50%", // Label for PBC-3
       left: "93.5%",
       content: "PBC-3",
       color: "#000",
       size: "10px",
     },
     {
-      top: "75%", // Label for PBC-3
+      top: "54.8%%", // Label for PBC-3
       left: "93.5%",
       content: "V 500м³",
       color: "#000",
@@ -476,14 +492,14 @@ export default function Diagram() {
     },
 
     {
-      top: "50%", // Label for PBC-4
+      top: "70.2%", // Label for PBC-4
       left: "93.5%",
       content: "PBC-4",
       color: "#000",
       size: "10px",
     },
     {
-      top: "54.8%", // Label for PBC-4
+      top: "75%", // Label for PBC-4
       left: "93.5%",
       content: "V 500м³",
       color: "#000",
@@ -496,7 +512,7 @@ export default function Diagram() {
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["ARM_LSA2_TFS", "ARM_PT1_TFS", "ARM_TFS_LC1_H2O", "ARM_TFS_LC1_L", "ARM_TT1_TFS"], 
+            [ "ARM_TFS_LC1_L", "ARM_LSA2_TFS", "ARM_TFS_LC1_H2O", "ARM_PT1_TFS", "ARM_TT1_TFS"], 
             "ТФС-1"
           )}
           style={{
@@ -517,7 +533,7 @@ export default function Diagram() {
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["ARM_PT1_TFS2", "ARM_TT1_TFS2", "ARM_LC_I_TFS2", "ARM_LC_L_TFS2", "ARM_LSA2_TFS2"], 
+            [ "ARM_LC_L_TFS2", "ARM_LSA2_TFS2", "ARM_LC_I_TFS2", "ARM_PT1_TFS2", "ARM_TT1_TFS2"], 
             "ТФС-2"
           )}
           style={{
@@ -675,10 +691,11 @@ export default function Diagram() {
 
     // Additional 4 progress bars with blue color
     {
+      // 2
       top: "49.2%",
       left: "86.8%",
       key: "pbc5L",
-      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS4_LT")?.value || 0),
+      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS6_LT")?.value || 0),
       maxValue: 500,
       color: "#0C5D81", // Blue color
       width: 9,
@@ -688,10 +705,11 @@ export default function Diagram() {
       labelLeft: "60%",
     },
     {
+      // 3
       top: "49.2%",
       left: "95.4%",
       key: "pbc5L",
-      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS6_LT")?.value || 0),
+      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS5_LT")?.value || 0),
       maxValue: 500,
       color: "#0C5D81", // Blue color
       width: 9,
@@ -702,10 +720,11 @@ export default function Diagram() {
     },
 
     {
+      // 4
       top: "69.3%",
       left: "95.4%",
       key: "pbc5L",
-      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS5_LT")?.value || 0),
+      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS3_LT")?.value || 0),
       maxValue: 500,
       color: "#0C5D81", // Blue color
       width: 9,
@@ -715,10 +734,11 @@ export default function Diagram() {
       labelLeft: "60%",
     },
     {
+      // 1
       top: "69.3%",
       left: "86.8%",
       key: "pbc5L",
-      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS3_LT")?.value || 0),
+      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS4_LT")?.value || 0),
       maxValue: 500,
       color: "#0C5D81", // Blue color
       width: 9,
@@ -729,8 +749,8 @@ export default function Diagram() {
     },
     // progress bars for EP-1,2,3
     {
-      top: "65.5%",
-      left: "37.7%",
+      top: "24%",
+      left: "54.5%",
       key: "ep1",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_EP1_LT")?.value || 0),
       maxValue: 500,
@@ -742,9 +762,9 @@ export default function Diagram() {
       labelLeft: "60%",
     },
     {
-      top: "65.5%",
-      left: "42.9%",
-      key: "ep3",
+      top: "30.5%",
+      left: "54.5%",
+      key: "ep2",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_EP2_LT")?.value || 0),
       maxValue: 500,
       color: "green",
@@ -755,8 +775,8 @@ export default function Diagram() {
       labelLeft: "60%",
     },
     {
-      top: "65.5%",
-      left: "48.1%",
+      top: "37%",
+      left: "54.5%",
       key: "ep3",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_EP3_LT")?.value || 0),
       maxValue: 500,
@@ -811,14 +831,14 @@ export default function Diagram() {
           ))}
         </div>
 
-        <div
+        {/* <div
           className={`${styles.box} ${styles.textBox}`}
           style={{ top: "48%", left: "78.4%" }}
         >
           <Indicator indicatorNumber={69.3} indicatorUnits={"т/ч"} />
           <Indicator indicatorNumber={86.8} indicatorUnits={"м3/ч"} />
           <LabelBox label={"Расходомер"} width={60} height={3} fontSize={10} />
-        </div>
+        </div> */}
         <div
           className={`${styles.box} ${styles.textBox}`}
           style={{ top: "27%", left: "12%" }}
