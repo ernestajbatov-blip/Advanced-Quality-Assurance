@@ -14,7 +14,7 @@ export default function OilLayout() {
   const [availableWells, setAvailableWells] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [activeView, setActiveView] = useState("chart"); // New state for toggle
+  const [activeView, setActiveView] = useState("chart");
   const dropdownRef = useRef(null);
 
   // Helper function to safely parse JSON response
