@@ -47,10 +47,29 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
     return chartItems;
   }, [chartData]);
 
+  // Get unit for tooltip based on item type
+  const getUnit = (type) => {
+    switch (type) {
+      case "initial":
+      case "final":
+        return "м³";
+      case "workTime":
+        return "ч";
+      case "waterCut":
+        return "%";
+      case "fluid":
+        return "м³";
+      default:
+        return "";
+    }
+  };
+
   // Custom tooltip component
   const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
+      const unit = getUnit(data.type);
+      
       return (
         <div style={{
           backgroundColor: "#333",
@@ -61,7 +80,7 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
         }}>
           <p style={{ margin: 0, fontWeight: "bold" }}>{label}</p>
           <p style={{ margin: "5px 0 0 0" }}>
-            Значение: {data.Δ.toFixed(2)} т
+            Значение: {data.Δ.toFixed(2)} {unit}
           </p>
           {data.type === "workTime" && (
             <p style={{ margin: "5px 0 0 0", fontSize: "12px" }}>
@@ -78,6 +97,16 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
               Изменение дебита жидкости
             </p>
           )}
+          {data.type === "initial" && (
+            <p style={{ margin: "5px 0 0 0", fontSize: "12px" }}>
+              Начальная добыча нефти
+            </p>
+          )}
+          {data.type === "final" && (
+            <p style={{ margin: "5px 0 0 0", fontSize: "12px" }}>
+              Конечная добыча нефти
+            </p>
+          )}
         </div>
       );
     }
@@ -90,6 +119,12 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
       return "#8884d8"; // Blue for initial and final values
     }
     return item.Δ < 0 ? "#B22222" : "#228B22"; // Red for negative, green for positive
+  };
+
+  // Get Y-axis label based on data types
+  const getYAxisLabel = () => {
+    // Since we have mixed units, we'll use a general label
+    return "Значения";
   };
 
   return (
@@ -112,12 +147,15 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
         fontSize: "18px",
         margin: "0 0 30px 0"
       }}>
-        Анализ потерь нефти
+        Анализ изменений добычи нефти
         {selectedWell !== "all" && (
           <span style={{ fontSize: "14px", color: "#888", display: "block" }}>
             Скважина: {selectedWell}
           </span>
         )}
+        <span style={{ fontSize: "12px", color: "#999", display: "block", marginTop: "5px" }}>
+          Период: {startDate} - {endDate}
+        </span>
       </h3>
       
       {processedData.length > 0 ? (
@@ -127,13 +165,22 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
               <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
               <XAxis 
                 dataKey="name" 
-                tick={{ fill: '#ccc', fontSize: 12 }}
+                tick={{ fill: '#ccc', fontSize: 11 }}
                 axisLine={{ stroke: '#666' }}
+                interval={0}
+                angle={-45}
+                textAnchor="end"
+                height={80}
               />
               <YAxis 
                 tick={{ fill: '#ccc', fontSize: 12 }}
                 axisLine={{ stroke: '#666' }}
-                label={{ value: 'Добыча (т)', angle: -90, position: 'insideLeft', style: { textAnchor: 'middle', fill: '#ccc' } }}
+                label={{ 
+                  value: getYAxisLabel(), 
+                  angle: -90, 
+                  position: 'insideLeft', 
+                  style: { textAnchor: 'middle', fill: '#ccc' } 
+                }}
               />
               <Tooltip content={<CustomTooltip />} />
               
@@ -151,9 +198,16 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
                 <LabelList
                   dataKey="Δ"
                   position="top"
-                  formatter={(value) => value.toFixed(1)}
+                  formatter={(value, entry, index) => {
+                    // Check if entry exists and has the required properties
+                    if (!entry || !entry.payload || !entry.payload.type) {
+                      return `${value ? value.toFixed(1) : '0'}`;
+                    }
+                    const unit = getUnit(entry.payload.type);
+                    return `${value.toFixed(1)}${unit}`;
+                  }}
                   fill="#fff"
-                  fontSize={12}
+                  fontSize={11}
                 />
               </Bar>
             </BarChart>
@@ -172,6 +226,30 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
           Нет данных для выбранного периода времени
         </div>
       )}
+      
+      {/* Legend */}
+      <div style={{
+        position: "absolute",
+        bottom: "10px",
+        right: "10px",
+        display: "flex",
+        gap: "15px",
+        fontSize: "11px",
+        color: "#ccc"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <div style={{ width: "12px", height: "12px", backgroundColor: "#8884d8" }}></div>
+          <span>Добыча (м³)</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <div style={{ width: "12px", height: "12px", backgroundColor: "#228B22" }}></div>
+          <span>Положит. изменение</span>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+          <div style={{ width: "12px", height: "12px", backgroundColor: "#B22222" }}></div>
+          <span>Отрицат. изменение</span>
+        </div>
+      </div>
     </div>
   );
 }

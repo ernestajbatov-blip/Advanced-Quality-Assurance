@@ -88,7 +88,10 @@ export default function Diagram() {
     "volume": "м³",
     "consumption_brutto": "т/ч",
     "quantity_brutto": "т",
-    "moisture_volume": "%"
+    "moisture_volume": "%",
+
+    // Vlagomer
+    "VlagomerTFS_1": "м3/ч"
   };
 
   // New mapping for tag descriptions
@@ -284,7 +287,10 @@ export default function Diagram() {
       left: "19.9%",
       content: (
         <>
-          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
+          <Indicator 
+            indicatorNumber={Math.round((oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.value || oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.tag_value || 0) * 100) / 100} 
+            indicatorUnits={"%"}
+          />
           <LabelBox label={"Влагомер"} width={60} height={5} fontSize={10} />
         </>
       ),
@@ -484,7 +490,7 @@ export default function Diagram() {
       size: "10px",
     },
     {
-      top: "54.8%%", // Label for PBC-3
+      top: "54.8%", // Label for PBC-3
       left: "93.5%",
       content: "V 500м³",
       color: "#000",

@@ -31,15 +31,26 @@ export default function OilLayout() {
     }
   };
 
-  // Helper function to find closest data to target date
-  const findClosestData = (dataArray, targetDate) => {
+  // Helper function to find closest data within the date interval
+  const findClosestData = (dataArray, targetDate, startDate, endDate) => {
     if (!dataArray || dataArray.length === 0) return null;
     
     const target = new Date(targetDate);
+    const intervalStart = new Date(startDate);
+    const intervalEnd = new Date(endDate);
+    
+    // Filter data to only include dates within the interval
+    const filteredData = dataArray.filter(item => {
+      const itemDate = new Date(item.date);
+      return itemDate >= intervalStart && itemDate <= intervalEnd;
+    });
+    
+    if (filteredData.length === 0) return null;
+    
     let closest = null;
     let smallestDiff = Infinity;
     
-    for (const item of dataArray) {
+    for (const item of filteredData) {
       const itemDate = new Date(item.date);
       const diff = Math.abs(itemDate - target);
       
@@ -138,31 +149,31 @@ export default function OilLayout() {
     if (!currentData || !previousData) return null;
     
     const current = {
-      oil: parseFloat(currentData.tm_oil) || 0,
-      fluid: parseFloat(currentData.tm_fluid) || 0,
-      workTime: parseFloat(currentData.well_work_time) || 0,
-      waterCut: parseFloat(currentData.water_lab) || 0
+      oil: parseFloat(currentData.tm_oil) || 0, // m³
+      fluid: parseFloat(currentData.tm_fluid) || 0, // m³
+      workTime: parseFloat(currentData.well_work_time) || 0, // hours
+      waterCut: parseFloat(currentData.water_lab) || 0 // %
     };
     
     const previous = {
-      oil: parseFloat(previousData.tm_oil) || 0,
-      fluid: parseFloat(previousData.tm_fluid) || 0,
-      workTime: parseFloat(previousData.well_work_time) || 0,
-      waterCut: parseFloat(previousData.water_lab) || 0
+      oil: parseFloat(previousData.tm_oil) || 0, // m³
+      fluid: parseFloat(previousData.tm_fluid) || 0, // m³
+      workTime: parseFloat(previousData.well_work_time) || 0, // hours
+      waterCut: parseFloat(previousData.water_lab) || 0 // %
     };
     
-    // Calculate changes
+    // Calculate simple changes in each factor
     const oilChange = current.oil - previous.oil;
+    const fluidChange = current.fluid - previous.fluid;
     const workTimeChange = current.workTime - previous.workTime;
     const waterCutChange = current.waterCut - previous.waterCut;
-    const fluidChange = current.fluid - previous.fluid;
     
     return {
-      initial: previous.oil,
-      workTimeEffect: workTimeChange * (previous.oil / (previous.workTime || 1)),
-      waterCutEffect: -(waterCutChange * current.fluid / 100),
-      fluidEffect: fluidChange * (1 - current.waterCut / 100),
-      final: current.oil,
+      initial: previous.oil, // m³
+      final: current.oil, // m³
+      fluidChange: fluidChange, // m³
+      workTimeChange: workTimeChange, // hours
+      waterCutChange: waterCutChange, // %
       currentDate: currentData.date,
       previousDate: previousData.date
     };
@@ -204,9 +215,9 @@ export default function OilLayout() {
       const sortedDates = Object.keys(groupedByDate).sort();
       const aggregatedData = sortedDates.map(date => groupedByDate[date]);
       
-      // Find data closest to start and end dates
-      const startData = findClosestData(aggregatedData, startDate);
-      const endData = findClosestData(aggregatedData, endDate);
+      // Find data closest to start and end dates within the interval
+      const startData = findClosestData(aggregatedData, startDate, startDate, endDate);
+      const endData = findClosestData(aggregatedData, endDate, startDate, endDate);
       
       if (startData && endData && startData.date !== endData.date) {
         const changes = calculateProductionChanges(endData, startData);
@@ -215,16 +226,19 @@ export default function OilLayout() {
           return {
             chartData: [
               { name: "Нач. добыча", value: changes.initial, type: "initial" },
-              { name: "За счет вр. работы", value: changes.workTimeEffect, type: "workTime" },
-              { name: "За счет обвод-ти", value: changes.waterCutEffect, type: "waterCut" },
-              { name: "За счет дебита жидк.", value: changes.fluidEffect, type: "fluid" },
+              { name: "Изм. врем. работы", value: changes.workTimeChange, type: "workTime" },
+              { name: "Изм. обвод.", value: changes.waterCutChange, type: "waterCut" },
+              { name: "Изм. дебита жидк.", value: changes.fluidChange, type: "fluid" },
               { name: "Конеч. добыча", value: changes.final, type: "final" }
             ],
             tableData: [
-              ["Нач. добыча", changes.initial.toFixed(2), changes.workTimeEffect.toFixed(2), changes.waterCutEffect.toFixed(2), changes.fluidEffect.toFixed(2), changes.final.toFixed(2)],
+              ["Нач. добыча (м³)", changes.initial.toFixed(2), "", "", "", changes.final.toFixed(2)],
+              ["Изм. времени работы (ч)", "", changes.workTimeChange.toFixed(2), "", "", ""],
+              ["Изм. обводненности (%)", "", "", changes.waterCutChange.toFixed(2), "", ""],
+              ["Изм. дебита жидк. (м³)", "", "", "", changes.fluidChange.toFixed(2), ""],
               ["Дата начальная", changes.previousDate, "", "", "", ""],
               ["Дата конечная", changes.currentDate, "", "", "", ""],
-              ["Изменение", "", changes.workTimeEffect.toFixed(2), changes.waterCutEffect.toFixed(2), changes.fluidEffect.toFixed(2), (changes.final - changes.initial).toFixed(2)]
+              ["Общее изм. добычи (м³)", "", "", "", "", (changes.final - changes.initial).toFixed(2)]
             ]
           };
         }
@@ -234,9 +248,9 @@ export default function OilLayout() {
       const wellData = oilLossData.filter(item => item.well === selectedWell);
       const sortedWellData = wellData.sort((a, b) => new Date(a.date) - new Date(b.date));
       
-      // Find data closest to start and end dates
-      const startData = findClosestData(sortedWellData, startDate);
-      const endData = findClosestData(sortedWellData, endDate);
+      // Find data closest to start and end dates within the interval
+      const startData = findClosestData(sortedWellData, startDate, startDate, endDate);
+      const endData = findClosestData(sortedWellData, endDate, startDate, endDate);
       
       if (startData && endData && startData.date !== endData.date) {
         const changes = calculateProductionChanges(endData, startData);
@@ -244,17 +258,20 @@ export default function OilLayout() {
         if (changes) {
           return {
             chartData: [
-              { name: "Нач. добыча", value: changes.initial, type: "initial" },
-              { name: "За счет вр. работы", value: changes.workTimeEffect, type: "workTime" },
-              { name: "За счет обвод-ти", value: changes.waterCutEffect, type: "waterCut" },
-              { name: "За счет дебита жидк.", value: changes.fluidEffect, type: "fluid" },
-              { name: "Конеч. добыча", value: changes.final, type: "final" }
+              { name: "Нач. добыча (м³)", value: changes.initial, type: "initial" },
+              { name: "Изм. времени работы (ч)", value: changes.workTimeChange, type: "workTime" },
+              { name: "Изм. обводненности (%)", value: changes.waterCutChange, type: "waterCut" },
+              { name: "Изм. дебита жидк. (м³)", value: changes.fluidChange, type: "fluid" },
+              { name: "Конеч. добыча (м³)", value: changes.final, type: "final" }
             ],
             tableData: [
-              ["Нач. добыча", changes.initial.toFixed(2), changes.workTimeEffect.toFixed(2), changes.waterCutEffect.toFixed(2), changes.fluidEffect.toFixed(2), changes.final.toFixed(2)],
+              ["Нач. добыча (м³)", changes.initial.toFixed(2), "", "", "", changes.final.toFixed(2)],
+              ["Изм. времени работы (ч)", "", changes.workTimeChange.toFixed(2), "", "", ""],
+              ["Изм. обводненности (%)", "", "", changes.waterCutChange.toFixed(2), "", ""],
+              ["Изм. дебита жидк. (м³)", "", "", "", changes.fluidChange.toFixed(2), ""],
               ["Дата начальная", changes.previousDate, "", "", "", ""],
               ["Дата конечная", changes.currentDate, "", "", "", ""],
-              ["Изменение", "", changes.workTimeEffect.toFixed(2), changes.waterCutEffect.toFixed(2), changes.fluidEffect.toFixed(2), (changes.final - changes.initial).toFixed(2)]
+              ["Общее изм. добычи (м³)", "", "", "", "", (changes.final - changes.initial).toFixed(2)]
             ]
           };
         }
@@ -267,9 +284,9 @@ export default function OilLayout() {
   const tableHeaders = [
     "Показатель",
     "Нач. добыча",
-    "За счет вр. работы",
-    "За счет обвод-ти",
-    "За счет дебита жидк.",
+    "Изм. вр. работы",
+    "Изм. обводн-ти",
+    "Изм. дебита жидк.",
     "Конеч. добыча",
   ];
 
