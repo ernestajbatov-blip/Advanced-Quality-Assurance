@@ -6,44 +6,266 @@ import styles from "./OilLayout.module.css";
 
 export default function OilLayout() {
   const [selectedWell, setSelectedWell] = useState("all");
-  const [startDate, setStartDate] = useState("2024-01-01");
-  const [endDate, setEndDate] = useState("2024-12-31");
+  const [startDate, setStartDate] = useState("2025-06-01");
+  const [endDate, setEndDate] = useState("2025-07-31");
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [oilLossData, setOilLossData] = useState([]);
+  const [availableWells, setAvailableWells] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [activeView, setActiveView] = useState("chart"); // New state for toggle
   const dropdownRef = useRef(null);
 
-  // Sample data for multiple wells and dates
-  const allTableData = {
-    "BSK_0002": {
-      "2024-01-15": [
-        ["Нач. добыча", "150", "-13", "7", "-11", "133"],
-        ["0", "150", "137", "144", "133"],
-        ["150", "137", "144", "133", "266"],
-        ["Мин", "0", "137", "137", "133", "0"],
-        ["Макс", "150", "150", "144", "144", "133"],
-      ]
-    },
-    "BSK_0003": {
-      "2024-01-20": [
-        ["Нач. добыча", "140", "-15", "8", "-10", "123"],
-        ["0", "140", "125", "133", "123"],
-        ["140", "125", "133", "123", "246"],
-        ["Мин", "0", "125", "125", "123", "0"],
-        ["Макс", "140", "140", "133", "133", "123"],
-      ]
-    },
-    "BSK_0004": {
-      "2024-02-10": [
-        ["Нач. добыча", "160", "-12", "5", "-8", "145"],
-        ["0", "160", "148", "153", "145"],
-        ["160", "148", "153", "145", "305"],
-        ["Мин", "0", "148", "148", "145", "0"],
-        ["Макс", "160", "160", "153", "153", "145"],
-      ]
-    },
+  // Helper function to safely parse JSON response
+  const safeJsonParse = async (response) => {
+    const text = await response.text();
+    if (!text || text.trim() === '') {
+      throw new Error('Empty response from server');
+    }
+    try {
+      return JSON.parse(text);
+    } catch (error) {
+      console.error('Invalid JSON response:', text);
+      throw new Error(`Invalid JSON response: ${error.message}`);
+    }
   };
 
+  // Helper function to find closest data to target date
+  const findClosestData = (dataArray, targetDate) => {
+    if (!dataArray || dataArray.length === 0) return null;
+    
+    const target = new Date(targetDate);
+    let closest = null;
+    let smallestDiff = Infinity;
+    
+    for (const item of dataArray) {
+      const itemDate = new Date(item.date);
+      const diff = Math.abs(itemDate - target);
+      
+      if (diff < smallestDiff) {
+        smallestDiff = diff;
+        closest = item;
+      }
+    }
+    
+    return closest;
+  };
+
+  // Fetch available wells from oil_loss table
+  useEffect(() => {
+    const fetchWells = async () => {
+      try {
+        setError(null);
+        console.log('Fetching wells...');
+        
+        const response = await fetch("/api/oil-loss/wells");
+        console.log('Wells response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await safeJsonParse(response);
+        console.log('Wells data:', data);
+        
+        if (Array.isArray(data)) {
+          setAvailableWells(data.map(item => item.well || item));
+        } else {
+          console.error('Wells data is not an array:', data);
+          setAvailableWells([]);
+        }
+      } catch (error) {
+        console.error("Error fetching wells:", error);
+        setError(`Error fetching wells: ${error.message}`);
+        setAvailableWells([]);
+      }
+    };
+    fetchWells();
+  }, []);
+
+  // Fetch oil loss data when filters change
+  useEffect(() => {
+    const fetchOilLossData = async () => {
+      setLoading(true);
+      setError(null);
+      
+      try {
+        console.log('Fetching oil loss data with params:', { selectedWell, startDate, endDate });
+        
+        const params = new URLSearchParams({
+          startDate,
+          endDate
+        });
+        
+        if (selectedWell !== "all") {
+          params.append("well", selectedWell);
+        }
+        
+        const url = `/api/oil-loss?${params}`;
+        console.log('Request URL:', url);
+        
+        const response = await fetch(url);
+        console.log('Oil loss response status:', response.status);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await safeJsonParse(response);
+        console.log('Oil loss data:', data);
+        
+        if (Array.isArray(data)) {
+          setOilLossData(data);
+        } else {
+          console.error('Oil loss data is not an array:', data);
+          setOilLossData([]);
+        }
+      } catch (error) {
+        console.error("Error fetching oil loss data:", error);
+        setError(`Error fetching data: ${error.message}`);
+        setOilLossData([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchOilLossData();
+  }, [selectedWell, startDate, endDate]);
+
+  // Calculate production changes for chart
+  const calculateProductionChanges = (currentData, previousData) => {
+    if (!currentData || !previousData) return null;
+    
+    const current = {
+      oil: parseFloat(currentData.tm_oil) || 0,
+      fluid: parseFloat(currentData.tm_fluid) || 0,
+      workTime: parseFloat(currentData.well_work_time) || 0,
+      waterCut: parseFloat(currentData.water_lab) || 0
+    };
+    
+    const previous = {
+      oil: parseFloat(previousData.tm_oil) || 0,
+      fluid: parseFloat(previousData.tm_fluid) || 0,
+      workTime: parseFloat(previousData.well_work_time) || 0,
+      waterCut: parseFloat(previousData.water_lab) || 0
+    };
+    
+    // Calculate changes
+    const oilChange = current.oil - previous.oil;
+    const workTimeChange = current.workTime - previous.workTime;
+    const waterCutChange = current.waterCut - previous.waterCut;
+    const fluidChange = current.fluid - previous.fluid;
+    
+    return {
+      initial: previous.oil,
+      workTimeEffect: workTimeChange * (previous.oil / (previous.workTime || 1)),
+      waterCutEffect: -(waterCutChange * current.fluid / 100),
+      fluidEffect: fluidChange * (1 - current.waterCut / 100),
+      final: current.oil,
+      currentDate: currentData.date,
+      previousDate: previousData.date
+    };
+  };
+
+  // Process data for chart and table
+  const processedData = useMemo(() => {
+    if (!oilLossData || oilLossData.length === 0) {
+      return { chartData: [], tableData: [] };
+    }
+
+    if (selectedWell === "all") {
+      // Group by date and aggregate all wells
+      const groupedByDate = oilLossData.reduce((acc, item) => {
+        const date = item.date;
+        if (!acc[date]) {
+          acc[date] = {
+            date,
+            tm_oil: 0,
+            tm_fluid: 0,
+            well_work_time: 0,
+            water_lab: 0,
+            count: 0
+          };
+        }
+        acc[date].tm_oil += parseFloat(item.tm_oil) || 0;
+        acc[date].tm_fluid += parseFloat(item.tm_fluid) || 0;
+        acc[date].well_work_time += parseFloat(item.well_work_time) || 0;
+        acc[date].water_lab += parseFloat(item.water_lab) || 0;
+        acc[date].count++;
+        return acc;
+      }, {});
+      
+      // Calculate averages for water_lab
+      Object.keys(groupedByDate).forEach(date => {
+        groupedByDate[date].water_lab = groupedByDate[date].water_lab / groupedByDate[date].count;
+      });
+      
+      const sortedDates = Object.keys(groupedByDate).sort();
+      const aggregatedData = sortedDates.map(date => groupedByDate[date]);
+      
+      // Find data closest to start and end dates
+      const startData = findClosestData(aggregatedData, startDate);
+      const endData = findClosestData(aggregatedData, endDate);
+      
+      if (startData && endData && startData.date !== endData.date) {
+        const changes = calculateProductionChanges(endData, startData);
+        
+        if (changes) {
+          return {
+            chartData: [
+              { name: "Нач. добыча", value: changes.initial, type: "initial" },
+              { name: "За счет вр. работы", value: changes.workTimeEffect, type: "workTime" },
+              { name: "За счет обвод-ти", value: changes.waterCutEffect, type: "waterCut" },
+              { name: "За счет дебита жидк.", value: changes.fluidEffect, type: "fluid" },
+              { name: "Конеч. добыча", value: changes.final, type: "final" }
+            ],
+            tableData: [
+              ["Нач. добыча", changes.initial.toFixed(2), changes.workTimeEffect.toFixed(2), changes.waterCutEffect.toFixed(2), changes.fluidEffect.toFixed(2), changes.final.toFixed(2)],
+              ["Дата начальная", changes.previousDate, "", "", "", ""],
+              ["Дата конечная", changes.currentDate, "", "", "", ""],
+              ["Изменение", "", changes.workTimeEffect.toFixed(2), changes.waterCutEffect.toFixed(2), changes.fluidEffect.toFixed(2), (changes.final - changes.initial).toFixed(2)]
+            ]
+          };
+        }
+      }
+    } else {
+      // Filter data for selected well
+      const wellData = oilLossData.filter(item => item.well === selectedWell);
+      const sortedWellData = wellData.sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+      // Find data closest to start and end dates
+      const startData = findClosestData(sortedWellData, startDate);
+      const endData = findClosestData(sortedWellData, endDate);
+      
+      if (startData && endData && startData.date !== endData.date) {
+        const changes = calculateProductionChanges(endData, startData);
+        
+        if (changes) {
+          return {
+            chartData: [
+              { name: "Нач. добыча", value: changes.initial, type: "initial" },
+              { name: "За счет вр. работы", value: changes.workTimeEffect, type: "workTime" },
+              { name: "За счет обвод-ти", value: changes.waterCutEffect, type: "waterCut" },
+              { name: "За счет дебита жидк.", value: changes.fluidEffect, type: "fluid" },
+              { name: "Конеч. добыча", value: changes.final, type: "final" }
+            ],
+            tableData: [
+              ["Нач. добыча", changes.initial.toFixed(2), changes.workTimeEffect.toFixed(2), changes.waterCutEffect.toFixed(2), changes.fluidEffect.toFixed(2), changes.final.toFixed(2)],
+              ["Дата начальная", changes.previousDate, "", "", "", ""],
+              ["Дата конечная", changes.currentDate, "", "", "", ""],
+              ["Изменение", "", changes.workTimeEffect.toFixed(2), changes.waterCutEffect.toFixed(2), changes.fluidEffect.toFixed(2), (changes.final - changes.initial).toFixed(2)]
+            ]
+          };
+        }
+      }
+    }
+    
+    return { chartData: [], tableData: [] };
+  }, [oilLossData, selectedWell, startDate, endDate]);
+
   const tableHeaders = [
+    "Показатель",
     "Нач. добыча",
     "За счет вр. работы",
     "За счет обвод-ти",
@@ -51,18 +273,13 @@ export default function OilLayout() {
     "Конеч. добыча",
   ];
 
-  // Get unique wells for the dropdown
-  const uniqueWells = useMemo(() => {
-    return Object.keys(allTableData).sort();
-  }, []);
-
   // Filter wells based on search term
   const filteredWells = useMemo(() => {
-    if (!searchTerm) return uniqueWells;
-    return uniqueWells.filter(well => 
+    if (!searchTerm) return availableWells;
+    return availableWells.filter(well => 
       well.toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [uniqueWells, searchTerm]);
+  }, [availableWells, searchTerm]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -91,107 +308,36 @@ export default function OilLayout() {
     return selectedWell;
   };
 
-  // Filter table data based on selected filters - MOVED BEFORE chartData
-  const filteredTableData = useMemo(() => {
-    if (selectedWell === "all") {
-      // Aggregate all data for all wells
-      const aggregated = [
-        ["Нач. добыча", 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0],
-        ["Мин", 0, 0, 0, 0, 0],
-        ["Макс", 0, 0, 0, 0, 0],
-      ];
-
-      Object.keys(allTableData).forEach(well => {
-        Object.keys(allTableData[well]).forEach(date => {
-          const wellDate = new Date(date);
-          const start = new Date(startDate);
-          const end = new Date(endDate);
-          
-          if (wellDate >= start && wellDate <= end) {
-            const data = allTableData[well][date];
-            data.forEach((row, rowIndex) => {
-              row.forEach((cell, cellIndex) => {
-                if (cellIndex > 0 && !isNaN(parseInt(cell))) { // Skip first column (labels) and handle only numeric values
-                  aggregated[rowIndex][cellIndex] = aggregated[rowIndex][cellIndex] + parseInt(cell);
-                }
-              });
-            });
-          }
-        });
-      });
-
-      // Convert numbers back to strings for display
-      return aggregated.map(row => 
-        row.map((cell, index) => index === 0 ? cell : cell.toString())
-      );
-    } else {
-      // Find data for selected well within date range
-      const wellData = allTableData[selectedWell];
-      if (!wellData) return [];
-
-      const validDates = Object.keys(wellData).filter(date => {
-        const wellDate = new Date(date);
-        const start = new Date(startDate);
-        const end = new Date(endDate);
-        return wellDate >= start && wellDate <= end;
-      });
-
-      if (validDates.length === 0) return [];
-
-      // Return the most recent data
-      const latestDate = validDates.sort().reverse()[0];
-      return wellData[latestDate];
-    }
-  }, [selectedWell, startDate, endDate]);
-
-  // Prepare chart data using the same logic as the table - MOVED AFTER filteredTableData
-  const chartData = useMemo(() => {
-    if (filteredTableData.length === 0) return [];
-    
-    // Convert table data to chart format
-    // Extract numeric values from the filtered table data
-    const chartPoints = [];
-    
-    if (selectedWell === "all") {
-      // For "all" wells, use the aggregated data
-      filteredTableData.forEach((row, index) => {
-        if (index === 0) { // "Нач. добыча" row
-          row.forEach((cell, cellIndex) => {
-            if (cellIndex > 0) { // Skip first column (labels)
-              chartPoints.push({
-                name: tableHeaders[cellIndex - 1],
-                value: parseInt(cell) || 0,
-                well: "all"
-              });
-            }
-          });
-        }
-      });
-    } else {
-      // For individual wells, use the specific well data
-      filteredTableData.forEach((row, index) => {
-        if (index === 0) { // "Нач. добыча" row
-          row.forEach((cell, cellIndex) => {
-            if (cellIndex > 0) { // Skip first column (labels)
-              chartPoints.push({
-                name: tableHeaders[cellIndex - 1],
-                value: parseInt(cell) || 0,
-                well: selectedWell
-              });
-            }
-          });
-        }
-      });
-    }
-    
-    return chartPoints;
-  }, [filteredTableData, selectedWell, tableHeaders]);
-
   return (
     <div style={{ width: "100%" }}>
       <AppNav />
+      
+      {/* Error Display */}
+      {error && (
+        <div style={{
+          padding: "10px",
+          backgroundColor: "#ff4444",
+          color: "white",
+          margin: "10px 20px",
+          borderRadius: "4px"
+        }}>
+          {error}
+        </div>
+      )}
+      
+      {/* Debug Info */}
+      {/* {process.env.NODE_ENV === 'development' && (
+        <div style={{
+          padding: "10px",
+          backgroundColor: "#333",
+          color: "#ccc",
+          margin: "10px 20px",
+          borderRadius: "4px",
+          fontSize: "12px"
+        }}>
+          Debug: Wells: {availableWells.length}, Data: {oilLossData.length}, Selected: {selectedWell}
+        </div>
+      )} */}
       
       {/* Filters Section */}
       <div style={{ 
@@ -328,46 +474,132 @@ export default function OilLayout() {
         </div>
       </div>
 
-      <div className={styles.flexContainer}>
-        <div style={{ flex: 1 }}>
-          <OilLossChart 
-            chartData={chartData}
-            selectedWell={selectedWell}
-            startDate={startDate}
-            endDate={endDate}
-          />
-        </div>
-        
-        {filteredTableData.length > 0 ? (
-          <table className={styles.oilLossTable}>
-            <thead>
-              <tr>
-                {tableHeaders.map((header, index) => (
-                  <th key={index}>{header}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTableData.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>{cell}</td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        ) : (
+      {/* Toggle Buttons */}
+      <div style={{
+        padding: "20px",
+        backgroundColor: "dark grey",
+        borderBottom: "1px solid dark grey",
+        display: "flex",
+        justifyContent: "center",
+        gap: "10px"
+      }}>
+        <button
+          onClick={() => setActiveView("chart")}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: activeView === "chart" ? "#4a90e2" : "#444",
+            color: "#ccc",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "bold",
+            transition: "background-color 0.3s"
+          }}
+          onMouseEnter={(e) => {
+            if (activeView !== "chart") {
+              e.target.style.backgroundColor = "#555";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeView !== "chart") {
+              e.target.style.backgroundColor = "#444";
+            }
+          }}
+        >
+          График
+        </button>
+        <button
+          onClick={() => setActiveView("table")}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: activeView === "table" ? "#4a90e2" : "#444",
+            color: "#ccc",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "bold",
+            transition: "background-color 0.3s"
+          }}
+          onMouseEnter={(e) => {
+            if (activeView !== "table") {
+              e.target.style.backgroundColor = "#555";
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeView !== "table") {
+              e.target.style.backgroundColor = "#444";
+            }
+          }}
+        >
+          Таблица
+        </button>
+      </div>
+
+      {/* Chart/Table Container */}
+      <div style={{ padding: "50px", marginRight: "20px" }}>
+        {loading ? (
           <div style={{ 
-            flex: 1, 
             display: "flex", 
             alignItems: "center", 
             justifyContent: "center",
-            color: "#666",
-            fontSize: "16px"
+            height: "500px",
+            color: "#ccc"
           }}>
-            Нет данных для данного периода
+            Загрузка данных...
           </div>
+        ) : (
+          <>
+            {activeView === "chart" && (
+              <OilLossChart 
+                chartData={processedData.chartData}
+                selectedWell={selectedWell}
+                startDate={startDate}
+                endDate={endDate}
+              />
+            )}
+            
+            {activeView === "table" && (
+              <div style={{ 
+                display: "flex", 
+                justifyContent: "center",
+                width: "100%"
+              }}>
+                {processedData.tableData.length > 0 ? (
+                  <table className={styles.oilLossTable}>
+                    <thead>
+                      <tr>
+                        {tableHeaders.map((header, index) => (
+                          <th key={index}>{header}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {processedData.tableData.map((row, rowIndex) => (
+                        <tr key={rowIndex}>
+                          {row.map((cell, cellIndex) => (
+                            <td key={cellIndex}>{cell}</td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <div style={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    justifyContent: "center",
+                    height: "400px",
+                    color: "#666",
+                    fontSize: "16px"
+                  }}>
+                    {error ? "Ошибка загрузки данных" : "Нет данных для анализа (нужно минимум 2 даты)"}
+                  </div>
+                )}
+              </div>
+            )}
+          </>
         )}
       </div>
       

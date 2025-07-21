@@ -164,6 +164,71 @@ app.get("/api/progress-oil", (req, res) => {
   });
 });
 
+// NEW: Oil Loss API endpoint
+app.get("/api/oil-loss", (req, res) => {
+  const connection = getConnection();
+  const { well, startDate, endDate } = req.query;
+  
+  let query = `
+    SELECT 
+      well,
+      date,
+      tm_oil,
+      well_work_time,
+      tm_obv,
+      tm_fluid,
+      water_lab
+    FROM oil_loss 
+    WHERE oil_field = 'BSK'
+  `;
+  
+  const params = [];
+  
+  if (well && well !== 'all') {
+    query += ` AND well = ?`;
+    params.push(well);
+  }
+  
+  if (startDate) {
+    query += ` AND date >= ?`;
+    params.push(startDate);
+  }
+  
+  if (endDate) {
+    query += ` AND date <= ?`;
+    params.push(endDate);
+  }
+  
+  query += ` ORDER BY well, date DESC`;
+  
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
+// Get available wells from oil_loss table
+app.get("/api/oil-loss/wells", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT DISTINCT well 
+    FROM oil_loss 
+    WHERE oil_field = 'BSK' 
+    ORDER BY well;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
 // ---- Static Frontend ----
 
 const distPath = path.join(__dirname, "../../dist");
