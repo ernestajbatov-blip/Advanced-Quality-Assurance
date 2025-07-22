@@ -15,7 +15,7 @@ export const fetch2HoursArchive = (oilField = 'BSK', date) => {
   });
 };
 
-export const getAvailableArchiveDates = (oilField = 'BSK') => {
+export const getAvailableArchiveDates = (oilField = 'ABK') => {
   return api.get("/2hours/archive/dates", {
     params: { oil_field: oilField }
   });

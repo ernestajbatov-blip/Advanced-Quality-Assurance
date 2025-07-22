@@ -69,15 +69,70 @@ app.get("/api/wells/bsk", (req, res) => {
 
 app.get("/api/2hours", (req, res) => {
   const connection = getConnection();
+  const oilField = req.query.oil_field || 'BSK';
+  
+  const query = `
+    SELECT current_debit, tech_rezh, debit_last_day,
+          current_debit_nak, tech_rezh_nak, debit_last_day_nak,
+          n_current_debit, n_tech_rezh, n_debit_last_day,
+          n_current_debit_nak, n_tech_rezh_nak, n_debit_last_day_nak, time
+    FROM n_2hour
+    WHERE oil_field LIKE ?
+    ORDER BY time DESC -- Or a reliable timestamp column to get latest 13
+    LIMIT 13;
+  `;
+  
+  connection.query(query, [`${oilField}%`], (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
+app.get("/api/2hours/archive", (req, res) => {
+  const connection = getConnection();
+  const oilField = req.query.oil_field || 'BSK';
+  const date = req.query.date;
+  
+  if (!date) {
+    return res.status(400).json({ error: "Date parameter is required" });
+  }
+  
   const query = `
     SELECT current_debit, tech_rezh, debit_last_day,
            current_debit_nak, tech_rezh_nak, debit_last_day_nak,
            n_current_debit, n_tech_rezh, n_debit_last_day,
-           n_current_debit_nak, n_tech_rezh_nak, n_debit_last_day_nak
-    FROM n_2hour
-    WHERE oil_field LIKE 'BSK%';
+           n_current_debit_nak, n_tech_rezh_nak, n_debit_last_day_nak,
+           date, time
+    FROM n_2hour_arch
+    WHERE oil_field LIKE ? AND date = ?
+    ORDER BY time;
   `;
-  connection.query(query, (error, results) => {
+  
+  connection.query(query, [`${oilField}%`, date], (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
+app.get("/api/2hours/archive/dates", (req, res) => {
+  const connection = getConnection();
+  const oilField = req.query.oil_field || 'BSK';
+  
+  const query = `
+    SELECT DISTINCT date 
+    FROM n_2hour_arch 
+    WHERE oil_field LIKE ?
+    ORDER BY date DESC
+    LIMIT 100;
+  `;
+  
+  connection.query(query, [`${oilField}%`], (error, results) => {
     if (error) {
       console.error("Database error:", error);
       return res.status(500).json({ error: "Database query failed" });
@@ -164,7 +219,7 @@ app.get("/api/progress-oil", (req, res) => {
   });
 });
 
-// NEW: Oil Loss API endpoint
+// Oil Loss API endpoint
 app.get("/api/oil-loss", (req, res) => {
   const connection = getConnection();
   const { well, startDate, endDate } = req.query;
