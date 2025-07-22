@@ -14,7 +14,11 @@ export default function OilLayout() {
   const [availableWells, setAvailableWells] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [activeView, setActiveView] = useState("chart");
+  
+  // Map filter states
+  const [mapFilter, setMapFilter] = useState("All");
+  const [mapSearchTerm, setMapSearchTerm] = useState("");
+  
   const dropdownRef = useRef(null);
 
   // Helper function to safely parse JSON response
@@ -179,10 +183,10 @@ export default function OilLayout() {
     };
   };
 
-  // Process data for chart and table
+  // Process data for chart
   const processedData = useMemo(() => {
     if (!oilLossData || oilLossData.length === 0) {
-      return { chartData: [], tableData: [] };
+      return { chartData: [] };
     }
 
     if (selectedWell === "all") {
@@ -230,15 +234,6 @@ export default function OilLayout() {
               { name: "Изм. обвод.", value: changes.waterCutChange, type: "waterCut" },
               { name: "Изм. дебита жидк.", value: changes.fluidChange, type: "fluid" },
               { name: "Конеч. добыча", value: changes.final, type: "final" }
-            ],
-            tableData: [
-              ["Нач. добыча (м³)", changes.initial.toFixed(2), "", "", "", changes.final.toFixed(2)],
-              ["Изм. времени работы (ч)", "", changes.workTimeChange.toFixed(2), "", "", ""],
-              ["Изм. обводненности (%)", "", "", changes.waterCutChange.toFixed(2), "", ""],
-              ["Изм. дебита жидк. (м³)", "", "", "", changes.fluidChange.toFixed(2), ""],
-              ["Дата начальная", changes.previousDate, "", "", "", ""],
-              ["Дата конечная", changes.currentDate, "", "", "", ""],
-              ["Общее изм. добычи (м³)", "", "", "", "", (changes.final - changes.initial).toFixed(2)]
             ]
           };
         }
@@ -263,32 +258,14 @@ export default function OilLayout() {
               { name: "Изм. обводненности (%)", value: changes.waterCutChange, type: "waterCut" },
               { name: "Изм. дебита жидк. (м³)", value: changes.fluidChange, type: "fluid" },
               { name: "Конеч. добыча (м³)", value: changes.final, type: "final" }
-            ],
-            tableData: [
-              ["Нач. добыча (м³)", changes.initial.toFixed(2), "", "", "", changes.final.toFixed(2)],
-              ["Изм. времени работы (ч)", "", changes.workTimeChange.toFixed(2), "", "", ""],
-              ["Изм. обводненности (%)", "", "", changes.waterCutChange.toFixed(2), "", ""],
-              ["Изм. дебита жидк. (м³)", "", "", "", changes.fluidChange.toFixed(2), ""],
-              ["Дата начальная", changes.previousDate, "", "", "", ""],
-              ["Дата конечная", changes.currentDate, "", "", "", ""],
-              ["Общее изм. добычи (м³)", "", "", "", "", (changes.final - changes.initial).toFixed(2)]
             ]
           };
         }
       }
     }
     
-    return { chartData: [], tableData: [] };
+    return { chartData: [] };
   }, [oilLossData, selectedWell, startDate, endDate]);
-
-  const tableHeaders = [
-    "Показатель",
-    "Нач. добыча",
-    "Изм. вр. работы",
-    "Изм. обводн-ти",
-    "Изм. дебита жидк.",
-    "Конеч. добыча",
-  ];
 
   // Filter wells based on search term
   const filteredWells = useMemo(() => {
@@ -325,250 +302,129 @@ export default function OilLayout() {
     return selectedWell;
   };
 
+  // Handle clear all filters
+  const handleClearAllFilters = () => {
+    setMapFilter("All");
+    setMapSearchTerm("");
+  };
+
   return (
-    <div style={{ width: "100%" }}>
+    <div className={styles.layoutContainer}>
       <AppNav />
       
       {/* Error Display */}
       {error && (
-        <div style={{
-          padding: "10px",
-          backgroundColor: "#ff4444",
-          color: "white",
-          margin: "10px 20px",
-          borderRadius: "4px"
-        }}>
+        <div className={styles.errorAlert}>
           {error}
         </div>
       )}
       
-      {/* Debug Info */}
-      {/* {process.env.NODE_ENV === 'development' && (
-        <div style={{
-          padding: "10px",
-          backgroundColor: "#333",
-          color: "#ccc",
-          margin: "10px 20px",
-          borderRadius: "4px",
-          fontSize: "12px"
-        }}>
-          Debug: Wells: {availableWells.length}, Data: {oilLossData.length}, Selected: {selectedWell}
-        </div>
-      )} */}
-      
-      {/* Filters Section */}
-      <div style={{ 
-        padding: "20px", 
-        backgroundColor: "dark grey", 
-        borderBottom: "1px solid dark grey",
-        display: "flex",
-        gap: "20px",
-        alignItems: "center",
-        flexWrap: "wrap",
-        justifyContent: "center"
-      }}>
-        <div style={{ position: "relative" }} ref={dropdownRef}>
-          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold", color: "#ccc" }}>
-            Выбрать скважину:
-          </label>
-          <div style={{ position: "relative" }}>
-            <input
-              type="text"
-              value={isDropdownOpen ? searchTerm : getDisplayText()}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                if (!isDropdownOpen) setIsDropdownOpen(true);
-              }}
-              onFocus={() => {
-                setIsDropdownOpen(true);
-                setSearchTerm("");
-              }}
-              placeholder="Поиск скважины..."
-              className={styles.inputField}
-              style={{ 
-                paddingRight: "30px",
-                cursor: "pointer"
-              }}
-            />
-            <span
-              style={{
-                position: "absolute",
-                right: "10px",
-                top: "50%",
-                transform: "translateY(-50%)",
-                cursor: "pointer",
-                fontSize: "12px",
-                color: "#ccc"
-              }}
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            >
-              {isDropdownOpen ? "▲" : "▼"}
+      {/* Main Content */}
+      <div className={styles.mainContent}>
+        {/* Chart Section with Filters Above */}
+        <div className={styles.chartSection}>
+          {/* Chart Filters Section */}
+          <div className={styles.filtersSection}>
+            <div className={styles.filtersContainer}>
+              <div className={styles.filterGroup} ref={dropdownRef}>
+                <label className={styles.filterLabel}>
+                  Выбрать скважину:
+                </label>
+                <div className={styles.dropdownContainer}>
+                  <input
+                    type="text"
+                    value={isDropdownOpen ? searchTerm : getDisplayText()}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      if (!isDropdownOpen) setIsDropdownOpen(true);
+                    }}
+                    onFocus={() => {
+                      setIsDropdownOpen(true);
+                      setSearchTerm("");
+                    }}
+                    placeholder="Поиск скважины..."
+                    className={styles.inputField}
+                  />
+                  <span
+                    className={styles.dropdownArrow}
+                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                  >
+                    {isDropdownOpen ? "▲" : "▼"}
+                  </span>
+                </div>
+                
+                {isDropdownOpen && (
+                  <div className={styles.dropdownMenu}>
+                    <div
+                      className={`${styles.dropdownItem} ${selectedWell === "all" ? styles.selected : ""}`}
+                      onClick={() => handleWellSelect("all")}
+                    >
+                      Все
+                    </div>
+                    {filteredWells.map(well => (
+                      <div
+                        key={well}
+                        className={`${styles.dropdownItem} ${selectedWell === well ? styles.selected : ""}`}
+                        onClick={() => handleWellSelect(well)}
+                      >
+                        {well}
+                      </div>
+                    ))}
+                    {filteredWells.length === 0 && searchTerm && (
+                      <div className={styles.dropdownNoResults}>
+                        Не найдено
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <div className={styles.filterGroup}>
+                <label className={styles.filterLabel}>
+                  Начало:
+                </label>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className={styles.inputField}
+                />
+              </div>
+
+              <div className={styles.filterGroup}>
+                <label className={styles.filterLabel}>
+                  Конец:
+                </label>
+                <input
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className={styles.inputField}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Chart Header and Content */}
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Анализ изменений добычи нефти</h2>
+            {selectedWell !== "all" && (
+              <span className={styles.sectionSubtitle}>
+                Скважина: {selectedWell}
+              </span>
+            )}
+            <span className={styles.sectionPeriod}>
+              Период: {startDate} - {endDate}
             </span>
           </div>
           
-          {isDropdownOpen && (
-            <div
-              style={{
-                position: "absolute",
-                top: "100%",
-                left: 0,
-                right: 0,
-                backgroundColor: "#333",
-                border: "1px solid #666",
-                borderRadius: "4px",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
-                zIndex: 1000,
-                maxHeight: "200px",
-                overflowY: "auto"
-              }}
-            >
-              <div
-                style={{
-                  padding: "8px 12px",
-                  cursor: "pointer",
-                  borderBottom: "1px solid #555",
-                  backgroundColor: selectedWell === "all" ? "#555" : "transparent",
-                  color: "#ccc"
-                }}
-                onClick={() => handleWellSelect("all")}
-                onMouseEnter={(e) => e.target.style.backgroundColor = "#555"}
-                onMouseLeave={(e) => e.target.style.backgroundColor = selectedWell === "all" ? "#555" : "transparent"}
-              >
-                Все
+          <div className={styles.chartContainer}>
+            {loading ? (
+              <div className={styles.loadingState}>
+                <div className={styles.spinner}></div>
+                <span>Загрузка данных...</span>
               </div>
-              {filteredWells.map(well => (
-                <div
-                  key={well}
-                  style={{
-                    padding: "8px 12px",
-                    cursor: "pointer",
-                    borderBottom: "1px solid #555",
-                    backgroundColor: selectedWell === well ? "#555" : "transparent",
-                    color: "#ccc"
-                  }}
-                  onClick={() => handleWellSelect(well)}
-                  onMouseEnter={(e) => e.target.style.backgroundColor = "#555"}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = selectedWell === well ? "#555" : "transparent"}
-                >
-                  {well}
-                </div>
-              ))}
-              {filteredWells.length === 0 && searchTerm && (
-                <div style={{ 
-                  padding: "8px 12px", 
-                  color: "#ccc", 
-                  fontStyle: "italic" 
-                }}>
-                  Не найдено
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div>
-          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold", color: "#ccc" }}>
-            Начало:
-          </label>
-          <input
-            type="date"
-            value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
-            className={styles.inputField}
-          />
-        </div>
-
-        <div>
-          <label style={{ display: "block", marginBottom: "5px", fontWeight: "bold", color: "#ccc" }}>
-            Конец:
-          </label>
-          <input
-            type="date"
-            value={endDate}
-            onChange={(e) => setEndDate(e.target.value)}
-            className={styles.inputField}
-          />
-        </div>
-      </div>
-
-      {/* Toggle Buttons */}
-      <div style={{
-        padding: "20px",
-        backgroundColor: "dark grey",
-        borderBottom: "1px solid dark grey",
-        display: "flex",
-        justifyContent: "center",
-        gap: "10px"
-      }}>
-        <button
-          onClick={() => setActiveView("chart")}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: activeView === "chart" ? "#4a90e2" : "#444",
-            color: "#ccc",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "bold",
-            transition: "background-color 0.3s"
-          }}
-          onMouseEnter={(e) => {
-            if (activeView !== "chart") {
-              e.target.style.backgroundColor = "#555";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (activeView !== "chart") {
-              e.target.style.backgroundColor = "#444";
-            }
-          }}
-        >
-          График
-        </button>
-        <button
-          onClick={() => setActiveView("table")}
-          style={{
-            padding: "10px 20px",
-            backgroundColor: activeView === "table" ? "#4a90e2" : "#444",
-            color: "#ccc",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-            fontSize: "14px",
-            fontWeight: "bold",
-            transition: "background-color 0.3s"
-          }}
-          onMouseEnter={(e) => {
-            if (activeView !== "table") {
-              e.target.style.backgroundColor = "#555";
-            }
-          }}
-          onMouseLeave={(e) => {
-            if (activeView !== "table") {
-              e.target.style.backgroundColor = "#444";
-            }
-          }}
-        >
-          Таблица
-        </button>
-      </div>
-
-      {/* Chart/Table Container */}
-      <div style={{ padding: "50px", marginRight: "20px" }}>
-        {loading ? (
-          <div style={{ 
-            display: "flex", 
-            alignItems: "center", 
-            justifyContent: "center",
-            height: "500px",
-            color: "#ccc"
-          }}>
-            Загрузка данных...
-          </div>
-        ) : (
-          <>
-            {activeView === "chart" && (
+            ) : (
               <OilLossChart 
                 chartData={processedData.chartData}
                 selectedWell={selectedWell}
@@ -576,52 +432,18 @@ export default function OilLayout() {
                 endDate={endDate}
               />
             )}
-            
-            {activeView === "table" && (
-              <div style={{ 
-                display: "flex", 
-                justifyContent: "center",
-                width: "100%"
-              }}>
-                {processedData.tableData.length > 0 ? (
-                  <table className={styles.oilLossTable}>
-                    <thead>
-                      <tr>
-                        {tableHeaders.map((header, index) => (
-                          <th key={index}>{header}</th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {processedData.tableData.map((row, rowIndex) => (
-                        <tr key={rowIndex}>
-                          {row.map((cell, cellIndex) => (
-                            <td key={cellIndex}>{cell}</td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div style={{ 
-                    display: "flex", 
-                    alignItems: "center", 
-                    justifyContent: "center",
-                    height: "400px",
-                    color: "#666",
-                    fontSize: "16px"
-                  }}>
-                    {error ? "Ошибка загрузки данных" : "Нет данных для анализа (нужно минимум 2 даты)"}
-                  </div>
-                )}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-      
-      <div className={styles.mapSection}>
-        <OilMap />
+          </div>
+        </div>
+        
+        {/* Map Section */}
+        <div className={styles.mapSection}>          
+          <div className={styles.mapContainer}>
+            <OilMap 
+              filter={mapFilter}
+              searchTerm={mapSearchTerm}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

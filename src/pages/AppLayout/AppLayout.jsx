@@ -23,14 +23,17 @@ export default function AppLayout() {
   const [wellModalData, setWellModalData] = useState([]);
   const [wellModalTitle, setWellModalTitle] = useState("Well Data");
   const [wellModalLoading, setWellModalLoading] = useState(false);
+  const [chartType, setChartType] = useState("liquid"); // 'liquid' or 'oil'
 
-  const fieldMappings = {
+
+  const fieldMappings = useMemo(() => ({
     leftTop: "well",
     rightTop: "tr_fluid",
-    middle: "zamer",
+    middle: chartType === "liquid" ? "zamer" : "zamer_oil",
     leftBottom: "tr_oil",
     rightBottom: "tr_water",
-  };
+  }), [chartType]);
+
 
   const calculateMiddleValue = (wells, values) => {
     return parseFloat(((values.middle - values.leftBottom) / values.leftBottom * 100).toFixed(2));
@@ -100,7 +103,7 @@ const handleWellClick = async (wellNumber) => {
       <div className={styles.mainSection}>
         <div className={styles.row}>
           <div className={styles.chartContainer}>
-            <Chart />
+            <Chart type={chartType} setType={setChartType} />
           </div>
           <div className={styles.container}>
             <KPI />

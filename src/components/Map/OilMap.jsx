@@ -366,85 +366,93 @@ export default function OilMap() {
       {/* Main Content */}
       <div className={styles.mainContent}>
         {/* Sidebar */}
-        <div className={styles.sidebar} ref={searchContainerRef}>
+        {/* <div className={styles.sidebar} ref={searchContainerRef}>
           <div className={styles.sidebarHeader}>
-            <h3>Фильтры скважин</h3>
-          </div>
-          
-          {/* Search Input */}
-          <div className={styles.searchContainer}>
-            <label className={styles.searchLabel}>
-              Поиск скважины:
-            </label>
-            <input
-              ref={searchInputRef}
-              type="text"
-              value={searchTerm}
-              onChange={handleSearchChange}
-              onFocus={handleSearchFocus}
-              onKeyDown={handleSearchKeyDown}
-              placeholder="Введите название скважины"
-              className={styles.searchInput}
-            />
+            {/* <h3>Фильтры скважин</h3> */}
+          {/* </div> */}
+        <div className={styles.controlsRow}>
+          <div className={styles.topRow}>
+            {/* Search Container */}
             
-            {/* Search Results Dropdown */}
-            {showSearchResults && searchResults.length > 0 && (
-              <div className={styles.searchDropdown}>
-                {searchResults.map((well, index) => (
-                  <div
-                    key={well.id}
-                    onClick={() => handleSearchResultClick(well)}
-                    className={`${styles.searchResultItem} ${
-                      selectedSuggestionIndex === index ? styles.searchResultItemSelected : ''
-                    }`}
-                    onMouseEnter={() => setSelectedSuggestionIndex(index)}
-                    onMouseLeave={() => setSelectedSuggestionIndex(-1)}
-                  >
-                    <div className={styles.searchResultName}>
-                      {well.name}
-                    </div>
-                    <div className={styles.searchResultStatus}>
-                      Статус: {
-                        well.type === "Active" ? "В сети" : 
-                        well.type === "Inactive" ? "Не в сети" : 
-                        "Нет данных"
-                      }
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            
-            {/* No Results Message */}
-            {showSearchResults && searchResults.length === 0 && searchTerm.trim() !== "" && (
-              <div className={styles.noResultsMessage}>
-                Скважины не найдены
-              </div>
-            )}
-          </div>
           
-          {/* Filter Select */}
-          <div className={styles.filterContainer}>
-            <label className={styles.filterLabel}>Статус контроллера:</label>
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className={styles.filterSelect}
-            >
-              <option value="All">Все</option>
-              <option value="Active">В сети</option>
-              <option value="Inactive">Не в сети</option>
-              <option value="Maintenance">Нет данных</option>
-            </select>
+            {/* Search Input */}
+            <div className={styles.searchContainer}>
+              <label className={styles.searchLabel}>
+                Поиск скважины:
+              </label>
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
+                onKeyDown={handleSearchKeyDown}
+                placeholder="Введите название скважины"
+                className={styles.searchInput}
+              />
+              
+              {/* Search Results Dropdown */}
+              {showSearchResults && searchResults.length > 0 && (
+                <div className={styles.searchDropdown}>
+                  {searchResults.map((well, index) => (
+                    <div
+                      key={well.id}
+                      onClick={() => handleSearchResultClick(well)}
+                      className={`${styles.searchResultItem} ${
+                        selectedSuggestionIndex === index ? styles.searchResultItemSelected : ''
+                      }`}
+                      onMouseEnter={() => setSelectedSuggestionIndex(index)}
+                      onMouseLeave={() => setSelectedSuggestionIndex(-1)}
+                    >
+                      <div className={styles.searchResultName}>
+                        {well.name}
+                      </div>
+                      <div className={styles.searchResultStatus}>
+                        Статус: {
+                          well.type === "Active" ? "В сети" : 
+                          well.type === "Inactive" ? "Не в сети" : 
+                          "Нет данных"
+                        }
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              
+              {/* No Results Message */}
+              {showSearchResults && searchResults.length === 0 && searchTerm.trim() !== "" && (
+                <div className={styles.noResultsMessage}>
+                  Скважины не найдены
+                </div>
+              )}
+            </div>
+            
+            {/* Filter Select */}
+            <div className={styles.filterContainer}>
+              <label className={styles.filterLabel}>Статус контроллера:</label>
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className={styles.filterSelect}
+              >
+                <option value="All">Все</option>
+                <option value="Active">В сети</option>
+                <option value="Inactive">Не в сети</option>
+                <option value="Maintenance">Нет данных</option>
+              </select>
+            </div>
           </div>
           
           {/* Clear Filters Button */}
-          <button
-            onClick={handleClearFilters}
-            className={styles.clearFiltersButton}
-          >
-            Очистить фильтры
-          </button>
+          <div className={styles.buttonContainer}>
+            <button
+              onClick={handleClearFilters}
+              className={styles.clearFiltersButton}
+            >
+              Очистить фильтры
+            </button>
+          </div>
+
         </div>
 
         {/* Map Container */}

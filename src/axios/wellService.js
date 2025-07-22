@@ -1,11 +1,28 @@
 import api from "./api";
 
-export const fetchWells = () => {
-  return api.get("/wells");
+export const fetch2Hours = (oilField = 'BSK') => {
+  return api.get("/2hours", {
+    params: { oil_field: oilField }
+  });
 };
 
-export const fetch2Hours = () => {
-  return api.get("/2hours");
+export const fetch2HoursArchive = (oilField = 'BSK', date) => {
+  return api.get("/2hours/archive", {
+    params: { 
+      oil_field: oilField,
+      date: date
+    }
+  });
+};
+
+export const getAvailableArchiveDates = (oilField = 'BSK') => {
+  return api.get("/2hours/archive/dates", {
+    params: { oil_field: oilField }
+  });
+};
+
+export const fetchWells = () => {
+  return api.get("/wells");
 };
 
 export const fetchWellsABC = () => {

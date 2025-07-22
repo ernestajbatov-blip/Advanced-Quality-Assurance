@@ -1,113 +1,347 @@
-/* Main input field styling */
-.inputField {
-  padding: 8px 12px;
-  border: 1px solid #666;
-  border-radius: 4px;
+/* Layout Container */
+.layoutContainer {
+  width: 100%;
+  min-height: 100vh;
+  background: transparent;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #e0e0e0;
+}
+
+/* Error Alert */
+.errorAlert {
+  margin: 20px;
+  padding: 16px 20px;
+  background: #2d1b1b;
+  color: #ff6b6b;
+  border: 1px solid #4a2c2c;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Filters Section */
+.filtersSection {
+  padding: 24px 0 16px 0;
+}
+
+.filtersContainer {
+  display: flex;
+  gap: 32px;
+  align-items: flex-end;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  max-width: 1200px;
+}
+
+.filterGroup {
+  position: relative;
+  min-width: 200px;
+}
+
+.filterLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #e0e0e0;
   font-size: 14px;
-  background-color: #333;
-  color: #fff;
+  letter-spacing: 0.5px;
+}
+
+/* Input Fields */
+.inputField {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  font-size: 14px;
+  background: #333333;
+  color: #e0e0e0;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
 }
 
 .inputField:focus {
   outline: none;
-  border-color: #007bff;
+  border-color: #555555;
+  background: #3a3a3a;
 }
 
-/* Style for select dropdown options */
-.inputField option {
-  background-color: #333;
-  color: #fff;
+.inputField:hover {
+  border-color: #505050;
+  background: #383838;
 }
 
-/* Specific styling for date inputs */
-.inputField[type="date"] {
-  background-color: #333;
-  color: #fff;
-  border: 1px solid #666;
+.inputField::placeholder {
+  color: #888888;
 }
 
-/* Date input calendar button styling */
-.inputField[type="date"]::-webkit-calendar-picker-indicator {
-  background-color: #fff;
-  border-radius: 3px;
+/* Dropdown Container */
+.dropdownContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dropdownArrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   cursor: pointer;
-  filter: invert(1); /* This inverts the calendar icon to make it visible on dark background */
+  font-size: 12px;
+  color: #888888;
+  transition: all 0.2s ease;
+  user-select: none;
 }
 
-/* Date input text color */
-.inputField[type="date"]::-webkit-datetime-edit {
-  color: #fff;
+.dropdownArrow:hover {
+  color: #b0b0b0;
 }
 
-.inputField[type="date"]::-webkit-datetime-edit-fields-wrapper {
-  background-color: #333;
+/* Dropdown Menu */
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #333333;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  max-height: 240px;
+  overflow-y: auto;
 }
 
-.inputField[type="date"]::-webkit-datetime-edit-text {
-  color: #fff;
+.dropdownItem {
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid #404040;
+  color: #e0e0e0;
+  transition: all 0.2s ease;
 }
 
-.inputField[type="date"]::-webkit-datetime-edit-month-field,
-.inputField[type="date"]::-webkit-datetime-edit-day-field,
-.inputField[type="date"]::-webkit-datetime-edit-year-field {
-  color: #fff;
+.dropdownItem:last-child {
+  border-bottom: none;
 }
 
-/* For Firefox */
-.inputField[type="date"]::-moz-placeholder {
-  color: #ccc;
+.dropdownItem:hover {
+  background: #404040;
+  color: #ffffff;
 }
 
-/* Labels styling */
-.inputLabel {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: #000;
+.dropdownItem.selected {
+  background: #555555;
+  color: #ffffff;
 }
 
-/* Rest of your existing styles */
-.oilLossTable {
-  width: 80%;
-  border-collapse: collapse;
-  margin: auto;
+.dropdownNoResults {
+  padding: 12px 16px;
+  color: #888888;
+  font-style: italic;
   text-align: center;
 }
 
-.flexContainer {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 20px;
-  padding: 20px;
-}
-
-.oilLossTable th,
-.oilLossTable td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-.mapSection {
-  margin-top: 40px;
-  width: 90%;
-  margin-left: 100px;
-  height: 100%;
-  padding-bottom: 20px;
-}
-
-.oilLossTable th {
-  font-weight: bold;
+/* Date Input Styling */
+.inputField[type="date"] {
+  background: #333333;
+  color: #e0e0e0;
 }
 
 .inputField[type="date"]::-webkit-calendar-picker-indicator {
-  background-color: #333;
-  color: #fff;
-  filter: invert(1);
+  background: none;
+  color: #888888;
+  cursor: pointer;
+  filter: invert(0.7);
 }
 
-/* Force dark theme for calendar popup */
-.inputField[type="date"]::-webkit-calendar-picker-indicator:hover {
-  background-color: #555;
+.inputField[type="date"]::-webkit-datetime-edit {
+  color: #e0e0e0;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  background: #333333;
+}
+
+.inputField[type="date"]::-webkit-datetime-edit-text,
+.inputField[type="date"]::-webkit-datetime-edit-month-field,
+.inputField[type="date"]::-webkit-datetime-edit-day-field,
+.inputField[type="date"]::-webkit-datetime-edit-year-field {
+  color: #e0e0e0;
+}
+
+/* Main Content */
+.mainContent {
+  display: flex;
+  gap: 24px;
+  padding: 24px 32px;
+  min-height: 600px;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Chart Section */
+.chartSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.sectionHeader {
+  /* padding: 16px 0; */
+  border-bottom: 1px solid #404040;
+  /* margin-bottom: 16px; */
+}
+
+.sectionTitle {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+}
+
+.sectionSubtitle {
+  display: block;
+  font-size: 14px;
+  color: #b0b0b0;
+  margin-bottom: 4px;
+}
+
+.sectionPeriod {
+  display: block;
+  font-size: 12px;
+  color: #888888;
+}
+
+.chartContainer {
+  flex: 1;
+  /* padding: 24px; */
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+  /* min-height: 400px; */
+  background: transparent;
+  /* border-radius: 8px; */
+  /* border: 1px solid #404040; */
+}
+
+/* Map Section */
+.mapSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Map Filters - positioned above map */
+.mapFiltersSection {
+  padding: 16px 0;
+  /* border-bottom: 1px solid #404040; */
+  margin-bottom: 16px;
+}
+
+.mapFiltersContainer {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.mapFilterGroup {
+  position: relative;
+  min-width: 160px;
+}
+
+.mapContainer {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  /* border-radius: 8px; */
+  /* border: 1px solid #404040; */
+  min-height: 400px;
+}
+
+/* Loading State */
+.loadingState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  color: #888888;
+  font-size: 16px;
+  height: 100%;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #404040;
+  border-top: 4px solid #888888;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .mainContent {
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .filtersContainer,
+  .mapFiltersContainer {
+    gap: 20px;
+  }
+  
+  .filterGroup,
+  .mapFilterGroup {
+    min-width: 180px;
+  }
+  
+  .chartContainer,
+  .mapContainer {
+    min-height: 350px;
+  }
+}
+
+@media (max-width: 768px) {
+  .filtersSection,
+  .mapFiltersSection {
+    padding: 16px 0;
+  }
+  
+  .mainContent {
+    padding: 16px;
+    gap: 16px;
+  }
+  
+  .filtersContainer,
+  .mapFiltersContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .filterGroup,
+  .mapFilterGroup {
+    min-width: auto;
+  }
+  
+  .sectionHeader {
+    padding: 16px 0;
+  }
+  
+  .sectionTitle {
+    font-size: 18px;
+  }
+  
+  .chartContainer,
+  .mapContainer {
+    min-height: 300px;
+  }
 }

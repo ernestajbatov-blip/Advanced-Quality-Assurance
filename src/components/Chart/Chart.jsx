@@ -47,7 +47,9 @@ const CustomTooltip = ({ active, payload }) => {
             {`${entry.value.toLocaleString("ru-RU")}`}
           </div>
         ))}
-        <div className={styles.tooltipDate}>28.04.2024</div>
+        <div className={styles.tooltipDate}>
+          {new Date().toLocaleDateString("ru-RU")}
+        </div>
       </div>
     );
   }
@@ -55,9 +57,9 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
-export default function Chart() {
+export default function Chart({ type, setType }) {
   const [isNak, setNak] = useState(true);
-  const [type, setType] = useState("liquid");
+  // const [type, setType] = useState("liquid");
   const [data, setData] = useState({
     liquid: [],
     oil: [],

@@ -1,15 +1,17 @@
-/* OilMap.module.css */
+/* OilMap.module.css - Updated for horizontal layout */
 
 .oilMapContainer {
   width: 100%;
-  background-color: #2d2d32;
-  color: #ffffff;
+  /* background-color: #2d2d32; */
+  /* color: #ffffff; */
   font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   min-height: 100vh;
   position: relative;
-  padding: 20px;
-  border-radius: 5px;
-  box-sizing: border-box;
+  /* padding: 20px; */
+  /* border-radius: 5px; */
+  /* box-sizing: border-box; */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Loading and Error States */
@@ -56,6 +58,7 @@
   background: rgba(239, 68, 68, 0.9);
   color: white;
 }
+
 .chartLegend {
   display: flex;
   flex-wrap: wrap;
@@ -82,78 +85,85 @@
   white-space: nowrap;
 }
 
-/* Header */
-.header {
-  margin-bottom: 20px;
-}
-
-.headerTitle {
-  margin: 0 0 16px 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.headerStats {
-  display: flex;
-  gap: 20px;
-  font-size: 14px;
-  font-weight: 500;
-  background: rgba(45, 45, 50, 0.8);
-  padding: 12px 16px;
-  border-radius: 5px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.statActive {
-  color: #22c55e;
-}
-
-.statMaintenance {
-  color: #f97316;
-}
-
-.statInactive {
-  color: #ef4444;
-}
-
-.statTotal {
-  color: #ffffff;
-}
-
-/* Main Content Layout */
-.mainContent {
-  display: flex;
-  gap: 20px;
-  height: calc(100vh - 200px);
-}
-
-/* Sidebar */
-.sidebar {
-  width: 300px;
+/* Top Navigation Bar */
+.topNavigation {
   background: #2d2d32;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
   border-radius: 5px;
   padding: 20px;
-  box-sizing: border-box;
+  /* margin-bottom: 20px; */
   position: relative;
-  overflow-y: auto;
 }
 
-.sidebarHeader {
-  margin-bottom: 20px;
+.navSection {
+  /* margin-bottom: 16px; */
 }
 
-.sidebarHeader h3 {
-  margin: 0;
+.navTitle {
+  margin: 0 0 16px 0;
   font-size: 16px;
   font-weight: 600;
   color: #ffffff;
 }
 
+/* Replace the existing .controlsRow rule with this: */
+.controlsRow {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  flex-direction: column; /* Stack vertically */
+}
+
+/* Add this new rule for the top row: */
+.topRow {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Update these existing rules: */
+.searchContainer {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.filterContainer {
+  flex: 0 0 200px;
+  min-width: 200px;
+}
+
+/* Update the button container: */
+.buttonContainer {
+  width: 100%; /* Full width for the bottom row */
+  /* margin-top: 16px;  */
+  /* margin-bottom: 0px; */
+}
+
+.clearFiltersButton {
+  width: 200px;
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 /* Search Container */
 .searchContainer {
-  margin-bottom: 20px;
+  flex: 1;
+  min-width: 250px;
   position: relative;
 }
 
@@ -185,6 +195,104 @@
 
 .searchInput::placeholder {
   color: #999;
+}
+
+/* Filter Container */
+.filterContainer {
+  flex: 0 0 200px;
+  min-width: 200px;
+}
+
+.filterLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.filterSelect {
+  width: 100%;
+  padding: 10px 12px;
+  background: #2d2d32;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 14px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.filterSelect option {
+  background: #2d2d32;
+  color: #ffffff;
+}
+
+/* Button Container */
+.buttonContainer {
+  flex: 0 0 150px;
+}
+
+.clearFiltersButton {
+  width: 100%;
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  height: 42px; /* Match input height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearFiltersButton:hover {
+  background: #2563eb;
+}
+
+.clearFiltersButton:active {
+  transform: translateY(1px);
+}
+
+/* Stats Section */
+.statsSection {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
+}
+
+.headerStats {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+.statActive {
+  color: #22c55e;
+}
+
+.statMaintenance {
+  color: #f97316;
+}
+
+.statInactive {
+  color: #ef4444;
+}
+
+.statTotal {
+  color: #ffffff;
 }
 
 /* Search Dropdown */
@@ -247,72 +355,14 @@
   margin-top: 2px;
 }
 
-/* Filter Container */
-.filterContainer {
-  margin-bottom: 20px;
-}
-
-.filterLabel {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #ffffff;
-}
-
-.filterSelect {
-  width: 100%;
-  padding: 10px 12px;
-  background: #2d2d32;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 5px;
-  color: #ffffff;
-  font-size: 14px;
-  box-sizing: border-box;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.filterSelect:focus {
-  outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-}
-
-.filterSelect option {
-  background: #2d2d32;
-  color: #ffffff;
-}
-
-/* Clear Filters Button */
-.clearFiltersButton {
-  width: 100%;
-  padding: 10px 16px;
-  background: #3b82f6;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.clearFiltersButton:hover {
-  background: #2563eb;
-}
-
-.clearFiltersButton:active {
-  transform: translateY(1px);
-}
-
 /* Map Container */
 .mapContainer {
-  flex: 1;
-  height: 100%;
-  border-radius: 5px;
-  overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  /* flex: 1; */
+  height: 500px;
+  /* border-radius: 5px; */
+  /* overflow: hidden; */
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
+  /* min-height: 400px; */
 }
 
 .noDataContainer {
@@ -407,6 +457,13 @@
   letter-spacing: 0.5px;
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+.mainContent {
+  padding: 0px;
+  gap: 0px;
+  margin-bottom: 5px;
+  overflow: hidden;
 }
 
 .statusActive {

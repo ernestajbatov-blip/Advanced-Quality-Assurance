@@ -128,35 +128,21 @@ export default function OilLossChart({ chartData, selectedWell, startDate, endDa
   };
 
   return (
-    <div style={{ 
-      width: "100%", 
-      height: "450px",
-      backgroundColor: "#1a1a1a",
-      padding: "40px",
-      borderRadius: "12px",
-      border: "1px solid #333",
+    <div 
+    style={{ 
+      width: "700px", 
+      height: "500px",
+      // backgroundColor: "#1a1a1a",
+      // padding: "0px",
+      // borderRadius: "12px",
+      // border: "1px solid #333",
       position: "relative",
-      margin: "0 auto",
-      maxWidth: "1200px"
-    }}
+      // margin: "0 auto",
+      // maxWidth: "1200px"
+    }
+  }
     >
-      <h3 style={{ 
-        color: "#ccc", 
-        textAlign: "center", 
-        marginBottom: "30px",
-        fontSize: "18px",
-        margin: "0 0 30px 0"
-      }}>
-        Анализ изменений добычи нефти
-        {selectedWell !== "all" && (
-          <span style={{ fontSize: "14px", color: "#888", display: "block" }}>
-            Скважина: {selectedWell}
-          </span>
-        )}
-        <span style={{ fontSize: "12px", color: "#999", display: "block", marginTop: "5px" }}>
-          Период: {startDate} - {endDate}
-        </span>
-      </h3>
+      
       
       {processedData.length > 0 ? (
         <div style={{ height: "calc(100% - 60px)" }}>
