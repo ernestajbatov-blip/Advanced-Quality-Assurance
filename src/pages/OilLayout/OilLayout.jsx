@@ -1,4 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from "react";
+import { DateRange } from "react-date-range";
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 import OilLossChart from "../../components/OilLossChart/OilLossChart";
 import AppNav from "../../components/AppNav/AppNav";
 import OilMap from "../../components/Map/OilMap";
@@ -6,8 +9,6 @@ import styles from "./OilLayout.module.css";
 
 export default function OilLayout() {
   const [selectedWell, setSelectedWell] = useState("all");
-  const [startDate, setStartDate] = useState("2025-06-01");
-  const [endDate, setEndDate] = useState("2025-07-31");
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [oilLossData, setOilLossData] = useState([]);
@@ -15,10 +16,28 @@ export default function OilLayout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
+  // Date range states for two intervals
+  const [initialRange, setInitialRange] = useState([{
+    startDate: new Date(2025, 5, 1), // June 1, 2025
+    endDate: new Date(2025, 5, 15),  // June 15, 2025
+    key: 'initialSelection'
+  }]);
+  
+  const [finalRange, setFinalRange] = useState([{
+    startDate: new Date(2025, 6, 1), // July 1, 2025
+    endDate: new Date(2025, 6, 31),  // July 31, 2025
+    key: 'finalSelection'
+  }]);
+  
+  const [showInitialPicker, setShowInitialPicker] = useState(false);
+  const [showFinalPicker, setShowFinalPicker] = useState(false);
+  
   // Map status filter
   const [statusFilter, setStatusFilter] = useState("All");
   
   const dropdownRef = useRef(null);
+  const initialPickerRef = useRef(null);
+  const finalPickerRef = useRef(null);
 
   // Helper function to safely parse JSON response
   const safeJsonParse = async (response) => {
@@ -34,36 +53,118 @@ export default function OilLayout() {
     }
   };
 
-  // Helper function to find closest data within the date interval
-  const findClosestData = (dataArray, targetDate, startDate, endDate) => {
+  // Helper function to format date for API
+  const formatDateForAPI = (date) => {
+    return date.toISOString().split('T')[0];
+  };
+
+  // Get dates that have data for highlighting
+  const datesWithData = useMemo(() => {
+    if (!oilLossData || oilLossData.length === 0) return [];
+    return [...new Set(oilLossData.map(item => item.date))];
+  }, [oilLossData]);
+
+  // Check if a date has data
+  const isDateWithData = (date) => {
+    const dateStr = formatDateForAPI(date);
+    return datesWithData.includes(dateStr);
+  };
+
+  // Custom day content renderer for highlighting dates with data
+  const dayContentRenderer = (date) => {
+    const hasData = isDateWithData(date);
+    return (
+      <div style={{ position: "relative" }}>
+        <span>{date.getDate()}</span>
+        {hasData && (
+          <div style={{
+            width: 6,
+            height: 6,
+            borderRadius: "50%",
+            background: "#4CAF50",
+            position: "absolute",
+            bottom: 2,
+            left: "50%",
+            transform: "translateX(-50%)"
+          }} />
+        )}
+      </div>
+    );
+  };
+
+  // Helper function to find average data within a date range
+  const getAverageDataForRange = (dataArray, startDate, endDate, wellFilter = null) => {
     if (!dataArray || dataArray.length === 0) return null;
     
-    const target = new Date(targetDate);
-    const intervalStart = new Date(startDate);
-    const intervalEnd = new Date(endDate);
+    const start = new Date(startDate);
+    const end = new Date(endDate);
     
-    // Filter data to only include dates within the interval
+    // Filter data by date range and well if specified
     const filteredData = dataArray.filter(item => {
       const itemDate = new Date(item.date);
-      return itemDate >= intervalStart && itemDate <= intervalEnd;
+      const inDateRange = itemDate >= start && itemDate <= end;
+      const matchesWell = wellFilter ? item.well === wellFilter : true;
+      return inDateRange && matchesWell;
     });
     
     if (filteredData.length === 0) return null;
     
-    let closest = null;
-    let smallestDiff = Infinity;
-    
-    for (const item of filteredData) {
-      const itemDate = new Date(item.date);
-      const diff = Math.abs(itemDate - target);
+    if (wellFilter) {
+      // For individual well, calculate averages
+      const totals = filteredData.reduce((acc, item) => ({
+        oil: acc.oil + (parseFloat(item.tm_oil) || 0),
+        fluid: acc.fluid + (parseFloat(item.tm_fluid) || 0),
+        workTime: acc.workTime + (parseFloat(item.well_work_time) || 0),
+        waterCut: acc.waterCut + (parseFloat(item.water_lab) || 0)
+      }), { oil: 0, fluid: 0, workTime: 0, waterCut: 0 });
       
-      if (diff < smallestDiff) {
-        smallestDiff = diff;
-        closest = item;
-      }
+      const count = filteredData.length;
+      return {
+        oil: totals.oil / count,
+        fluid: totals.fluid / count,
+        workTime: totals.workTime / count,
+        waterCut: totals.waterCut / count
+      };
+    } else {
+      // For all wells, group by date first, then aggregate
+      const groupedByDate = filteredData.reduce((acc, item) => {
+        const date = item.date;
+        if (!acc[date]) {
+          acc[date] = {
+            oil: 0, fluid: 0, workTime: 0, waterCut: 0, count: 0
+          };
+        }
+        acc[date].oil += parseFloat(item.tm_oil) || 0;
+        acc[date].fluid += parseFloat(item.tm_fluid) || 0;
+        acc[date].workTime += parseFloat(item.well_work_time) || 0;
+        acc[date].waterCut += parseFloat(item.water_lab) || 0;
+        acc[date].count++;
+        return acc;
+      }, {});
+      
+      // Calculate daily averages, then overall average
+      const dailyAverages = Object.values(groupedByDate).map(day => ({
+        oil: day.oil,
+        fluid: day.fluid,
+        workTime: day.workTime,
+        waterCut: day.waterCut / day.count // Water cut is averaged per day
+      }));
+      
+      const totals = dailyAverages.reduce((acc, day) => ({
+        oil: acc.oil + day.oil,
+        fluid: acc.fluid + day.fluid,
+        workTime: acc.workTime + day.workTime,
+        waterCut: acc.waterCut + day.waterCut
+      }), { oil: 0, fluid: 0, workTime: 0, waterCut: 0 });
+      
+      const days = dailyAverages.length;
+      return {
+        oil: totals.oil / days,
+        fluid: totals.fluid / days,
+        workTime: totals.workTime / days,
+        waterCut: totals.waterCut / days
+      };
     }
-    
-    return closest;
   };
 
   // Fetch available wells from oil_loss table
@@ -98,18 +199,33 @@ export default function OilLayout() {
     fetchWells();
   }, []);
 
-  // Fetch oil loss data when filters change
+  // Fetch oil loss data when date ranges change
   useEffect(() => {
     const fetchOilLossData = async () => {
       setLoading(true);
       setError(null);
       
       try {
-        console.log('Fetching oil loss data with params:', { selectedWell, startDate, endDate });
+        // Get the full date range that encompasses both intervals
+        const allDates = [
+          initialRange[0].startDate,
+          initialRange[0].endDate,
+          finalRange[0].startDate,
+          finalRange[0].endDate
+        ];
+        
+        const minDate = new Date(Math.min(...allDates));
+        const maxDate = new Date(Math.max(...allDates));
+        
+        console.log('Fetching oil loss data with params:', { 
+          selectedWell, 
+          startDate: formatDateForAPI(minDate), 
+          endDate: formatDateForAPI(maxDate) 
+        });
         
         const params = new URLSearchParams({
-          startDate,
-          endDate
+          startDate: formatDateForAPI(minDate),
+          endDate: formatDateForAPI(maxDate)
         });
         
         if (selectedWell !== "all") {
@@ -145,40 +261,26 @@ export default function OilLayout() {
     };
     
     fetchOilLossData();
-  }, [selectedWell, startDate, endDate]);
+  }, [selectedWell, initialRange, finalRange]);
 
-  // Calculate production changes for chart
-  const calculateProductionChanges = (currentData, previousData) => {
-    if (!currentData || !previousData) return null;
+  // Calculate production changes for chart (comparing two intervals)
+  const calculateIntervalComparison = (initialData, finalData) => {
+    if (!initialData || !finalData) return null;
     
-    const current = {
-      oil: parseFloat(currentData.tm_oil) || 0, // m³
-      fluid: parseFloat(currentData.tm_fluid) || 0, // m³
-      workTime: parseFloat(currentData.well_work_time) || 0, // hours
-      waterCut: parseFloat(currentData.water_lab) || 0 // %
-    };
-    
-    const previous = {
-      oil: parseFloat(previousData.tm_oil) || 0, // m³
-      fluid: parseFloat(previousData.tm_fluid) || 0, // m³
-      workTime: parseFloat(previousData.well_work_time) || 0, // hours
-      waterCut: parseFloat(previousData.water_lab) || 0 // %
-    };
-    
-    // Calculate simple changes in each factor
-    const oilChange = current.oil - previous.oil;
-    const fluidChange = current.fluid - previous.fluid;
-    const workTimeChange = current.workTime - previous.workTime;
-    const waterCutChange = current.waterCut - previous.waterCut;
+    // Calculate changes between the two intervals
+    const oilChange = finalData.oil - initialData.oil;
+    const fluidChange = finalData.fluid - initialData.fluid;
+    const workTimeChange = finalData.workTime - initialData.workTime;
+    const waterCutChange = finalData.waterCut - initialData.waterCut;
     
     return {
-      initial: previous.oil, // m³
-      final: current.oil, // m³
+      initial: initialData.oil, // m³
+      final: finalData.oil, // m³
       fluidChange: fluidChange, // m³
       workTimeChange: workTimeChange, // hours
       waterCutChange: waterCutChange, // %
-      currentDate: currentData.date,
-      previousDate: previousData.date
+      initialRange: `${formatDateForAPI(initialRange[0].startDate)} - ${formatDateForAPI(initialRange[0].endDate)}`,
+      finalRange: `${formatDateForAPI(finalRange[0].startDate)} - ${formatDateForAPI(finalRange[0].endDate)}`
     };
   };
 
@@ -188,83 +290,42 @@ export default function OilLayout() {
       return { chartData: [] };
     }
 
-    if (selectedWell === "all") {
-      // Group by date and aggregate all wells
-      const groupedByDate = oilLossData.reduce((acc, item) => {
-        const date = item.date;
-        if (!acc[date]) {
-          acc[date] = {
-            date,
-            tm_oil: 0,
-            tm_fluid: 0,
-            well_work_time: 0,
-            water_lab: 0,
-            count: 0
-          };
-        }
-        acc[date].tm_oil += parseFloat(item.tm_oil) || 0;
-        acc[date].tm_fluid += parseFloat(item.tm_fluid) || 0;
-        acc[date].well_work_time += parseFloat(item.well_work_time) || 0;
-        acc[date].water_lab += parseFloat(item.water_lab) || 0;
-        acc[date].count++;
-        return acc;
-      }, {});
+    const wellFilter = selectedWell === "all" ? null : selectedWell;
+    
+    // Get average data for both intervals
+    const initialData = getAverageDataForRange(
+      oilLossData, 
+      initialRange[0].startDate, 
+      initialRange[0].endDate,
+      wellFilter
+    );
+    
+    const finalData = getAverageDataForRange(
+      oilLossData, 
+      finalRange[0].startDate, 
+      finalRange[0].endDate,
+      wellFilter
+    );
+    
+    if (initialData && finalData) {
+      const changes = calculateIntervalComparison(initialData, finalData);
       
-      // Calculate averages for water_lab
-      Object.keys(groupedByDate).forEach(date => {
-        groupedByDate[date].water_lab = groupedByDate[date].water_lab / groupedByDate[date].count;
-      });
-      
-      const sortedDates = Object.keys(groupedByDate).sort();
-      const aggregatedData = sortedDates.map(date => groupedByDate[date]);
-      
-      // Find data closest to start and end dates within the interval
-      const startData = findClosestData(aggregatedData, startDate, startDate, endDate);
-      const endData = findClosestData(aggregatedData, endDate, startDate, endDate);
-      
-      if (startData && endData && startData.date !== endData.date) {
-        const changes = calculateProductionChanges(endData, startData);
-        
-        if (changes) {
-          return {
-            chartData: [
-              { name: "Нач. добыча", value: changes.initial, type: "initial" },
-              { name: "Изм. врем. работы", value: changes.workTimeChange, type: "workTime" },
-              { name: "Изм. обвод.", value: changes.waterCutChange, type: "waterCut" },
-              { name: "Изм. дебита жидк.", value: changes.fluidChange, type: "fluid" },
-              { name: "Конеч. добыча", value: changes.final, type: "final" }
-            ]
-          };
-        }
-      }
-    } else {
-      // Filter data for selected well
-      const wellData = oilLossData.filter(item => item.well === selectedWell);
-      const sortedWellData = wellData.sort((a, b) => new Date(a.date) - new Date(b.date));
-      
-      // Find data closest to start and end dates within the interval
-      const startData = findClosestData(sortedWellData, startDate, startDate, endDate);
-      const endData = findClosestData(sortedWellData, endDate, startDate, endDate);
-      
-      if (startData && endData && startData.date !== endData.date) {
-        const changes = calculateProductionChanges(endData, startData);
-        
-        if (changes) {
-          return {
-            chartData: [
-              { name: "Нач. добыча (м³)", value: changes.initial, type: "initial" },
-              { name: "Изм. времени работы (ч)", value: changes.workTimeChange, type: "workTime" },
-              { name: "Изм. обводненности (%)", value: changes.waterCutChange, type: "waterCut" },
-              { name: "Изм. дебита жидк. (м³)", value: changes.fluidChange, type: "fluid" },
-              { name: "Конеч. добыча (м³)", value: changes.final, type: "final" }
-            ]
-          };
-        }
+      if (changes) {
+        const units = selectedWell === "all" ? "" : " (м³)";
+        return {
+          chartData: [
+            { name: `Нач. добыча${units}`, value: changes.initial, type: "initial" },
+            { name: "Изм. врем. работы (ч)", value: changes.workTimeChange, type: "workTime" },
+            { name: "Изм. обвод. (%)", value: changes.waterCutChange, type: "waterCut" },
+            { name: `Изм. дебита жидк.${units}`, value: changes.fluidChange, type: "fluid" },
+            { name: `Конеч. добыча${units}`, value: changes.final, type: "final" }
+          ]
+        };
       }
     }
     
     return { chartData: [] };
-  }, [oilLossData, selectedWell, startDate, endDate]);
+  }, [oilLossData, selectedWell, initialRange, finalRange]);
 
   // Process data specifically for individual wells in the map
   const processedWellsData = useMemo(() => {
@@ -286,15 +347,22 @@ export default function OilLayout() {
 
     // Process each well's data
     Object.keys(groupedByWell).forEach(wellName => {
-      const wellData = groupedByWell[wellName];
-      const sortedWellData = wellData.sort((a, b) => new Date(a.date) - new Date(b.date));
+      const initialData = getAverageDataForRange(
+        oilLossData, 
+        initialRange[0].startDate, 
+        initialRange[0].endDate,
+        wellName
+      );
       
-      // Find data closest to start and end dates within the interval
-      const startData = findClosestData(sortedWellData, startDate, startDate, endDate);
-      const endData = findClosestData(sortedWellData, endDate, startDate, endDate);
+      const finalData = getAverageDataForRange(
+        oilLossData, 
+        finalRange[0].startDate, 
+        finalRange[0].endDate,
+        wellName
+      );
       
-      if (startData && endData && startData.date !== endData.date) {
-        const changes = calculateProductionChanges(endData, startData);
+      if (initialData && finalData) {
+        const changes = calculateIntervalComparison(initialData, finalData);
         
         if (changes) {
           wellsDataMap[wellName] = {
@@ -308,7 +376,7 @@ export default function OilLayout() {
     });
 
     return wellsDataMap;
-  }, [oilLossData, startDate, endDate]);
+  }, [oilLossData, initialRange, finalRange]);
 
   // Filter wells based on search term
   const filteredWells = useMemo(() => {
@@ -318,11 +386,17 @@ export default function OilLayout() {
     );
   }, [availableWells, searchTerm]);
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setIsDropdownOpen(false);
+      }
+      if (initialPickerRef.current && !initialPickerRef.current.contains(event.target)) {
+        setShowInitialPicker(false);
+      }
+      if (finalPickerRef.current && !finalPickerRef.current.contains(event.target)) {
+        setShowFinalPicker(false);
       }
     };
 
@@ -351,6 +425,24 @@ export default function OilLayout() {
     setStatusFilter("All");
     setSearchTerm("");
     setIsDropdownOpen(false);
+    // Reset to default date ranges
+    setInitialRange([{
+      startDate: new Date(2025, 5, 1),
+      endDate: new Date(2025, 5, 15),
+      key: 'initialSelection'
+    }]);
+    setFinalRange([{
+      startDate: new Date(2025, 6, 1),
+      endDate: new Date(2025, 6, 31),
+      key: 'finalSelection'
+    }]);
+  };
+
+  // Format date range for display
+  const formatDateRange = (range) => {
+    const start = formatDateForAPI(range[0].startDate);
+    const end = formatDateForAPI(range[0].endDate);
+    return `${start} - ${end}`;
   };
 
   return (
@@ -436,28 +528,76 @@ export default function OilLayout() {
             </select>
           </div>
 
-          <div className={styles.filterGroup}>
+          {/* Initial Date Range Picker */}
+          <div className={styles.filterGroup} ref={initialPickerRef}>
             <label className={styles.filterLabel}>
-              Начало:
+              Начальный период:
             </label>
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className={styles.inputField}
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                type="text"
+                value={formatDateRange(initialRange)}
+                onClick={() => setShowInitialPicker(!showInitialPicker)}
+                readOnly
+                className={styles.inputField}
+                style={{ cursor: "pointer" }}
+              />
+              {showInitialPicker && (
+                <div style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  zIndex: 2000,
+                  backgroundColor: "white",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "8px",
+                  overflow: "hidden"
+                }}>
+                  <DateRange
+                    ranges={initialRange}
+                    onChange={item => setInitialRange([item.initialSelection])}
+                    dayContentRenderer={dayContentRenderer}
+                    maxDate={new Date()}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
-          <div className={styles.filterGroup}>
+          {/* Final Date Range Picker */}
+          <div className={styles.filterGroup} ref={finalPickerRef}>
             <label className={styles.filterLabel}>
-              Конец:
+              Конечный период:
             </label>
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className={styles.inputField}
-            />
+            <div style={{ position: "relative" }}>
+              <input
+                type="text"
+                value={formatDateRange(finalRange)}
+                onClick={() => setShowFinalPicker(!showFinalPicker)}
+                readOnly
+                className={styles.inputField}
+                style={{ cursor: "pointer" }}
+              />
+              {showFinalPicker && (
+                <div style={{
+                  position: "absolute",
+                  top: "100%",
+                  left: 0,
+                  zIndex: 3000,
+                  backgroundColor: "white",
+                  boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                  borderRadius: "8px",
+                  overflow: "hidden"
+                }}>
+                  <DateRange
+                    ranges={finalRange}
+                    onChange={item => setFinalRange([item.finalSelection])}
+                    dayContentRenderer={dayContentRenderer}
+                    maxDate={new Date()}
+                  />
+                </div>
+              )}
+            </div>
           </div>
 
           <div className={styles.filterGroup}>
@@ -477,15 +617,16 @@ export default function OilLayout() {
         <div className={styles.chartSection}>
           {/* Chart Header */}
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Анализ изменений добычи нефти</h2>
+            <h2 className={styles.sectionTitle}>Анализ потерь нефти</h2>
             {selectedWell !== "all" && (
               <span className={styles.sectionSubtitle}>
                 Скважина: {selectedWell}
               </span>
             )}
-            {/* <span className={styles.sectionPeriod}>
-              Период: {startDate} - {endDate}
-            </span> */}
+            {/* <div className={styles.sectionPeriod}>
+              <div>Начальный: {formatDateRange(initialRange)}</div>
+              <div>Конечный: {formatDateRange(finalRange)}</div>
+            </div> */}
           </div>
           
           <div className={styles.chartContainer}>
@@ -498,8 +639,8 @@ export default function OilLayout() {
               <OilLossChart 
                 chartData={processedData.chartData}
                 selectedWell={selectedWell}
-                startDate={startDate}
-                endDate={endDate}
+                startDate={formatDateRange(initialRange)}
+                endDate={formatDateRange(finalRange)}
               />
             )}
           </div>
@@ -513,8 +654,8 @@ export default function OilLayout() {
               statusFilter={statusFilter}
               onWellSelect={handleWellSelect}
               wellsOilData={processedWellsData}
-              startDate={startDate}
-              endDate={endDate}
+              startDate={formatDateRange(initialRange)}
+              endDate={formatDateRange(finalRange)}
             />
           </div>
         </div>
