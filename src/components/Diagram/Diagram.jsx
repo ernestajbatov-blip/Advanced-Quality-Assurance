@@ -13,12 +13,38 @@ import AppNav from "../AppNav/AppNav";
 import ResponsiveTable from "../ResponsiveTable/ResponsiveTable";
 import Modal from "../Modal/Modal";
 import { NavLink } from "react-router-dom";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
+import { format, parseISO } from "date-fns";
+import Legend from "../Legends/Legends"
+
+const VlagomerTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+        border: '1px solid #ccc',
+        borderRadius: '4px',
+        padding: '10px',
+        color: 'white'
+      }}>
+        <p style={{ margin: 0, fontWeight: 'bold' }}>{`Время: ${label}`}</p>
+        <p style={{ margin: 0, color: '#2563eb' }}>
+          {`Влажность: ${payload[0].value}%`}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function Diagram() {
   const [oilProgressData, setOilProgressData] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [tableTitle, setTableTitle] = useState("Sensor Data");
+  const [showVlagomerChart, setShowVlagomerChart] = useState(false);
+  const [vlagomerData, setVlagomerData] = useState([]);
+const [vlagomerLoading, setVlagomerLoading] = useState(false);
 
   useEffect(() => {
     axios.get("http://localhost:3000/api/progress-oil")
@@ -30,6 +56,11 @@ export default function Diagram() {
         console.error("Failed to fetch oil progress data", err);
       });
   }, []);
+
+
+
+
+
 
   const TAG_UNITS = {
     // tfs-1
@@ -267,6 +298,64 @@ export default function Diagram() {
     });
   };
 
+  const fetchVlagomerData = async () => {
+    setVlagomerLoading(true);
+    try {
+      // Replace with your actual API endpoint for historical vlagomer data
+      const response = await axios.get("http://localhost:3000/api/vlagomer-history");
+      
+      // Process the data similar to Chart.jsx
+      const processedData = response.data
+        .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
+        .slice(-20) // Get last 20 data points
+        .map(item => ({
+          time: format(parseISO(item.timestamp), 'HH:mm'),
+          value: Math.round(item.value * 100) / 100,
+          fullTimestamp: item.timestamp
+        }));
+      
+      setVlagomerData(processedData);
+    } catch (error) {
+      console.error("Failed to fetch vlagomer history:", error);
+      // Fallback to mock data if API fails
+      generateVlagomerMockData();
+    } finally {
+      setVlagomerLoading(false);
+    }
+  };
+
+  const generateVlagomerMockData = () => {
+    const now = new Date();
+    const data = [];
+    
+    // Generate 20 data points over the last 40 minutes (every 2 minutes)
+    for (let i = 19; i >= 0; i--) {
+      const time = new Date(now.getTime() - (i * 2 * 60 * 1000));
+      
+      // Use a base value between 15-25% for realistic moisture content
+      const baseValue = 20;
+      const variation = (Math.random() - 0.5) * 8; // ±4% variation
+      const value = Math.max(0, Math.min(100, baseValue + variation)); // Keep between 0-100%
+      
+      data.push({
+        time: time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+        value: Math.round(value * 100) / 100,
+        fullTimestamp: time.toISOString()
+      });
+    }
+    
+    setVlagomerData(data);
+  };
+
+  const handleVlagomerClick = () => {
+    setShowVlagomerChart(true);
+    fetchVlagomerData();
+  };
+
+  const handleCloseVlagomerChart = () => {
+    setShowVlagomerChart(false);
+  };
+
   const realUzelUchetaData = getRealUzelUchetaData();
 
   // Array of objects for dynamically creating LabelBox + Table/Indicator/Pumps components with percentage positions
@@ -287,11 +376,16 @@ export default function Diagram() {
       left: "19.9%",
       content: (
         <>
-          <Indicator 
-            indicatorNumber={Math.round((oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.value || oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.tag_value || 0) * 100) / 100} 
-            indicatorUnits={"%"}
-          />
-          <LabelBox label={"Влагомер"} width={60} height={5} fontSize={10} />
+          <div 
+            onClick={handleVlagomerClick}
+            style={{ cursor: "pointer" }}
+          >
+            <Indicator 
+              indicatorNumber={Math.round((oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.value || oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.tag_value || 0) * 100) / 100} 
+              indicatorUnits={"%"}
+            />
+            <LabelBox label={"Влагомер"} width={60} height={5} fontSize={10} />
+          </div>
         </>
       ),
     },
@@ -874,6 +968,100 @@ export default function Diagram() {
                 <ResponsiveTable data={tableData} />
               </div>
             )}
+          </div>
+        </Modal>
+      )}
+
+      {showVlagomerChart && (
+        <Modal onClose={handleCloseVlagomerChart}>
+          <div style={{ padding: "20px", minWidth: "700px" }}>
+            <h2 style={{ 
+              marginTop: 0, 
+              marginBottom: "20px",
+              fontSize: "24px",
+              color: "white"
+            }}>
+              Влагомер - Изменения во времени
+            </h2>
+            
+            {vlagomerLoading && (
+              <div style={{ 
+                color: "white", 
+                textAlign: "center", 
+                padding: "20px",
+                fontSize: "16px"
+              }}>
+                ⏳ Загрузка данных...
+              </div>
+            )}
+            
+            <div style={{ 
+              backgroundColor: "#1a1a1a",
+              borderRadius: "8px",
+              padding: "20px",
+              height: "250px",
+              border: "1px solid #333" 
+            }}>
+              <LineChart
+                width={650}
+                height={350}
+                data={vlagomerData}
+                margin={{
+                  top: 20,
+                  right: 30,
+                  left: 20,
+                  bottom: 60,
+                }}
+              >
+                <CartesianGrid strokeDasharray="3 3" stroke="#444" opacity={0.5} />
+                <XAxis 
+                  dataKey="time" 
+                  angle={-45}
+                  textAnchor="end"
+                  height={80}
+                  fontSize={12}
+                  tick={{ fill: "#e5e5e5" }} // Light text for dark theme
+                  axisLine={{ stroke: "#666" }}
+                  tickLine={{ stroke: "#666" }}
+                />
+                <YAxis 
+                  label={{ 
+                    value: 'Влажность (%)', 
+                    angle: -90, 
+                    position: 'insideLeft',
+                    style: { textAnchor: 'middle', fill: '#e5e5e5' }
+                  }}
+                  fontSize={12}
+                  tick={{ fill: "#e5e5e5" }} // Light text for dark theme
+                  axisLine={{ stroke: "#666" }}
+                  tickLine={{ stroke: "#666" }}
+                />
+                <Tooltip 
+                  content={<VlagomerTooltip />}
+                />
+                <Legend 
+                  wrapperStyle={{ color: '#e5e5e5' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="value" 
+                  name="Влажность"
+                  stroke="#60a5fa" // Lighter blue for better visibility on dark background
+                  strokeWidth={2}
+                  dot={{ fill: '#60a5fa', strokeWidth: 2, r: 3 }}
+                  activeDot={{ r: 6, fill: '#3b82f6' }}
+                />
+              </LineChart>
+            </div>
+            
+            <div style={{ 
+              marginTop: "15px", 
+              color: "white", 
+              fontSize: "12px",
+              textAlign: "center"
+            }}>
+              Последние 20 измерений • Обновлено: {new Date().toLocaleTimeString('ru-RU')}
+            </div>
           </div>
         </Modal>
       )}

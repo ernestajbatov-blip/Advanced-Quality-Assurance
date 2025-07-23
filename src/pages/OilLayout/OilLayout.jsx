@@ -618,11 +618,11 @@ export default function OilLayout() {
           {/* Chart Header */}
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Анализ потерь нефти</h2>
-            {selectedWell !== "all" && (
+            {/* {selectedWell !== "all" && (
               <span className={styles.sectionSubtitle}>
                 Скважина: {selectedWell}
               </span>
-            )}
+            )} */}
             {/* <div className={styles.sectionPeriod}>
               <div>Начальный: {formatDateRange(initialRange)}</div>
               <div>Конечный: {formatDateRange(finalRange)}</div>

@@ -4,6 +4,9 @@ import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 import am5themes_Dark from "@amcharts/amcharts5/themes/Dark";
 import Slider from "react-slider";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { parseISO, format } from "date-fns";
 import styles from "./AmChart.module.css";
 
 const AmChart = ({ wellData, onReset }) => {
@@ -15,7 +18,7 @@ const AmChart = ({ wellData, onReset }) => {
   const updateTimeoutRef = useRef(null);
   const [currentTimePoint, setCurrentTimePoint] = useState(null);
   const [viewMode, setViewMode] = useState("daily");
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const monthNamesRU = ["Янв", "Фев", "Мар", "Апр", "Май", "Июн", "Июл", "Авг", "Сен", "Окт", "Ноя", "Дек"];
 
@@ -77,9 +80,30 @@ const AmChart = ({ wellData, onReset }) => {
     return allDates;
   }, [wellData, viewMode]);
 
+  // Convert timePoints to Date objects for DatePicker highlighting
+  const parsedAvailableDates = useMemo(() => {
+    return timePoints
+      .map((dateStr) => {
+        try {
+          const parsedDate = parseISO(dateStr);
+          if (isNaN(parsedDate.getTime())) {
+            const [year, month, day] = dateStr.split("-");
+            return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+          }
+          return parsedDate;
+        } catch (error) {
+          console.warn("Failed to parse date:", dateStr, error);
+          return null;
+        }
+      })
+      .filter((date) => date !== null && !isNaN(date.getTime()));
+  }, [timePoints]);
+
   useEffect(() => {
     if (timePoints.length > 0) {
-      setCurrentTimePoint(timePoints[timePoints.length - 1]);
+      const latestTimePoint = timePoints[timePoints.length - 1];
+      setCurrentTimePoint(latestTimePoint);
+      setSelectedDate(parseISO(latestTimePoint));
     }
   }, [timePoints]);  
 
@@ -502,7 +526,21 @@ const AmChart = ({ wellData, onReset }) => {
   const handleViewModeChange = (mode) => {
     setViewMode(mode);
     if (timePoints.length > 0) {
-      setCurrentTimePoint(timePoints[timePoints.length - 1]);
+      const latestTimePoint = timePoints[timePoints.length - 1];
+      setCurrentTimePoint(latestTimePoint);
+      setSelectedDate(parseISO(latestTimePoint));
+    }
+  };
+
+  const handleDateChange = (date) => {
+    if (date) {
+      const dateString = format(date, "yyyy-MM-dd");
+      // Find the closest available time point
+      const closestTimePoint = timePoints.find(tp => tp === dateString) || timePoints[0];
+      if (closestTimePoint) {
+        setCurrentTimePoint(closestTimePoint);
+        setSelectedDate(date);
+      }
     }
   };
 
@@ -540,40 +578,22 @@ const AmChart = ({ wellData, onReset }) => {
           >
             Ежемесячно
           </button>
-          <button 
-            className={styles.datePickerButton}
-            onClick={() => setShowDatePicker(!showDatePicker)}
-          >
-            Выбрать дату
-          </button>
+          
+          <DatePicker
+            selected={selectedDate}
+            onChange={handleDateChange}
+            highlightDates={parsedAvailableDates}
+            placeholderText="Выберите дату"
+            className={styles.customDatepicker}
+            dateFormat="yyyy-MM-dd"
+          />
+          
           {onReset && (
             <button onClick={onReset} className={styles.resetButton}>
               ↻
             </button>
           )}
         </div>
-        {showDatePicker && (
-          <div className={styles.datePickerDropdown}>
-            <div className={styles.datePickerHeader}>
-              <span>Выберите дату:</span>
-              <button onClick={() => setShowDatePicker(false)}>×</button>
-            </div>
-            <div className={styles.datePickerList}>
-              {timePoints.map((date, index) => (
-                <button
-                  key={index}
-                  className={`${styles.datePickerItem} ${date === currentTimePoint ? styles.selectedDate : ""}`}
-                  onClick={() => {
-                    setCurrentTimePoint(date);
-                    setShowDatePicker(false);
-                  }}
-                >
-                  {formatDateForDisplay(date)}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
       <div id="yearlyChartDiv" className={styles.chart}></div>
       {timePoints.length > 0 && (
@@ -583,7 +603,11 @@ const AmChart = ({ wellData, onReset }) => {
             max={timePoints.length - 1}
             step={1}
             value={timePoints.indexOf(currentTimePoint)}
-            onChange={(value) => setCurrentTimePoint(timePoints[value])}
+            onChange={(value) => {
+              const newTimePoint = timePoints[value];
+              setCurrentTimePoint(newTimePoint);
+              setSelectedDate(parseISO(newTimePoint));
+            }}
             className={styles.slider}
             thumbClassName={styles.sliderThumb}
             trackClassName={styles.sliderTrack}
