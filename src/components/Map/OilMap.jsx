@@ -130,19 +130,16 @@ const EnhancedPopup = ({ well }) => {
   );
 };
 
-export default function OilMap() {
+export default function OilMap({ 
+  selectedWell = "all", 
+  statusFilter = "All", 
+  onWellSelect 
+}) {
   const [wells, setWells] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [filter, setFilter] = useState("All");
-  const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
-  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
   const mapRef = useRef(null);
   const markerRefs = useRef({});
-  const searchInputRef = useRef(null);
-  const searchContainerRef = useRef(null);
 
   // Fetch all wells data
   useEffect(() => {
@@ -202,119 +199,31 @@ export default function OilMap() {
     fetchWellsData();
   }, []);
 
-  // Search functionality
+  // Filter wells based ONLY on status filter, not on selected well
+  const filteredWells = wells.filter((well) => {
+    // Only filter by status, not by selected well
+    return statusFilter === "All" || well.type === statusFilter;
+  });
+
+  // Focus on selected well when it changes
   useEffect(() => {
-    if (searchTerm.trim() === "") {
-      setSearchResults([]);
-      setShowSearchResults(false);
-      setSelectedSuggestionIndex(-1);
-      return;
-    }
-
-    const filtered = wells.filter(well => 
-      well.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    setSearchResults(filtered);
-    setShowSearchResults(true);
-    setSelectedSuggestionIndex(-1);
-  }, [searchTerm, wells]);
-
-  // Click outside handler
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
-        setShowSearchResults(false);
-        setSelectedSuggestionIndex(-1);
+    if (selectedWell !== "all" && mapRef.current) {
+      const targetWell = wells.find(well => well.name === selectedWell);
+      if (targetWell && targetWell.coords) {
+        mapRef.current.setView(targetWell.coords, 15);
+        
+        setTimeout(() => {
+          const marker = markerRefs.current[targetWell.id];
+          if (marker) {
+            marker.openPopup();
+          }
+        }, 300);
       }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const filteredWells = filter === "All" 
-    ? wells 
-    : wells.filter((well) => well && well.type === filter);
-
-  const counts = {
-    Active: wells.filter((w) => w && w.type === "Active").length,
-    Inactive: wells.filter((w) => w && w.type === "Inactive").length,
-    Maintenance: wells.filter((w) => w && w.type === "Maintenance").length,
-  };
+    }
+  }, [selectedWell, wells]);
 
   const handleMapClick = (e) => {
     // Handle map click if needed
-  };
-
-  const handleClearFilters = () => {
-    setFilter("All");
-    setSearchTerm("");
-    setShowSearchResults(false);
-    setSelectedSuggestionIndex(-1);
-  };
-
-  const handleSearchResultClick = (well) => {
-    setSearchTerm(well.name);
-    
-    if (mapRef.current && well.coords) {
-      mapRef.current.setView(well.coords, 15);
-      
-      setTimeout(() => {
-        const marker = markerRefs.current[well.id];
-        if (marker) {
-          marker.openPopup();
-        }
-      }, 300);
-    }
-    
-    setShowSearchResults(false);
-    setSelectedSuggestionIndex(-1);
-  };
-
-  const handleSearchChange = (e) => {
-    setSearchTerm(e.target.value);
-  };
-
-  const handleSearchFocus = () => {
-    if (searchTerm.trim() !== "" && searchResults.length > 0) {
-      setShowSearchResults(true);
-    }
-  };
-
-  const handleSearchKeyDown = (e) => {
-    if (!showSearchResults || searchResults.length === 0) {
-      return;
-    }
-
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault();
-        setSelectedSuggestionIndex(prev => 
-          prev < searchResults.length - 1 ? prev + 1 : 0
-        );
-        break;
-      case 'ArrowUp':
-        e.preventDefault();
-        setSelectedSuggestionIndex(prev => 
-          prev > 0 ? prev - 1 : searchResults.length - 1
-        );
-        break;
-      case 'Enter':
-        e.preventDefault();
-        if (selectedSuggestionIndex >= 0 && selectedSuggestionIndex < searchResults.length) {
-          handleSearchResultClick(searchResults[selectedSuggestionIndex]);
-        } else if (searchResults.length > 0) {
-          handleSearchResultClick(searchResults[0]);
-        }
-        break;
-      case 'Escape':
-        setShowSearchResults(false);
-        setSelectedSuggestionIndex(-1);
-        break;
-    }
   };
 
   const getWellIcon = (well) => {
@@ -331,6 +240,12 @@ export default function OilMap() {
         return icons.maintenance;
       default:
         return icons.default;
+    }
+  };
+
+  const handleMarkerClick = (well) => {
+    if (onWellSelect) {
+      onWellSelect(well.name);
     }
   };
 
@@ -353,172 +268,84 @@ export default function OilMap() {
   return (
     <div className={styles.oilMapContainer}>
       {/* Header */}
-      <div className={styles.header}>
-        <h2 className={styles.headerTitle}>Карта скважин</h2>
-        {/* <div className={styles.headerStats}>
-          <span className={styles.statActive}>В сети: {counts.Active}</span>
-          <span className={styles.statMaintenance}>Нет данных: {counts.Maintenance}</span>
-          <span className={styles.statInactive}>Не в сети: {counts.Inactive}</span>
-          <span className={styles.statTotal}>Всего: {wells.length}</span>
-        </div> */}
+      <div className={styles.sectionHeader}>
+        <h2 className={styles.sectionTitle}>Карта скважин</h2>
       </div>
 
-      {/* Main Content */}
-      <div className={styles.mainContent}>
-        {/* Sidebar */}
-        {/* <div className={styles.sidebar} ref={searchContainerRef}>
-          <div className={styles.sidebarHeader}>
-            {/* <h3>Фильтры скважин</h3> */}
-          {/* </div> */}
-        <div className={styles.controlsRow}>
-          <div className={styles.topRow}>
-            {/* Search Container */}
-            
-          
-            {/* Search Input */}
-            <div className={styles.searchContainer}>
-              <label className={styles.searchLabel}>
-                Поиск скважины:
-              </label>
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                onFocus={handleSearchFocus}
-                onKeyDown={handleSearchKeyDown}
-                placeholder="Введите название скважины"
-                className={styles.searchInput}
-              />
+      {/* Map Container */}
+      <div className={styles.mapContainer}>
+        {wells.length > 0 ? (
+          <MapContainer
+            center={wells.length > 0 ? wells[0].coords : [45, 55.23]}
+            zoom={14}
+            style={{ height: "100%", width: "100%" }}
+            ref={mapRef}
+          >
+            <TileLayer 
+              url="/tiles/{z}/{x}/{y}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              maxZoom={18}
+              minZoom={6}
+            />
+            <MapClickHandler onMapClick={handleMapClick} />
+            {filteredWells.map((well) => {
+              if (!well || !well.coords || !Array.isArray(well.coords) || well.coords.length !== 2) {
+                return null;
+              }
               
-              {/* Search Results Dropdown */}
-              {showSearchResults && searchResults.length > 0 && (
-                <div className={styles.searchDropdown}>
-                  {searchResults.map((well, index) => (
-                    <div
-                      key={well.id}
-                      onClick={() => handleSearchResultClick(well)}
-                      className={`${styles.searchResultItem} ${
-                        selectedSuggestionIndex === index ? styles.searchResultItemSelected : ''
-                      }`}
-                      onMouseEnter={() => setSelectedSuggestionIndex(index)}
-                      onMouseLeave={() => setSelectedSuggestionIndex(-1)}
-                    >
-                      <div className={styles.searchResultName}>
-                        {well.name}
-                      </div>
-                      <div className={styles.searchResultStatus}>
-                        Статус: {
-                          well.type === "Active" ? "В сети" : 
-                          well.type === "Inactive" ? "Не в сети" : 
-                          "Нет данных"
-                        }
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              const [lat, lng] = well.coords;
+              if (isNaN(lat) || isNaN(lng)) {
+                return null;
+              }
               
-              {/* No Results Message */}
-              {showSearchResults && searchResults.length === 0 && searchTerm.trim() !== "" && (
-                <div className={styles.noResultsMessage}>
-                  Скважины не найдены
-                </div>
-              )}
-            </div>
-            
-            {/* Filter Select */}
-            <div className={styles.filterContainer}>
-              <label className={styles.filterLabel}>Статус контроллера:</label>
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-                className={styles.filterSelect}
-              >
-                <option value="All">Все</option>
-                <option value="Active">В сети</option>
-                <option value="Inactive">Не в сети</option>
-                <option value="Maintenance">Нет данных</option>
-              </select>
-            </div>
-          </div>
-          
-          {/* Clear Filters Button */}
-          <div className={styles.buttonContainer}>
-            <button
-              onClick={handleClearFilters}
-              className={styles.clearFiltersButton}
-            >
-              Очистить фильтры
-            </button>
-          </div>
-
-        </div>
-
-        {/* Map Container */}
-        <div className={styles.mapContainer}>
-          {wells.length > 0 ? (
-            <MapContainer
-              center={wells.length > 0 ? wells[0].coords : [45, 55.23]}
-              zoom={14}
-              style={{ height: "100%", width: "100%" }}
-              ref={mapRef}
-            >
-              <TileLayer 
-                url="/tiles/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                maxZoom={18}
-                minZoom={6}
-              />
-              <MapClickHandler onMapClick={handleMapClick} />
-              {filteredWells.map((well) => {
-                if (!well || !well.coords || !Array.isArray(well.coords) || well.coords.length !== 2) {
-                  return null;
-                }
-                
-                const [lat, lng] = well.coords;
-                if (isNaN(lat) || isNaN(lng)) {
-                  return null;
-                }
-                
-                return (
-                  <Marker 
-                    key={well.id || `well-${Math.random()}`} 
-                    position={well.coords} 
-                    icon={getWellIcon(well)}
-                    ref={(ref) => {
-                      if (ref) {
-                        markerRefs.current[well.id] = ref;
-                      }
-                    }}
+              return (
+                <Marker 
+                  key={well.id || `well-${Math.random()}`} 
+                  position={well.coords} 
+                  icon={getWellIcon(well)}
+                  ref={(ref) => {
+                    if (ref) {
+                      markerRefs.current[well.id] = ref;
+                    }
+                  }}
+                  eventHandlers={{
+                    click: () => handleMarkerClick(well)
+                  }}
+                >
+                  {/* Always visible label */}
+                  <Tooltip 
+                    direction="top" 
+                    offset={[0, -15]} 
+                    opacity={1}
+                    permanent={true}
+                    className={styles.permanentLabel}
                   >
-                    <Tooltip direction="top" offset={[0, -10]} opacity={0.9}>
-                      <div className={styles.tooltipContent}>
-                        {well.name || 'Unknown Well'}
-                      </div>
-                    </Tooltip>
-                    <Popup
-                      className={styles.customPopup}
-                      closeButton={true}
-                      autoClose={true}
-                      closeOnClick={true}
-                      closeOnEscapeKey={true}
-                      keepInView={true}
-                      maxWidth={320}
-                      minWidth={280}
-                    >
-                      <EnhancedPopup well={well} />
-                    </Popup>
-                  </Marker>
-                );
-              })}
-            </MapContainer>
-          ) : (
-            <div className={styles.noDataContainer}>
-              Нет данных для отображения
-            </div>
-          )}
-        </div>
+                    <div className={styles.tooltipContent}>
+                      {well.name || 'Unknown Well'}
+                    </div>
+                  </Tooltip>
+                  
+                  <Popup
+                    className={styles.customPopup}
+                    closeButton={true}
+                    autoClose={true}
+                    closeOnClick={true}
+                    closeOnEscapeKey={true}
+                    keepInView={true}
+                    maxWidth={320}
+                    minWidth={280}
+                  >
+                    <EnhancedPopup well={well} />
+                  </Popup>
+                </Marker>
+              );
+            })}
+          </MapContainer>
+        ) : (
+          <div className={styles.noDataContainer}>
+            Нет данных для отображения
+          </div>
+        )}
       </div>
     </div>
   );

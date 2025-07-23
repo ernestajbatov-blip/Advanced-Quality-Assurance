@@ -15,9 +15,8 @@ export default function OilLayout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Map filter states
-  const [mapFilter, setMapFilter] = useState("All");
-  const [mapSearchTerm, setMapSearchTerm] = useState("");
+  // Map status filter
+  const [statusFilter, setStatusFilter] = useState("All");
   
   const dropdownRef = useRef(null);
 
@@ -267,6 +266,50 @@ export default function OilLayout() {
     return { chartData: [] };
   }, [oilLossData, selectedWell, startDate, endDate]);
 
+  // Process data specifically for individual wells in the map
+  const processedWellsData = useMemo(() => {
+    if (!oilLossData || oilLossData.length === 0) {
+      return {};
+    }
+
+    const wellsDataMap = {};
+    
+    // Group data by well
+    const groupedByWell = oilLossData.reduce((acc, item) => {
+      const wellName = item.well;
+      if (!acc[wellName]) {
+        acc[wellName] = [];
+      }
+      acc[wellName].push(item);
+      return acc;
+    }, {});
+
+    // Process each well's data
+    Object.keys(groupedByWell).forEach(wellName => {
+      const wellData = groupedByWell[wellName];
+      const sortedWellData = wellData.sort((a, b) => new Date(a.date) - new Date(b.date));
+      
+      // Find data closest to start and end dates within the interval
+      const startData = findClosestData(sortedWellData, startDate, startDate, endDate);
+      const endData = findClosestData(sortedWellData, endDate, startDate, endDate);
+      
+      if (startData && endData && startData.date !== endData.date) {
+        const changes = calculateProductionChanges(endData, startData);
+        
+        if (changes) {
+          wellsDataMap[wellName] = {
+            workTimeChange: Math.abs(changes.workTimeChange),
+            waterCutChange: Math.abs(changes.waterCutChange),
+            fluidChange: Math.abs(changes.fluidChange),
+            totalChange: Math.abs(changes.final - changes.initial)
+          };
+        }
+      }
+    });
+
+    return wellsDataMap;
+  }, [oilLossData, startDate, endDate]);
+
   // Filter wells based on search term
   const filteredWells = useMemo(() => {
     if (!searchTerm) return availableWells;
@@ -304,8 +347,10 @@ export default function OilLayout() {
 
   // Handle clear all filters
   const handleClearAllFilters = () => {
-    setMapFilter("All");
-    setMapSearchTerm("");
+    setSelectedWell("all");
+    setStatusFilter("All");
+    setSearchTerm("");
+    setIsDropdownOpen(false);
   };
 
   return (
@@ -319,93 +364,118 @@ export default function OilLayout() {
         </div>
       )}
       
-      {/* Main Content */}
-      <div className={styles.mainContent}>
-        {/* Chart Section with Filters Above */}
-        <div className={styles.chartSection}>
-          {/* Chart Filters Section */}
-          <div className={styles.filtersSection}>
-            <div className={styles.filtersContainer}>
-              <div className={styles.filterGroup} ref={dropdownRef}>
-                <label className={styles.filterLabel}>
-                  Выбрать скважину:
-                </label>
-                <div className={styles.dropdownContainer}>
-                  <input
-                    type="text"
-                    value={isDropdownOpen ? searchTerm : getDisplayText()}
-                    onChange={(e) => {
-                      setSearchTerm(e.target.value);
-                      if (!isDropdownOpen) setIsDropdownOpen(true);
-                    }}
-                    onFocus={() => {
-                      setIsDropdownOpen(true);
-                      setSearchTerm("");
-                    }}
-                    placeholder="Поиск скважины..."
-                    className={styles.inputField}
-                  />
-                  <span
-                    className={styles.dropdownArrow}
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  >
-                    {isDropdownOpen ? "▲" : "▼"}
-                  </span>
+      {/* Universal Filters Section */}
+      <div className={styles.centralFiltersSection}>
+        <div className={styles.filtersContainer}>
+          <div className={styles.filterGroup} ref={dropdownRef}>
+            <label className={styles.filterLabel}>
+              Выбрать скважину:
+            </label>
+            <div className={styles.dropdownContainer}>
+              <input
+                type="text"
+                value={isDropdownOpen ? searchTerm : getDisplayText()}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value);
+                  if (!isDropdownOpen) setIsDropdownOpen(true);
+                }}
+                onFocus={() => {
+                  setIsDropdownOpen(true);
+                  setSearchTerm("");
+                }}
+                placeholder="Поиск скважины..."
+                className={styles.inputField}
+              />
+              <span
+                className={styles.dropdownArrow}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                {isDropdownOpen ? "▲" : "▼"}
+              </span>
+            </div>
+            
+            {isDropdownOpen && (
+              <div className={styles.dropdownMenu}>
+                <div
+                  className={`${styles.dropdownItem} ${selectedWell === "all" ? styles.selected : ""}`}
+                  onClick={() => handleWellSelect("all")}
+                >
+                  Все
                 </div>
-                
-                {isDropdownOpen && (
-                  <div className={styles.dropdownMenu}>
-                    <div
-                      className={`${styles.dropdownItem} ${selectedWell === "all" ? styles.selected : ""}`}
-                      onClick={() => handleWellSelect("all")}
-                    >
-                      Все
-                    </div>
-                    {filteredWells.map(well => (
-                      <div
-                        key={well}
-                        className={`${styles.dropdownItem} ${selectedWell === well ? styles.selected : ""}`}
-                        onClick={() => handleWellSelect(well)}
-                      >
-                        {well}
-                      </div>
-                    ))}
-                    {filteredWells.length === 0 && searchTerm && (
-                      <div className={styles.dropdownNoResults}>
-                        Не найдено
-                      </div>
-                    )}
+                {filteredWells.map(well => (
+                  <div
+                    key={well}
+                    className={`${styles.dropdownItem} ${selectedWell === well ? styles.selected : ""}`}
+                    onClick={() => handleWellSelect(well)}
+                  >
+                    {well}
+                  </div>
+                ))}
+                {filteredWells.length === 0 && searchTerm && (
+                  <div className={styles.dropdownNoResults}>
+                    Не найдено
                   </div>
                 )}
               </div>
-
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>
-                  Начало:
-                </label>
-                <input
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
-                  className={styles.inputField}
-                />
-              </div>
-
-              <div className={styles.filterGroup}>
-                <label className={styles.filterLabel}>
-                  Конец:
-                </label>
-                <input
-                  type="date"
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
-                  className={styles.inputField}
-                />
-              </div>
-            </div>
+            )}
           </div>
 
-          {/* Chart Header and Content */}
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>
+              Статус контроллера:
+            </label>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className={styles.inputField}
+            >
+              <option value="All">Все</option>
+              <option value="Active">В сети</option>
+              <option value="Inactive">Не в сети</option>
+              <option value="Maintenance">Нет данных</option>
+            </select>
+          </div>
+
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>
+              Начало:
+            </label>
+            <input
+              type="date"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className={styles.inputField}
+            />
+          </div>
+
+          <div className={styles.filterGroup}>
+            <label className={styles.filterLabel}>
+              Конец:
+            </label>
+            <input
+              type="date"
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className={styles.inputField}
+            />
+          </div>
+
+          <div className={styles.filterGroup}>
+            <button
+              onClick={handleClearAllFilters}
+              className={styles.clearFiltersButton}
+            >
+              Очистить фильтры
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      {/* Main Content */}
+      <div className={styles.mainContent}>
+        {/* Chart Section */}
+        <div className={styles.chartSection}>
+          {/* Chart Header */}
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Анализ изменений добычи нефти</h2>
             {selectedWell !== "all" && (
@@ -413,9 +483,9 @@ export default function OilLayout() {
                 Скважина: {selectedWell}
               </span>
             )}
-            <span className={styles.sectionPeriod}>
+            {/* <span className={styles.sectionPeriod}>
               Период: {startDate} - {endDate}
-            </span>
+            </span> */}
           </div>
           
           <div className={styles.chartContainer}>
@@ -439,8 +509,12 @@ export default function OilLayout() {
         <div className={styles.mapSection}>          
           <div className={styles.mapContainer}>
             <OilMap 
-              filter={mapFilter}
-              searchTerm={mapSearchTerm}
+              selectedWell={selectedWell}
+              statusFilter={statusFilter}
+              onWellSelect={handleWellSelect}
+              wellsOilData={processedWellsData}
+              startDate={startDate}
+              endDate={endDate}
             />
           </div>
         </div>
