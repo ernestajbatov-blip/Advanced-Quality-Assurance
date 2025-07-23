@@ -50,19 +50,19 @@ export default function AGZU({ wells, index }) {
                     onClick={() => handleButtonClick("АГЗУ-4")}
                 />
                 <Button
-                    label="МФ-1"
-                    active={activeButton === "МФ-1"}
-                    onClick={() => handleButtonClick("МФ-1")}
+                    label="МФ-2"
+                    active={activeButton === "МФ №2"}
+                    onClick={() => handleButtonClick("МФ №2")}
                 />
                 <Button
-                    label="МФ-2"
-                    active={activeButton === "МФ-2"}
-                    onClick={() => handleButtonClick("МФ-2")}
+                    label="МФ-3"
+                    active={activeButton === "МФ №3"}
+                    onClick={() => handleButtonClick("МФ №3")}
                 />
                 <Button
                     label="МФ-4"
-                    active={activeButton === "МФ-4"}
-                    onClick={() => handleButtonClick("МФ-4")}
+                    active={activeButton === "МФ №4"}
+                    onClick={() => handleButtonClick("МФ №4")}
                 />
             </div>
             <AgzuDiagram filteredWells={filteredWells} boxIndex={2}/>
