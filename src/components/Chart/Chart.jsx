@@ -122,19 +122,20 @@ export default function Chart({ type, setType }) {
   };
 
   const processAndSetData = (fetchedData) => {
+    const timeToMinutes = (t) => {
+      const [h, m] = t?.split(":").map(Number);
+      return h * 60 + m;
+    };
+
     const sortedData = [...fetchedData].sort((a, b) => {
-      const timeToMinutes = (t) => {
-        const [h, m] = t?.split(":").map(Number);
-        return h * 60 + m;
-      };
       const offset = (t) => {
         const minutes = timeToMinutes(t);
         return (minutes - 120 + 1440) % 1440;
       };
       return offset(a.time) - offset(b.time);
     });
-    const chartDate = sortedData[0]?.date || new Date().toISOString().split("T")[0];
 
+    const chartDate = sortedData[0]?.date || new Date().toISOString().split("T")[0];
     setChartDate(chartDate);
 
     const formattedData = sortedData.map((item) => ({
@@ -186,7 +187,6 @@ export default function Chart({ type, setType }) {
 
   const handleNakChange = (event) => setNak(event.target.checked);
   const handleTypeChange = (event) => setType(event.target.value);
-
   const handleDateChange = (date) => {
     if (date) {
       setSelectedDate(date);

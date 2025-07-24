@@ -38,7 +38,7 @@ function MapClickHandler({ onMapClick }) {
 }
 
 // Enhanced popup component with pie chart
-const EnhancedPopup = ({ well }) => {
+const EnhancedPopup = ({ well, wellsOilData, startDate, endDate }) => {
   const getStatusClass = (type) => {
     switch (type) {
       case "Active":
@@ -65,14 +65,31 @@ const EnhancedPopup = ({ well }) => {
     }
   };
 
-  // Oil loss data for the pie chart
-  const oilLossData = [
-    { name: "Время работы", value: Math.abs(-9.8) },
-    { name: "Обводненность", value: Math.abs(-13.4) },
-    { name: "Дебит жидкости", value: 3.0 },
-  ];
+  // Get real oil loss data for this specific well
+  const wellData = wellsOilData[well.name] || {};
+  
+  // Show absolute values of changes for pie chart
+  const oilLossData = wellData.workTimeChange !== undefined ? [
+    { name: "Изм. времени работы", value: Math.abs(wellData.workTimeChange || 0), unit: "ч" },
+    { name: "Изм. обводненности", value: Math.abs(wellData.waterCutChange || 0), unit: "%" },
+    { name: "Изм. дебита жидкости", value: Math.abs(wellData.fluidChange || 0), unit: "м³" },
+  ].filter(item => item.value > 0) : []; // Only show items with actual changes
 
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
+
+  // Custom tooltip for pie chart
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className={styles.chartTooltip}>
+          <p>{data.name}</p>
+          <p>{`${data.value.toFixed(2)} ${data.unit}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className={styles.enhancedPopup}>
@@ -85,37 +102,48 @@ const EnhancedPopup = ({ well }) => {
       
       <div className={styles.popupBody}>
         <div className={styles.popupSection}>
-          <div className={styles.sectionTitle}>Анализ потерь нефти</div>
+          <div className={styles.sectionTitle}>Изменения между периодами</div>
+          {/* <div className={styles.periodInfo}>
+            <div className={styles.periodText}>{startDate} → {endDate}</div>
+          </div> */}
           <div className={styles.chartContainer}>
-            <PieChart width={280} height={160}>
-              <RechartsTooltip />
-              <Pie
-                data={oilLossData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={70}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {oilLossData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
-            <div className={styles.chartLegend}>
-              {oilLossData.map((entry, index) => (
-                <div key={`legend-${index}`} className={styles.legendItem}>
-                  <div 
-                    className={styles.legendColor} 
-                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                  ></div>
-                  <span className={styles.legendText}>
-                    {entry.name}
-                  </span>
+            {oilLossData.length > 0 ? (
+              <>
+                <PieChart width={280} height={160}>
+                  <RechartsTooltip content={<CustomTooltip />} />
+                  <Pie
+                    data={oilLossData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={70}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {oilLossData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+                <div className={styles.chartLegend}>
+                  {oilLossData.map((entry, index) => (
+                    <div key={`legend-${index}`} className={styles.legendItem}>
+                      <div 
+                        className={styles.legendColor} 
+                        style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                      ></div>
+                      <span className={styles.legendText}>
+                        {entry.name}: {entry.value.toFixed(2)} {entry.unit}
+                      </span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </>
+            ) : (
+              <div className={styles.noDataMessage}>
+                Нет изменений в выбранных периодах
+              </div>
+            )}
           </div>
         </div>
         
@@ -133,7 +161,10 @@ const EnhancedPopup = ({ well }) => {
 export default function OilMap({ 
   selectedWell = "all", 
   statusFilter = "All", 
-  onWellSelect 
+  onWellSelect,
+  wellsOilData = {},
+  startDate,
+  endDate
 }) {
   const [wells, setWells] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -335,7 +366,12 @@ export default function OilMap({
                     maxWidth={320}
                     minWidth={280}
                   >
-                    <EnhancedPopup well={well} />
+                    <EnhancedPopup 
+                      well={well} 
+                      wellsOilData={wellsOilData} 
+                      startDate={startDate}
+                      endDate={endDate}
+                    />
                   </Popup>
                 </Marker>
               );

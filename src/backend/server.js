@@ -75,10 +75,10 @@ app.get("/api/2hours", (req, res) => {
     SELECT current_debit, tech_rezh, debit_last_day,
           current_debit_nak, tech_rezh_nak, debit_last_day_nak,
           n_current_debit, n_tech_rezh, n_debit_last_day,
-          n_current_debit_nak, n_tech_rezh_nak, n_debit_last_day_nak, time
+          n_current_debit_nak, n_tech_rezh_nak, n_debit_last_day_nak, 
+          time, Tin
     FROM n_2hour
     WHERE oil_field LIKE ?
-    ORDER BY time DESC -- Or a reliable timestamp column to get latest 13
     LIMIT 13;
   `;
   

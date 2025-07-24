@@ -24,7 +24,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
 
   return (
     <div className={styles.container}>
-      <svg className="svgImage" viewBox="60 -30 1700 900" xmlns="http://www.w3.org/2000/svg">
+      <svg className="svgImage" viewBox="60 -40 1700 900" xmlns="http://www.w3.org/2000/svg">
         {/* Vertical Pipes */}
         {pipes.map((pipe, index) => (
           <line key={`v${index}`} {...pipe} stroke={getPipeColor(index)} strokeWidth="3" />
@@ -46,7 +46,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
             boxText1={well?.well || ""}
             boxText2={well?.tr_fluid != null ? well.tr_fluid.toFixed(2) : ""}
             top={index < 7 ? "5%" : "100%"}
-            left={`${10 + (index % 7) * 139}px`}
+            left={`${10 + (index % 7) * 135}px`}
             number={index + 1}
             borderColor={getPipeColor(index, "#FFFFFF")}
           />
