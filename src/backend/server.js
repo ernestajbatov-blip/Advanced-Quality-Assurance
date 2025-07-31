@@ -284,6 +284,62 @@ app.get("/api/oil-loss/wells", (req, res) => {
   });
 });
 
+app.get("/api/vlagomer-history/:date?", (req, res) => {
+  const connection = getConnection();
+  const date = req.params.date;
+  
+  let query = `
+    SELECT tag_key, tag_value, vlog_arch as timestamp
+    FROM vlagomer 
+    WHERE oil_field = 'BSK' AND tag_key = 'VlagomerTFS_1'
+  `;
+  
+  const params = [];
+  
+  if (date) {
+    query += ` AND DATE(vlog_arch) = ?`;
+    params.push(date);
+  }
+  
+  query += `
+    ORDER BY vlog_arch DESC
+    LIMIT 20;
+  `;
+  
+  connection.query(query, params, (err, results) => {
+    if (err) {
+      console.error("Failed to fetch vlagomer history:", err);
+      return res.status(500).json({ error: "Database error" });
+    }
+    
+    const transformedResults = results.map(row => ({
+      value: parseFloat(row.tag_value),
+      timestamp: row.timestamp
+    }));
+    
+    res.json(transformedResults || []);
+  });
+});
+
+app.get("/api/vlagomer-history/dates", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT DISTINCT DATE(vlog_arch) as date 
+    FROM vlagomer 
+    WHERE oil_field = 'BSK' AND tag_key = 'VlagomerTFS_1'
+    ORDER BY date DESC
+    LIMIT 100;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
 // ---- Static Frontend ----
 
 const distPath = path.join(__dirname, "../../dist");

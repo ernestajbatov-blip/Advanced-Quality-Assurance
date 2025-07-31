@@ -15,7 +15,7 @@ export const fetch2HoursArchive = (oilField = 'BSK', date) => {
   });
 };
 
-export const getAvailableArchiveDates = (oilField = 'ABK') => {
+export const getAvailableArchiveDates = (oilField = 'BSK') => {
   return api.get("/2hours/archive/dates", {
     params: { oil_field: oilField }
   });
@@ -51,4 +51,15 @@ export const fetchBSKWells = () => {
 
 export const fetchProgressOil = () => {
   return api.get("/progress-oil");
+};
+
+export const getAvailableVlagomerDates = () => {
+  return api.get("/vlagomer-history/dates");
+};
+
+export const fetchVlagomerHistory = (date = null) => {
+  const url = date 
+    ? `/vlagomer-history/${date}`
+    : "/vlagomer-history";
+  return api.get(url);
 };

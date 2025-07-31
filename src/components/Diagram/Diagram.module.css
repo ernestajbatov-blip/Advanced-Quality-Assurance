@@ -61,3 +61,68 @@
 .buttonBox:active {
   background-color: #003d80;
 }
+
+/* Add this to your CSS file */
+.custom-datepicker {
+  background-color: #333 !important;
+  color: white !important;
+  border: 1px solid #555 !important;
+  border-radius: 4px !important;
+  padding: 8px 12px !important;
+  font-size: 14px !important;
+}
+
+.custom-datepicker:focus {
+  outline: none !important;
+  border-color: #4a90e2 !important;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2) !important;
+}
+
+/* Style the date picker popup */
+.react-datepicker {
+  background-color: #2a2a2a !important;
+  border: 1px solid #555 !important;
+  color: white !important;
+}
+
+.react-datepicker__header {
+  background-color: #333 !important;
+  border-bottom: 1px solid #555 !important;
+}
+
+.react-datepicker__current-month {
+  color: white !important;
+}
+
+.react-datepicker__day-name {
+  color: #ccc !important;
+}
+
+.react-datepicker__day {
+  color: white !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #4a90e2 !important;
+}
+
+.react-datepicker__day--selected {
+  background-color: #4a90e2 !important;
+}
+
+.react-datepicker__day--highlighted {
+  background-color: #28a745 !important;
+  color: white !important;
+}
+
+.react-datepicker__navigation {
+  border: 0.45rem solid transparent !important;
+}
+
+.react-datepicker__navigation--previous {
+  border-right-color: white !important;
+}
+
+.react-datepicker__navigation--next {
+  border-left-color: white !important;
+}

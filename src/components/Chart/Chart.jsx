@@ -70,8 +70,8 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
   const scaleX = (index) => (index / Math.max(data.length - 1, 1)) * chartWidth;
   const scaleY = (value) => chartHeight - ((value - minValue) / valueRange) * chartHeight;
 
-  // Generate line segments with dynamic styling based on Tin for current data, solid for archive
-  const generateLineSegments = (dataKey) => {
+  // Updated generateLineSegments function with line-specific styling
+  const generateLineSegments = (dataKey, lineType) => {
     const segments = [];
     
     for (let i = 0; i < data.length - 1; i++) {
@@ -87,9 +87,26 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
         const x2 = scaleX(i + 1);
         const y2 = scaleY(nextValue);
 
+        let isDashed = false;
+        
+        // Apply line-specific styling rules
+        switch (lineType) {
+          case 'green': // Current debit - dashed based on tin (only if not archive mode)
+            isDashed = isArchiveMode ? false : current.tin === 0;
+            break;
+          case 'red': // Tech regime - always dashed
+            isDashed = true;
+            break;
+          case 'gray': // Previous day debit - always solid
+            isDashed = false;
+            break;
+          default:
+            isDashed = false;
+        }
+
         segments.push({
           path: `M ${x1} ${y1} L ${x2} ${y2}`,
-          isDashed: isArchiveMode ? false : current.tin === 0, // Solid for archive, dynamic for current
+          isDashed: isDashed,
           tin: current.tin
         });
       }
@@ -98,10 +115,10 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
     return segments;
   };
 
-  // Generate segments for all three lines
-  const currentDebitSegments = generateLineSegments(currDebitKey);
-  const techRezhSegments = generateLineSegments(techRezhKey);
-  const debitLastDaySegments = generateLineSegments(debitLastDayKey);
+  // Generate segments for all three lines with specific line types
+  const currentDebitSegments = generateLineSegments(currDebitKey, 'green');
+  const techRezhSegments = generateLineSegments(techRezhKey, 'red');
+  const debitLastDaySegments = generateLineSegments(debitLastDayKey, 'gray');
 
   // Format Y-axis values
   const formatYAxis = (value) => 
@@ -272,7 +289,7 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
 
         {/* Chart content */}
         <g transform={`translate(${margin.left}, ${margin.top})`}>
-          {/* Tech regime line segments with dynamic styling - NO ANIMATIONS ON PATHS */}
+          {/* Tech regime line segments - ALWAYS DASHED */}
           {techRezhSegments.map((segment, i) => (
             <path
               key={`tech-${i}`}
@@ -280,13 +297,13 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
               fill="none"
               stroke="#B22222"
               strokeWidth="2"
-              strokeDasharray={segment.isDashed ? "5 5" : "none"}
+              strokeDasharray="5 5"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           ))}
 
-          {/* Previous day debit line segments with dynamic styling - NO ANIMATIONS ON PATHS */}
+          {/* Previous day debit line segments - ALWAYS SOLID */}
           {debitLastDaySegments.map((segment, i) => (
             <path
               key={`lastday-${i}`}
@@ -294,13 +311,13 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
               fill="none"
               stroke="#888888"
               strokeWidth="2"
-              strokeDasharray={segment.isDashed ? "5 5" : "none"}
+              strokeDasharray="none"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           ))}
 
-          {/* Current debit line segments with dynamic styling - NO ANIMATIONS ON PATHS */}
+          {/* Current debit line segments - DASHED BASED ON TIN */}
           {currentDebitSegments.map((segment, i) => (
             <path
               key={`current-${i}`}
@@ -531,7 +548,7 @@ export default function Chart({ type, setType }) {
   const loadArchiveData = (date) => {
     setLoading(true);
     const dateString = format(date, "yyyy-MM-dd");
-    fetch2HoursArchive("ABK", dateString)
+    fetch2HoursArchive("BSK", dateString)
       .then((response) => {
         processAndSetData(response.data);
       })

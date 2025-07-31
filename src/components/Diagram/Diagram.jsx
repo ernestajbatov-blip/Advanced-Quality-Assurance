@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import SchemeMain from "../../data/Diagrams/SchemeMain.svg";
 import styles from "./Diagram.module.css";
@@ -14,8 +14,11 @@ import ResponsiveTable from "../ResponsiveTable/ResponsiveTable";
 import Modal from "../Modal/Modal";
 import { NavLink } from "react-router-dom";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, isSameDay } from "date-fns";
 import Legend from "../Legends/Legends"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { fetchVlagomerHistory, getAvailableVlagomerDates } from "../../axios/wellService";
 
 const VlagomerTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -44,7 +47,10 @@ export default function Diagram() {
   const [tableTitle, setTableTitle] = useState("Sensor Data");
   const [showVlagomerChart, setShowVlagomerChart] = useState(false);
   const [vlagomerData, setVlagomerData] = useState([]);
-const [vlagomerLoading, setVlagomerLoading] = useState(false);
+  const [vlagomerLoading, setVlagomerLoading] = useState(false);
+  const [selectedVlagomerDate, setSelectedVlagomerDate] = useState(null);
+  const [availableVlagomerDates, setAvailableVlagomerDates] = useState([]);
+  const [isVlagomerArchiveMode, setIsVlagomerArchiveMode] = useState(false);
 
   useEffect(() => {
     axios.get("http://localhost:3000/api/progress-oil")
@@ -57,10 +63,9 @@ const [vlagomerLoading, setVlagomerLoading] = useState(false);
       });
   }, []);
 
-
-
-
-
+  useEffect(() => {
+    loadAvailableVlagomerDates();
+  }, []);
 
   const TAG_UNITS = {
     // tfs-1
@@ -298,16 +303,22 @@ const [vlagomerLoading, setVlagomerLoading] = useState(false);
     });
   };
 
-  const fetchVlagomerData = async () => {
+  const fetchVlagomerData = async (date = null) => {
     setVlagomerLoading(true);
     try {
-      // Replace with your actual API endpoint for historical vlagomer data
-      const response = await axios.get("http://localhost:3000/api/vlagomer-history");
+      let response;
+      if (date) {
+        // Fetch archive data for specific date
+        const dateString = format(date, "yyyy-MM-dd");
+        response = await fetchVlagomerHistory(dateString);
+      } else {
+        // Fetch current data
+        response = await fetchVlagomerHistory();
+      }
       
-      // Process the data similar to Chart.jsx
       const processedData = response.data
         .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-        .slice(-20) // Get last 20 data points
+        .slice(-20)
         .map(item => ({
           time: format(parseISO(item.timestamp), 'HH:mm'),
           value: Math.round(item.value * 100) / 100,
@@ -316,35 +327,77 @@ const [vlagomerLoading, setVlagomerLoading] = useState(false);
       
       setVlagomerData(processedData);
     } catch (error) {
-      console.error("Failed to fetch vlagomer history:", error);
-      // Fallback to mock data if API fails
-      generateVlagomerMockData();
+      console.error("Не удалось загрузить историю влагомера:", error);
+      setVlagomerData([]);
     } finally {
       setVlagomerLoading(false);
     }
   };
 
-  const generateVlagomerMockData = () => {
-    const now = new Date();
-    const data = [];
-    
-    // Generate 20 data points over the last 40 minutes (every 2 minutes)
-    for (let i = 19; i >= 0; i--) {
-      const time = new Date(now.getTime() - (i * 2 * 60 * 1000));
-      
-      // Use a base value between 15-25% for realistic moisture content
-      const baseValue = 20;
-      const variation = (Math.random() - 0.5) * 8; // ±4% variation
-      const value = Math.max(0, Math.min(100, baseValue + variation)); // Keep between 0-100%
-      
-      data.push({
-        time: time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
-        value: Math.round(value * 100) / 100,
-        fullTimestamp: time.toISOString()
-      });
+  const loadAvailableVlagomerDates = async () => {
+    try {
+      const response = await getAvailableVlagomerDates();
+      setAvailableVlagomerDates(response.data || []);
+    } catch (error) {
+      console.error("Error fetching available vlagomer dates:", error);
+      setAvailableVlagomerDates([]);
     }
+  };
+
+  const parsedAvailableVlagomerDates = useMemo(() => {
+    return availableVlagomerDates
+      .map((d) => {
+        try {
+          const parsedDate = parseISO(d.date);
+          if (isNaN(parsedDate.getTime())) {
+            const [year, month, day] = d.date.split("-");
+            return new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+          }
+          return parsedDate;
+        } catch (error) {
+          console.warn("Failed to parse vlagomer date:", d.date, error);
+          return null;
+        }
+      })
+      .filter((date) => date !== null && !isNaN(date.getTime()));
+  }, [availableVlagomerDates]);
+
+  // const generateVlagomerMockData = () => {
+  //   const now = new Date();
+  //   const data = [];
     
-    setVlagomerData(data);
+  //   // Generate 20 data points over the last 40 minutes (every 2 minutes)
+  //   for (let i = 19; i >= 0; i--) {
+  //     const time = new Date(now.getTime() - (i * 2 * 60 * 1000));
+      
+  //     // Use a base value between 15-25% for realistic moisture content
+  //     const baseValue = 20;
+  //     const variation = (Math.random() - 0.5) * 8; // ±4% variation
+  //     const value = Math.max(0, Math.min(100, baseValue + variation)); // Keep between 0-100%
+      
+  //     data.push({
+  //       time: time.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+  //       value: Math.round(value * 100) / 100,
+  //       fullTimestamp: time.toISOString()
+  //     });
+  //   }
+    
+  //   setVlagomerData(data);
+  // };
+
+  const handleVlagomerDateChange = (date) => {
+    if (date) {
+      setSelectedVlagomerDate(date);
+      setIsVlagomerArchiveMode(true);
+      setShowVlagomerChart(true);
+      fetchVlagomerData(date);
+    }
+  };
+
+  const handleVlagomerReset = () => {
+    setIsVlagomerArchiveMode(false);
+    setSelectedVlagomerDate(null);
+    fetchVlagomerData();
   };
 
   const handleVlagomerClick = () => {
@@ -975,14 +1028,54 @@ const [vlagomerLoading, setVlagomerLoading] = useState(false);
       {showVlagomerChart && (
         <Modal onClose={handleCloseVlagomerChart}>
           <div style={{ padding: "20px", minWidth: "700px" }}>
-            <h2 style={{ 
-              marginTop: 0, 
-              marginBottom: "20px",
-              fontSize: "24px",
-              color: "white"
+            <div style={{ 
+              display: "flex", 
+              justifyContent: "space-between", 
+              alignItems: "center",
+              marginBottom: "20px"
             }}>
-              Влагомер - Изменения во времени
-            </h2>
+              <h2 style={{ 
+                margin: 0, 
+                fontSize: "24px",
+                color: "white"
+              }}>
+                Влагомер - Изменения во времени
+              </h2>
+              
+              <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                <DatePicker
+                  selected={selectedVlagomerDate}
+                  onChange={handleVlagomerDateChange}
+                  highlightDates={parsedAvailableVlagomerDates}
+                  placeholderText="Выберите дату"
+                  className="custom-datepicker"
+                  style={{
+                    backgroundColor: "#333",
+                    color: "white",
+                    border: "1px solid #555",
+                    borderRadius: "4px",
+                    padding: "8px 12px"
+                  }}
+                />
+                
+                {isVlagomerArchiveMode && (
+                  <button 
+                    onClick={handleVlagomerReset}
+                    style={{
+                      backgroundColor: "#4a90e2",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "4px",
+                      padding: "8px 12px",
+                      cursor: "pointer",
+                      fontSize: "14px"
+                    }}
+                  >
+                    🔄 Текущие данные
+                  </button>
+                )}
+              </div>
+            </div>
             
             {vlagomerLoading && (
               <div style={{ 
@@ -994,74 +1087,96 @@ const [vlagomerLoading, setVlagomerLoading] = useState(false);
                 ⏳ Загрузка данных...
               </div>
             )}
+
+            {!vlagomerLoading && vlagomerData.length === 0 && (
+              <div style={{ 
+                color: "#ff6b6b", 
+                textAlign: "center", 
+                padding: "40px",
+                fontSize: "16px",
+                backgroundColor: "#2a1f1f",
+                borderRadius: "8px",
+                border: "1px solid #ff6b6b"
+              }}>
+                ❌ Ошибка загрузки данных влагомера. Проверьте подключение к API.
+              </div>
+            )}
             
-            <div style={{ 
-              backgroundColor: "#1a1a1a",
-              borderRadius: "8px",
-              padding: "20px",
-              height: "250px",
-              border: "1px solid #333" 
-            }}>
-              <LineChart
-                width={650}
-                height={350}
-                data={vlagomerData}
-                margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 60,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" stroke="#444" opacity={0.5} />
-                <XAxis 
-                  dataKey="time" 
-                  angle={-45}
-                  textAnchor="end"
-                  height={80}
-                  fontSize={12}
-                  tick={{ fill: "#e5e5e5" }} // Light text for dark theme
-                  axisLine={{ stroke: "#666" }}
-                  tickLine={{ stroke: "#666" }}
-                />
-                <YAxis 
-                  label={{ 
-                    value: 'Влажность (%)', 
-                    angle: -90, 
-                    position: 'insideLeft',
-                    style: { textAnchor: 'middle', fill: '#e5e5e5' }
-                  }}
-                  fontSize={12}
-                  tick={{ fill: "#e5e5e5" }} // Light text for dark theme
-                  axisLine={{ stroke: "#666" }}
-                  tickLine={{ stroke: "#666" }}
-                />
-                <Tooltip 
-                  content={<VlagomerTooltip />}
-                />
-                <Legend 
-                  wrapperStyle={{ color: '#e5e5e5' }}
-                />
-                <Line 
-                  type="monotone" 
-                  dataKey="value" 
-                  name="Влажность"
-                  stroke="#60a5fa" // Lighter blue for better visibility on dark background
-                  strokeWidth={2}
-                  dot={{ fill: '#60a5fa', strokeWidth: 2, r: 3 }}
-                  activeDot={{ r: 6, fill: '#3b82f6' }}
-                />
-              </LineChart>
-            </div>
-            
-            <div style={{ 
-              marginTop: "15px", 
-              color: "white", 
-              fontSize: "12px",
-              textAlign: "center"
-            }}>
-              Последние 20 измерений • Обновлено: {new Date().toLocaleTimeString('ru-RU')}
-            </div>
+            {!vlagomerLoading && vlagomerData.length > 0 && (
+              <>
+                <div style={{ 
+                  backgroundColor: "#1a1a1a",
+                  borderRadius: "8px",
+                  padding: "20px",
+                  height: "250px",
+                  border: "1px solid #333" 
+                }}>
+                  <LineChart
+                    width={650}
+                    height={350}
+                    data={vlagomerData}
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 20,
+                      bottom: 60,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#444" opacity={0.5} />
+                    <XAxis 
+                      dataKey="time" 
+                      angle={-45}
+                      textAnchor="end"
+                      height={80}
+                      fontSize={12}
+                      tick={{ fill: "#e5e5e5" }}
+                      axisLine={{ stroke: "#666" }}
+                      tickLine={{ stroke: "#666" }}
+                    />
+                    <YAxis 
+                      label={{ 
+                        value: 'Влажность (%)', 
+                        angle: -90, 
+                        position: 'insideLeft',
+                        style: { textAnchor: 'middle', fill: '#e5e5e5' }
+                      }}
+                      fontSize={12}
+                      tick={{ fill: "#e5e5e5" }}
+                      axisLine={{ stroke: "#666" }}
+                      tickLine={{ stroke: "#666" }}
+                    />
+                    <Tooltip 
+                      content={<VlagomerTooltip />}
+                    />
+                    <Legend 
+                      wrapperStyle={{ color: '#e5e5e5' }}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="value" 
+                      name="Влажность"
+                      stroke="#60a5fa"
+                      strokeWidth={2}
+                      dot={{ fill: '#60a5fa', strokeWidth: 2, r: 3 }}
+                      activeDot={{ r: 6, fill: '#3b82f6' }}
+                    />
+                  </LineChart>
+                </div>
+                
+                <div style={{ 
+                  marginTop: "15px", 
+                  color: "white", 
+                  fontSize: "12px",
+                  textAlign: "center"
+                }}>
+                  Последние 20 измерений • 
+                  {isVlagomerArchiveMode && selectedVlagomerDate ? 
+                    `Архив: ${format(selectedVlagomerDate, "dd.MM.yyyy")}` : 
+                    `Обновлено: ${new Date().toLocaleTimeString('ru-RU')}`
+                  }
+                </div>
+              </>
+            )}
           </div>
         </Modal>
       )}
