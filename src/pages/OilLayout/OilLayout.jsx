@@ -7,7 +7,7 @@ import AppNav from "../../components/AppNav/AppNav";
 import OilMap from "../../components/Map/OilMap";
 import styles from "./OilLayout.module.css";
 
-export default function OilLayout() {
+export default function OilLayout({ user, onLogout }) {
   const [selectedWell, setSelectedWell] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

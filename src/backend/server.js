@@ -5,6 +5,7 @@ const fs = require("fs");
 const getConnection = require("./db");
 const port = 3000;
 const app = express();
+const crypto = require("crypto");
 
 app.use(cors());
 app.use(express.json());
@@ -170,7 +171,8 @@ app.get("/api/well/data", (req, res) => {
       c_freq AS 'Частота',
       c_current AS 'Ток',
       c_speed AS 'Скорость двигателя',
-      working AS 'Работа'
+      working AS 'Работа',
+      c_last_update AS 'Последнее обновление'
     FROM well_data
     WHERE well = ?;
   `;
@@ -180,6 +182,26 @@ app.get("/api/well/data", (req, res) => {
       return res.status(500).json({ error: "Database query failed" });
     }
     res.json(results || []);
+  });
+});
+
+app.get("/api/wells/last-update", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT MAX(c_last_update) as lastUpdate
+    FROM well_data
+    WHERE well LIKE 'BSK%'
+    AND c_last_update IS NOT NULL;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    const lastUpdate = results && results[0] ? results[0].lastUpdate : null;
+    res.json({ lastUpdate });
   });
 });
 
@@ -337,6 +359,218 @@ app.get("/api/vlagomer-history/dates", (req, res) => {
       return res.status(500).json({ error: "Database query failed" });
     }
     res.json(results || []);
+  });
+});
+
+// KPI data for production wells (nagn = 0)
+app.get("/api/kpi/production", (req, res) => {
+  const connection = getConnection();
+  
+  const matrixQuery = `
+    SELECT 
+      COALESCE(SUM(zamer), 0) as zamernaya_fluid,
+      COALESCE(SUM(zamer_oil), 0) as zamernaya_oil,
+      COALESCE(SUM(tr_fluid), 0) as tech_rezh_fluid,
+      COALESCE(SUM(tr_oil), 0) as tech_rezh_oil
+    FROM n_well_matrix 
+    WHERE nagn = 0;
+  `;
+  
+  const parkQuery = `
+    SELECT 
+      COALESCE(n_debit_last_day, 0) as park_fluid,
+      COALESCE(n_debit_last_day_nak, 0) as park_oil
+    FROM n_2hour 
+    WHERE oil_field LIKE 'BSK%' AND time = '1:59'
+    ORDER BY id DESC 
+    LIMIT 1;
+  `;
+  
+  connection.query(matrixQuery, (error1, matrixResults) => {
+    if (error1) {
+      console.error("Database error (matrix):", error1);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    connection.query(parkQuery, (error2, parkResults) => {
+      if (error2) {
+        console.error("Database error (park):", error2);
+        return res.status(500).json({ error: "Database query failed" });
+      }
+      
+      const matrixData = matrixResults[0] || {};
+      const parkData = parkResults[0] || {};
+      
+      const parkCoeff = parkData.park_oil > 0 ? 
+        (matrixData.zamernaya_oil / parkData.park_oil).toFixed(3) : 0;
+      
+      const result = {
+        zamernaya_fluid: parseFloat(matrixData.zamernaya_fluid || 0).toFixed(2),
+        zamernaya_oil: parseFloat(matrixData.zamernaya_oil || 0).toFixed(2),
+        park_fluid: parseFloat(parkData.park_fluid || 0).toFixed(2),
+        park_oil: parseFloat(parkData.park_oil || 0).toFixed(2),
+        tech_rezh_fluid: parseFloat(matrixData.tech_rezh_fluid || 0).toFixed(2),
+        tech_rezh_oil: parseFloat(matrixData.tech_rezh_oil || 0).toFixed(2),
+        park_coefficient: parseFloat(parkCoeff)
+      };
+      
+      res.json(result);
+    });
+  });
+});
+
+// KPI data for injection wells (nagn = 1)
+app.get("/api/kpi/injection", (req, res) => {
+  const connection = getConnection();
+  
+  const matrixQuery = `
+    SELECT 
+      COALESCE(SUM(zamer), 0) as sum_zakachka,
+      COALESCE(SUM(tr_fluid), 0) as tech_rezh_vrp
+    FROM n_well_matrix 
+    WHERE nagn = 1;
+  `;
+  
+  const parkQuery = `
+    SELECT 
+      COALESCE(SUM(wat_out), 0) as park_dobycha
+    FROM n_2hour 
+    WHERE oil_field LIKE 'BSK%';
+  `;
+  
+  connection.query(matrixQuery, (error1, matrixResults) => {
+    if (error1) {
+      console.error("Database error (matrix injection):", error1);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    connection.query(parkQuery, (error2, parkResults) => {
+      if (error2) {
+        console.error("Database error (park injection):", error2);
+        return res.status(500).json({ error: "Database query failed" });
+      }
+      
+      const matrixData = matrixResults[0] || {};
+      const parkData = parkResults[0] || {};
+      
+      const result = {
+        sum_zakachka: parseFloat(matrixData.sum_zakachka || 0).toFixed(2),
+        park_dobycha: parseFloat(parkData.park_dobycha || 0).toFixed(2),
+        tech_rezh_vrp: parseFloat(matrixData.tech_rezh_vrp || 0).toFixed(2)
+      };
+      
+      res.json(result);
+    });
+  });
+});
+
+// Authentication routes
+app.post("/api/auth/login", (req, res) => {
+  const { login, password } = req.body;
+  
+  if (!login || !password) {
+    return res.status(400).json({ error: "Login and password are required" });
+  }
+
+  const connection = getConnection();
+  const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
+  
+  const query = `
+    SELECT id, login, name, is_admin, available_ngdu_id 
+    FROM n_users 
+    WHERE login = ? AND password = ?
+  `;
+  
+  connection.query(query, [login, hashedPassword], (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    if (results.length === 0) {
+      return res.status(401).json({ error: "Invalid credentials" });
+    }
+    
+    const user = results[0];
+    res.json({
+      id: user.id,
+      login: user.login,
+      name: user.name,
+      is_admin: user.is_admin,
+      available_ngdu_id: user.available_ngdu_id
+    });
+  });
+});
+
+// Admin routes
+app.get("/api/admin/users", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT id, login, name, is_admin, available_ngdu_id 
+    FROM n_users 
+    ORDER BY id
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
+app.post("/api/admin/users", (req, res) => {
+  const { login, name, password, is_admin, available_ngdu_id } = req.body;
+  
+  if (!login || !name || !password) {
+    return res.status(400).json({ error: "Login, name and password are required" });
+  }
+
+  const connection = getConnection();
+  const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
+  
+  const query = `
+    INSERT INTO n_users (login, name, password, is_admin, available_ngdu_id, is_geolog) 
+    VALUES (?, ?, ?, ?, ?, 0)
+  `;
+  
+  connection.query(query, [login, name, hashedPassword, is_admin ? 1 : 0, available_ngdu_id || null], (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      if (error.code === 'ER_DUP_ENTRY') {
+        return res.status(400).json({ error: "User with this login already exists" });
+      }
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    res.json({ 
+      id: results.insertId,
+      login,
+      name,
+      is_admin: is_admin ? 1 : 0,
+      available_ngdu_id
+    });
+  });
+});
+
+app.delete("/api/admin/users/:id", (req, res) => {
+  const userId = req.params.id;
+  const connection = getConnection();
+  
+  const query = `DELETE FROM n_users WHERE id = ?`;
+  
+  connection.query(query, [userId], (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    res.json({ message: "User deleted successfully" });
   });
 });
 

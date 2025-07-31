@@ -40,7 +40,7 @@ const VlagomerTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function Diagram() {
+export default function Diagram({ user, onLogout }) {
   const [oilProgressData, setOilProgressData] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [tableData, setTableData] = useState([]);

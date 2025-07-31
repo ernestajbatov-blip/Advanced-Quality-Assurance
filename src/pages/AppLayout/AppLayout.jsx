@@ -14,7 +14,7 @@ import Modal from "../../components/Modal/Modal";
 import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
 import { WellsContext } from "../../states/WellsContext";
 
-export default function AppLayout() {
+export default function AppLayout({ user, onLogout}) {
   // Use the original WellsContext
   const { fond, setFond, wells, setWells } = useContext(WellsContext);
   
@@ -99,14 +99,17 @@ const handleWellClick = async (wellNumber) => {
 
   return (
     <div className={styles.app}>
-      <AppNav />
+      <AppNav 
+        user={user} 
+        onLogout={onLogout}
+      />
       <div className={styles.mainSection}>
         <div className={styles.row}>
           <div className={styles.chartContainer}>
             <Chart type={chartType} setType={setChartType} />
           </div>
           <div className={styles.container}>
-            <KPI />
+            <KPI chartType={chartType} />
           </div>
         </div>
         <div className={styles.row}>

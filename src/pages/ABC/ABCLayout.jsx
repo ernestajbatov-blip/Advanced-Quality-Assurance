@@ -9,7 +9,7 @@ import WellTable from "../../components/WellTable/WellTable";
 import AChart from "../../components/AChart/AChart";
 import { WellsABCContext } from "../../states/WellsABCContext";
 
-export default function ABCLayout() {
+export default function ABCLayout({ user, onLogout }) {
   const {
     wells,
     setWells,

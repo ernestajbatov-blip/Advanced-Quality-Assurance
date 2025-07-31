@@ -1,7 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./SelectFond.module.css";
+import { fetchLastUpdate } from "../../axios/wellService";
 
 export default function SelectFond({ setFond, wells = [], hideWorkingStatusLegend = false }) {
+  const [lastUpdate, setLastUpdate] = useState(null);
+
   // Count wells by working status
   const statusCounts = wells.reduce(
     (acc, well) => {
@@ -12,6 +15,22 @@ export default function SelectFond({ setFond, wells = [], hideWorkingStatusLegen
     },
     { working: 0, noData: 0, notWorking: 0 }
   );
+
+  // Fetch last update timestamp
+  useEffect(() => {
+    const getLastUpdate = async () => {
+      try {
+        const response = await fetchLastUpdate();
+        if (response.data && response.data.lastUpdate) {
+          setLastUpdate(new Date(response.data.lastUpdate).toLocaleString('ru-RU'));
+        }
+      } catch (error) {
+        console.error('Error fetching last update:', error);
+      }
+    };
+
+    getLastUpdate();
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -26,6 +45,15 @@ export default function SelectFond({ setFond, wells = [], hideWorkingStatusLegen
       {/* Only show working status legend if hideWorkingStatusLegend is false */}
       {!hideWorkingStatusLegend && (
         <div className={styles.legend}>
+          {/* Last Update Display */}
+          <div className={styles.lastUpdate}>
+            <span className={styles.lastUpdateLabel}>Последнее обновление:</span>
+            <span className={styles.lastUpdateValue}>
+              {lastUpdate || 'Загрузка...'}
+            </span>
+          </div>
+          
+          {/* Working Status Legend */}
           <LegendRow color="green" label="В сети" count={statusCounts.working} />
           <LegendRow color="yellow" label="Нет данных" count={statusCounts.noData} />
           <LegendRow color="red" label="Не в сети" count={statusCounts.notWorking} />

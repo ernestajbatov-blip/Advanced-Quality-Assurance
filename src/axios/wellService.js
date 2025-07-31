@@ -8,7 +8,7 @@ export const fetch2Hours = (oilField = 'BSK') => {
 
 export const fetch2HoursArchive = (oilField = 'BSK', date) => {
   return api.get("/2hours/archive", {
-    params: { 
+    params: {
       oil_field: oilField,
       date: date
     }
@@ -53,13 +53,41 @@ export const fetchProgressOil = () => {
   return api.get("/progress-oil");
 };
 
+export const fetchLastUpdate = () => {
+  return api.get("/wells/last-update");
+};
+
 export const getAvailableVlagomerDates = () => {
   return api.get("/vlagomer-history/dates");
 };
 
 export const fetchVlagomerHistory = (date = null) => {
-  const url = date 
+  const url = date
     ? `/vlagomer-history/${date}`
     : "/vlagomer-history";
   return api.get(url);
+};
+
+export const fetchKPIProduction = () => {
+  return api.get("/kpi/production");
+};
+
+export const fetchKPIInjection = () => {
+  return api.get("/kpi/injection");
+};
+
+export const login = (credentials) => {
+  return api.post("/auth/login", credentials);
+};
+
+export const fetchUsers = () => {
+  return api.get("/admin/users");
+};
+
+export const createUser = (userData) => {
+  return api.post("/admin/users", userData);
+};
+
+export const deleteUser = (userId) => {
+  return api.delete(`/admin/users/${userId}`);
 };
