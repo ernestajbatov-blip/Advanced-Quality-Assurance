@@ -8,8 +8,10 @@ import AmChart from "../../components/AmChart/AmChart";
 import WellTable from "../../components/WellTable/WellTable";
 import AChart from "../../components/AChart/AChart";
 import { WellsABCContext } from "../../states/WellsABCContext";
+import { useUser } from "../../states/UserContext";
 
-export default function ABCLayout({ user, onLogout }) {
+export default function ABCLayout() {
+  const { user, onLogout } = useUser();
   const {
     wells,
     setWells,
@@ -21,6 +23,7 @@ export default function ABCLayout({ user, onLogout }) {
     setWellsChart,
     resetWellsChart
   } = useContext(WellsABCContext);
+
 
   const fieldMappings = {
     leftTop: "well",

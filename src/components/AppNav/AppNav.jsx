@@ -2,13 +2,18 @@ import React, { useState, useEffect, useRef } from "react";
 import styles from "./AppNav.module.css";
 import DataDisplay from "../DataDisplay/DataDisplay";
 import { NavLink, useNavigate } from "react-router-dom";
+import { useUser } from "../../states/UserContext";
 
-export default function AppNav({ user, onLogout }) {
+export default function AppNav() {
   const [currentTime, setCurrentTime] = useState(new Date());
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const dropdownRef = useRef(null);
   const menuButtonRef = useRef(null);
+  const userMenuRef = useRef(null);
+  const userMenuButtonRef = useRef(null);
   const navigate = useNavigate();
+  const { user, onLogout } = useUser();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
@@ -25,16 +30,25 @@ export default function AppNav({ user, onLogout }) {
       ) {
         setIsDropdownOpen(false);
       }
+
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target) &&
+        userMenuButtonRef.current &&
+        !userMenuButtonRef.current.contains(event.target)
+      ) {
+        setIsUserMenuOpen(false);
+      }
     };
 
-    if (isDropdownOpen) {
+    if (isDropdownOpen || isUserMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isDropdownOpen]);
+  }, [isDropdownOpen, isUserMenuOpen]);
 
   const formattedTime = currentTime.toLocaleTimeString([], {
     hour: "2-digit",
@@ -43,6 +57,19 @@ export default function AppNav({ user, onLogout }) {
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
+  };
+
+  const toggleUserMenu = () => {
+    setIsUserMenuOpen((prev) => !prev);
+  };
+
+  const handleUserMenuAction = (action) => {
+    setIsUserMenuOpen(false);
+    if (action === 'admin') {
+      navigate("/admin/users");
+    } else if (action === 'logout') {
+      onLogout();
+    }
   };
 
   return (
@@ -96,51 +123,96 @@ export default function AppNav({ user, onLogout }) {
           <DataDisplay label="10 последних ГТМ/КРС" clickable={true} />
         </div>
 
-        <div className={styles.divider} />
-
-        {/* User Navigation Section */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "15px",
-            color: "#fff",
-            fontSize: "14px",
-          }}
-        >
-          <span>Добро пожаловать, {user?.name}</span>
-
-          {user?.is_admin && (
+        {/* User Menu Section - Rightmost */}
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "20px",
+          color: "#fff",
+          fontSize: "14px",
+          marginLeft: "auto",
+          marginRight: "20px"
+        }}>
+          <span>{user?.name}</span>
+          
+          <div style={{ position: "relative" }}>
             <button
-              onClick={() => navigate("/admin/users")}
+              ref={userMenuButtonRef}
+              onClick={toggleUserMenu}
               style={{
-                padding: "8px 16px",
-                backgroundColor: "#28a745",
-                color: "#ffffff",
-                border: "none",
+                width: "32px",
+                height: "32px",
+                backgroundColor: "transparent",
+                border: "1px solid #555",
                 borderRadius: "4px",
+                color: "#fff",
                 cursor: "pointer",
-                fontSize: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "16px"
               }}
+              title="Настройки пользователя"
             >
-              Пользователи
+              ⚙️
             </button>
-          )}
-
-          <button
-            onClick={onLogout}
-            style={{
-              padding: "8px 16px",
-              backgroundColor: "#dc3545",
-              color: "#ffffff",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "12px",
-            }}
-          >
-            Выйти
-          </button>
+            
+            {isUserMenuOpen && (
+              <div
+                ref={userMenuRef}
+                style={{
+                  position: "absolute",
+                  top: "100%",
+                  right: "0",
+                  marginTop: "5px",
+                  backgroundColor: "#2d2d32",
+                  border: "1px solid #555",
+                  borderRadius: "4px",
+                  minWidth: "160px",
+                  boxShadow: "0 4px 8px rgba(0,0,0,0.3)",
+                  zIndex: 1000
+                }}
+              >
+                {!!user?.is_admin && (
+                  <button
+                    onClick={() => handleUserMenuAction('admin')}
+                    style={{
+                      width: "100%",
+                      padding: "10px 15px",
+                      backgroundColor: "transparent",
+                      border: "none",
+                      color: "#fff",
+                      textAlign: "left",
+                      cursor: "pointer",
+                      fontSize: "14px",
+                      borderBottom: "1px solid #555"
+                    }}
+                    onMouseEnter={(e) => e.target.style.backgroundColor = "#3d3d42"}
+                    onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
+                  >
+                    Пользователи
+                  </button>
+                )}
+                <button
+                  onClick={() => handleUserMenuAction('logout')}
+                  style={{
+                    width: "100%",
+                    padding: "10px 15px",
+                    backgroundColor: "transparent",
+                    border: "none",
+                    color: "#dc3545",
+                    textAlign: "left",
+                    cursor: "pointer",
+                    fontSize: "14px"
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = "#3d3d42"}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = "transparent"}
+                >
+                  Выйти
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

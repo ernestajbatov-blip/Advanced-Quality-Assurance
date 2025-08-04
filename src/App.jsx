@@ -8,6 +8,9 @@ import Login from "./components/Login/Login";
 import AdminUsers from "./components/AdminUsers/AdminUser";
 import { WellsContextProvider } from "./states/WellsContext";
 import { WellsABCContextProvider } from "./states/WellsABCContext";
+import { UserContext, useUser } from "./states/UserContext";
+import { useNavigate } from "react-router-dom";
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -36,6 +39,11 @@ function App() {
     setUser(null);
   };
 
+  const AdminUsersWrapper = () => {
+    const navigate = useNavigate();
+    return <AdminUsers onBack={() => navigate(-1)} />;
+  };
+
   if (loading) {
     return (
       <div style={{
@@ -58,39 +66,41 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Routes>
-        <Route
-          index
-          element={
-            <WellsContextProvider>
-              <AppLayout user={user} onLogout={handleLogout} />
-            </WellsContextProvider>
-          }
-        />
-        <Route
-          path="abc"
-          element={
-            <WellsABCContextProvider>
-              <ABCLayout user={user} onLogout={handleLogout} />
-            </WellsABCContextProvider>
-          }
-        />
-        <Route 
-          path="scheme" 
-          element={<Diagram user={user} onLogout={handleLogout} />} 
-        />
-        <Route 
-          path="oil" 
-          element={<OilLayout user={user} onLogout={handleLogout} />} 
-        />
-        {/* Admin-only route */}
-        {user.is_admin && (
-          <Route 
-            path="admin/users" 
-            element={<AdminUsers user={user} onLogout={handleLogout} />} 
-          />
-        )}
-      </Routes>
+        <UserContext.Provider value={{ user, onLogout: handleLogout }}>
+          <Routes>
+            <Route
+              index
+              element={
+                <WellsContextProvider>
+                  <AppLayout />
+                </WellsContextProvider>
+              }
+            />
+            <Route
+              path="abc"
+              element={
+                <WellsABCContextProvider>
+                  <ABCLayout />
+                </WellsABCContextProvider>
+              }
+            />
+            <Route 
+              path="scheme" 
+              element={<Diagram />} 
+            />
+            <Route 
+              path="oil" 
+              element={<OilLayout />} 
+            />
+            {/* Admin-only route */}
+            {user.is_admin && (
+              <Route 
+                path="admin/users" 
+                element={<AdminUsersWrapper />} 
+              />
+            )}
+          </Routes>
+        </UserContext.Provider>
     </BrowserRouter>
   );
 }

@@ -6,8 +6,10 @@ import OilLossChart from "../../components/OilLossChart/OilLossChart";
 import AppNav from "../../components/AppNav/AppNav";
 import OilMap from "../../components/Map/OilMap";
 import styles from "./OilLayout.module.css";
+import { useUser } from "../../states/UserContext";
 
-export default function OilLayout({ user, onLogout }) {
+export default function OilLayout() {
+  const { user, onLogout } = useUser();
   const [selectedWell, setSelectedWell] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

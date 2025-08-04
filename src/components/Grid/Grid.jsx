@@ -16,7 +16,9 @@ export default function Grid({
   realMiddle,
   onWellClick,
   setSelectedWell,
-  hideWorkingStatus = false // New prop to hide working status
+  hideWorkingStatus = false,
+  isWellStopped,
+  fond
 }) {
   return (
     <div className={styles.gridContainer}>
@@ -30,14 +32,25 @@ export default function Grid({
           rightBottom: well[fieldMappings.rightBottom]
         };
 
-        // Let the passed function decide how to calculate middle value
-        // If no function is provided, use the raw middle value
         const calculatedMiddleValue = typeof calculateMiddleValue === 'function'
           ? calculateMiddleValue(well, wellValues)
           : wellValues.middle;
 
-        // Use raw middle value if realMiddle is true, otherwise use calculated middle value
         const middleValue = realMiddle === true ? wellValues.middle : calculatedMiddleValue;
+
+        // ABSOLUTELY ensure wellStopped is false for injection wells
+        let wellStopped = false;
+        if (fond === 0 && isWellStopped) {
+          wellStopped = isWellStopped(well);
+        }
+
+        // DEBUG: Log well data to see what's happening
+        console.log(`Grid - Well ${wellValues.leftTop}:`, {
+          fond: fond,
+          nagn: well.nagn,
+          wellStopped: wellStopped,
+          c_current: well.c_current
+        });
 
         return (
           <WellCard
@@ -60,6 +73,8 @@ export default function Grid({
             onWellClick={onWellClick}
             working={well.working}
             hideWorkingStatus={hideWorkingStatus}
+            wellStopped={wellStopped}
+            fond={fond}
           />
         );
       })}

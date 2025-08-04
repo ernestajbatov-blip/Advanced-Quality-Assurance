@@ -2,7 +2,14 @@ import React, { useState, useEffect } from "react";
 import styles from "./SelectFond.module.css";
 import { fetchLastUpdate } from "../../axios/wellService";
 
-export default function SelectFond({ setFond, wells = [], hideWorkingStatusLegend = false }) {
+export default function SelectFond({ 
+  setFond, 
+  wells = [], 
+  hideWorkingStatusLegend = false,
+  chrpFilter,
+  setChrpFilter,
+  fond
+}) {
   const [lastUpdate, setLastUpdate] = useState(null);
 
   // Count wells by working status
@@ -16,6 +23,9 @@ export default function SelectFond({ setFond, wells = [], hideWorkingStatusLegen
     { working: 0, noData: 0, notWorking: 0 }
   );
 
+  // Count ЧРП wells
+  const chrpCount = wells.filter(well => well.type === 1).length;
+
   // Fetch last update timestamp
   useEffect(() => {
     const getLastUpdate = async () => {
@@ -28,9 +38,12 @@ export default function SelectFond({ setFond, wells = [], hideWorkingStatusLegen
         console.error('Error fetching last update:', error);
       }
     };
-
     getLastUpdate();
   }, []);
+
+  const handleChrpChange = (e) => {
+    setChrpFilter(e.target.checked);
+  };
 
   return (
     <div className={styles.container}>
@@ -41,18 +54,35 @@ export default function SelectFond({ setFond, wells = [], hideWorkingStatusLegen
         <option value="0">Добывающий фонд</option>
         <option value="1">Нагнетательный фонд</option>
       </select>
-      
+
+      {/* ЧРП Checkbox - only show for добывающий фонд (nagn = 0) */}
+      {fond === 0 && (
+        <div className={styles.chrpCheckbox}>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={chrpFilter}
+              onChange={handleChrpChange}
+              className={styles.checkbox}
+            />
+            <span className={styles.checkboxText}>
+              ЧРП ({chrpCount})
+            </span>
+          </label>
+        </div>
+      )}
+
       {/* Only show working status legend if hideWorkingStatusLegend is false */}
       {!hideWorkingStatusLegend && (
         <div className={styles.legend}>
           {/* Last Update Display */}
-          <div className={styles.lastUpdate}>
+          {/* <div className={styles.lastUpdate}>
             <span className={styles.lastUpdateLabel}>Последнее обновление:</span>
             <span className={styles.lastUpdateValue}>
               {lastUpdate || 'Загрузка...'}
             </span>
-          </div>
-          
+          </div> */}
+
           {/* Working Status Legend */}
           <LegendRow color="green" label="В сети" count={statusCounts.working} />
           <LegendRow color="yellow" label="Нет данных" count={statusCounts.noData} />

@@ -91,3 +91,7 @@ export const createUser = (userData) => {
 export const deleteUser = (userId) => {
   return api.delete(`/admin/users/${userId}`);
 };
+
+export const updateUser = (userId, userData) => {
+  return api.put(`/admin/users/${userId}`, userData);
+};

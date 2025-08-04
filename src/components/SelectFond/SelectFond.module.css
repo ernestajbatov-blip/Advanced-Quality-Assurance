@@ -75,3 +75,33 @@
   color: #fff;
   font-weight: 500;
 }
+
+/* .chrpCheckbox {
+  margin-top: 5px;
+  margin-bottom: 5px;
+} */
+
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  gap: 8px;
+}
+
+.checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #007bff;
+}
+
+.checkboxText {
+  user-select: none;
+  font-weight: 500;
+}
+
+.checkboxLabel:hover .checkboxText {
+  color: #007bff;
+}

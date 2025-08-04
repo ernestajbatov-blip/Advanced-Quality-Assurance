@@ -15,7 +15,7 @@ app.use(express.json());
 app.get("/api/wells", (req, res) => {
   const connection = getConnection();
   const query = `
-    SELECT m.*, d.working
+    SELECT m.*, d.working, d.type, d.c_current
     FROM n_well_matrix m
     LEFT JOIN well_data d ON m.well = d.well
     WHERE m.well LIKE 'BSK%';
@@ -41,7 +41,8 @@ app.get("/api/wells/bsk", (req, res) => {
       c_freq AS 'Частота',
       c_current AS 'Ток',
       c_speed AS 'Скорость двигателя',
-      working AS 'Работа'
+      working AS 'Работа',
+      type AS 'Тип'
     FROM well_data
     WHERE well LIKE 'BSK%'
     AND coordinates_x IS NOT NULL 
@@ -172,6 +173,7 @@ app.get("/api/well/data", (req, res) => {
       c_current AS 'Ток',
       c_speed AS 'Скорость двигателя',
       working AS 'Работа',
+      type AS 'Тип',
       c_last_update AS 'Последнее обновление'
     FROM well_data
     WHERE well = ?;
@@ -184,7 +186,6 @@ app.get("/api/well/data", (req, res) => {
     res.json(results || []);
   });
 });
-
 app.get("/api/wells/last-update", (req, res) => {
   const connection = getConnection();
   const query = `
@@ -571,6 +572,53 @@ app.delete("/api/admin/users/:id", (req, res) => {
     }
     
     res.json({ message: "User deleted successfully" });
+  });
+});
+
+app.put("/api/admin/users/:id", (req, res) => {
+  const userId = req.params.id;
+  const { login, name, password, is_admin, available_ngdu_id } = req.body;
+  
+  if (!login || !name) {
+    return res.status(400).json({ error: "Login and name are required" });
+  }
+
+  const connection = getConnection();
+  
+  // Build the update query dynamically
+  let query = `UPDATE n_users SET login = ?, name = ?, is_admin = ?, available_ngdu_id = ?`;
+  let params = [login, name, is_admin ? 1 : 0, available_ngdu_id || null];
+  
+  // Only update password if provided
+  if (password && password.trim()) {
+    const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
+    query += `, password = ?`;
+    params.push(hashedPassword);
+  }
+  
+  query += ` WHERE id = ?`;
+  params.push(userId);
+  
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      if (error.code === 'ER_DUP_ENTRY') {
+        return res.status(400).json({ error: "User with this login already exists" });
+      }
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+    res.json({ 
+      id: parseInt(userId),
+      login,
+      name,
+      is_admin: is_admin ? 1 : 0,
+      available_ngdu_id
+    });
   });
 });
 

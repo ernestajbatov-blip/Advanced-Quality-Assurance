@@ -23,7 +23,9 @@ export default function WellCard({
   realMiddle,
   onWellClick,
   working,
-  hideWorkingStatus = false // New prop to hide working status circle
+  hideWorkingStatus = false,
+  wellStopped = false,
+  fond
 }) {
   const location = useLocation();
   const context = location.pathname === "/abc" ? useContext(WellsABCContext) : null;
@@ -31,13 +33,11 @@ export default function WellCard({
   const [well, setWell] = useState(null);
 
   const handleClick = async () => {
-    // If onWellClick prop is provided (from AppLayout), use it
     if (onWellClick) {
       onWellClick(leftTop);
       return;
     }
 
-    // Original ABC page logic
     if (location.pathname === "/abc") {
       try {
         const { wells, setWellsChart } = context;
@@ -57,16 +57,41 @@ export default function WellCard({
     }
   };
 
+  // DEBUG: Log the values to see what's happening
+  console.log(`Well ${leftTop}:`, {
+    fond: fond,
+    wellStopped: wellStopped,
+    middle: middle,
+    minThreshold: minThreshold,
+    maxThreshold: maxThreshold
+  });
+
   let cardColorClass = styles.grayCard;
-  if (middle > maxThreshold) {
-    cardColorClass = styles[colorMax];
-  } else if (middle <= minThreshold) {
-    cardColorClass = styles[colorMin];
-  } else if (middle !== 0) {
-    const percentageDifference = middle;
-    if (percentageDifference > inBetweenThresholdMin &&
-        percentageDifference <= inBetweenThresholdMax) {
-      cardColorClass = styles[inBetweenColor];
+
+  // For injection wells (fond = 1), completely different color logic
+  if (fond === 1) {
+    // For injection wells, NEVER use red color - only green, orange, or gray
+    if (middle > maxThreshold) {
+      cardColorClass = styles[colorMax]; // Green
+    } else if (middle !== 0 && middle > inBetweenThresholdMin && middle <= inBetweenThresholdMax) {
+      cardColorClass = styles[inBetweenColor]; // Orange
+    } else {
+      cardColorClass = styles.grayCard; // Gray (never red, even for low values)
+    }
+  } else if (fond === 0) {
+    // For production wells, check stopped status first
+    if (wellStopped) {
+      cardColorClass = `${styles[colorMin]} ${styles.blinking}`;
+    } else if (middle > maxThreshold) {
+      cardColorClass = styles[colorMax];
+    } else if (middle <= minThreshold) {
+      cardColorClass = styles[colorMin];
+    } else if (middle !== 0) {
+      const percentageDifference = middle;
+      if (percentageDifference > inBetweenThresholdMin &&
+          percentageDifference <= inBetweenThresholdMax) {
+        cardColorClass = styles[inBetweenColor];
+      }
     }
   }
 
@@ -75,7 +100,6 @@ export default function WellCard({
   return (
     <>
       <div className={cardClasses} onClick={handleClick}>
-        {/* Status circle in top-right - only show if hideWorkingStatus is false */}
         {!hideWorkingStatus && [1, 2, 3].includes(working) && (
           <div
             className={`${styles.statusCircle} ${
@@ -90,14 +114,26 @@ export default function WellCard({
             }
           />
         )}
+
         <div className={styles.cardRow}>
           <span>{leftTop}</span>
           <span>{rightTop.toFixed(2)}</span>
         </div>
+
         <h3 className={styles.cardHeader}>{realMiddle.toFixed(2)}</h3>
+
         <div className={styles.cardRow}>
-          <span>{leftBottom.toFixed(1)}</span>
-          <span>{rightBottom.toFixed(1)}</span>
+          {fond === 1 ? (
+            <>
+              <span style={{ visibility: 'hidden' }}>0.0</span>
+              <span style={{ visibility: 'hidden' }}>0.0</span>
+            </>
+          ) : (
+            <>
+              <span>{leftBottom.toFixed(1)}</span>
+              <span>{rightBottom.toFixed(1)}</span>
+            </>
+          )}
         </div>
       </div>
     </>

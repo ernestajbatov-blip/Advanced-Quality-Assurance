@@ -19,6 +19,7 @@ import Legend from "../Legends/Legends"
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { fetchVlagomerHistory, getAvailableVlagomerDates } from "../../axios/wellService";
+import { useUser } from "../../states/UserContext";
 
 const VlagomerTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -40,7 +41,8 @@ const VlagomerTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function Diagram({ user, onLogout }) {
+export default function Diagram() {
+  const { user, onLogout } = useUser();
   const [oilProgressData, setOilProgressData] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [tableData, setTableData] = useState([]);
