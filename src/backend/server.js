@@ -622,6 +622,48 @@ app.put("/api/admin/users/:id", (req, res) => {
   });
 });
 
+app.get("/api/agzu/categories", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT DISTINCT agzu
+    FROM n_well_matrix
+    WHERE agzu IS NOT NULL 
+    AND agzu != ''
+    AND oil_field = 'BSK'
+    ORDER BY agzu;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    const categories = results.map(row => row.agzu);
+    res.json(categories || []);
+  });
+});
+
+app.get("/api/well-number", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT tag_value 
+    FROM n_wincctags 
+    WHERE tag_key = 'well_num'
+    LIMIT 1;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    const wellNumber = results && results[0] ? results[0].tag_value : 5; // Default to 5 if not found
+    res.json({ wellNumber: parseInt(wellNumber) || 5 });
+  });
+});
+
 // ---- Static Frontend ----
 
 const distPath = path.join(__dirname, "../../dist");

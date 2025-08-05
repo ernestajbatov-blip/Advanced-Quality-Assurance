@@ -6,23 +6,32 @@
 
 .container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Changed to center the dropdown */
   gap: 5px;
+}
+
+/* When using buttons (<=8 categories) */
+.container:not(:has(.dropdown)) {
+  justify-content: space-between; /* Keep space-between for buttons */
 }
 
 .button {
   background-color: #444;
   color: white;
-  padding: 10px 20px;
+  padding: 10px 15px; /* Reduced horizontal padding */
   text-align: center;
   border-radius: 4px;
   cursor: pointer;
-  width: 70px;
+  width: auto; /* Changed from fixed 70px to auto */
+  min-width: 70px; /* Minimum width to maintain consistency */
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  white-space: nowrap; /* Prevent text wrapping */
+  font-size: 14px; /* Slightly smaller font to help fit text */
+  flex-shrink: 0; /* Prevent buttons from shrinking */
 }
 
 .button.active {
@@ -31,4 +40,90 @@
 
 .button:hover {
   background-color: #666;
+}
+
+.dropdown {
+  position: relative;
+  display: flex;
+  justify-content: center; /* Center the dropdown */
+}
+
+.dropdownButton {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Center the text */
+  min-width: 200px;
+  background-color: #444; /* Ensure background color */
+  color: white; /* Ensure text color */
+  white-space: nowrap; /* Prevent text wrapping */
+  text-align: center; /* Additional text centering */
+}
+
+.dropdownButton:hover {
+  background-color: #666;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.dropdownItem {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+  color: #333; /* Dark text for visibility */
+  background-color: white; /* Ensure white background */
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+.dropdownItem:hover {
+  background-color: #f5f5f5;
+  color: #333; /* Keep text dark on hover */
+}
+
+.dropdownItem:last-child {
+  border-bottom: none;
+}
+
+.dropdownItem.active {
+  background-color: #4caf50; /* Changed to match button active color */
+  color: white;
+}
+
+.loading, .error {
+  padding: 20px;
+  text-align: center;
+  font-size: 16px;
+}
+
+.error {
+  color: #dc3545;
+}
+
+.loading {
+  color: #6c757d;
+}
+
+@media (max-width: 768px) {
+  .button {
+    min-width: 60px;
+    font-size: 12px;
+    padding: 8px 10px;
+  }
+  
+  .container {
+    gap: 3px;
+  }
 }

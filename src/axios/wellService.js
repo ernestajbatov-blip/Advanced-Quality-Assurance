@@ -95,3 +95,11 @@ export const deleteUser = (userId) => {
 export const updateUser = (userId, userData) => {
   return api.put(`/admin/users/${userId}`, userData);
 };
+
+export const fetchAGZUCategories = () => {
+  return api.get("/agzu/categories");
+};
+
+export const fetchWellNumber = () => {
+  return api.get("/well-number");
+};

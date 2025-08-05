@@ -1,11 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./AgzuDiagram.module.css";
 import Box from "../Box/Box";
 import { NavLink } from "react-router-dom";
 
 export default function AgzuDiagram({ filteredWells, boxIndex }) {
-  const boxes = Array(14).fill(null);
+  const [centerData, setCenterData] = useState({
+    pressure: 0,
+    time: "00:00",
+    temperature: 0
+  });
 
+  // Generate random data on component mount and update periodically
+  useEffect(() => {
+    const generateRandomData = () => {
+      const now = new Date();
+      return {
+        pressure: (Math.random() * 10).toFixed(1), // Random pressure 0-10 МПа
+        time: now.toLocaleTimeString('ru-RU', { 
+          hour: '2-digit', 
+          minute: '2-digit' 
+        }),
+        temperature: Math.floor(Math.random() * 50 + 10) // Random temp 10-60°C
+      };
+    };
+
+    // Set initial random data
+    setCenterData(generateRandomData());
+
+    // Update data every 30 seconds (optional - remove if you don't want periodic updates)
+    const interval = setInterval(() => {
+      setCenterData(generateRandomData());
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const boxes = Array(14).fill(null);
   filteredWells.forEach((well) => {
     if (well.otvod >= 1 && well.otvod <= 14) {
       boxes[well.otvod - 1] = well;
@@ -29,16 +59,13 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
         {pipes.map((pipe, index) => (
           <line key={`v${index}`} {...pipe} stroke={getPipeColor(index)} strokeWidth="3" />
         ))}
-
         {/* Diagonal Pipes */}
         {pipes.map((pipe, index) => (
           <line key={`d${index}`} x1="918" y1="438" x2={pipe.x2} y2={pipe.y2} stroke={getPipeColor(index)} strokeWidth="2" />
         ))}
-
         {/* Center Circle */}
         <ellipse cx="918" cy="438" rx="120" ry="120" fill="#50505a" />
       </svg>
-
       <div className={styles.overlay}>
         {boxes.map((well, index) => (
           <Box
@@ -51,14 +78,14 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
             borderColor={getPipeColor(index, "#FFFFFF")}
           />
         ))}
-
-        <div className={styles.circle} style={{ top: "63.5%", left: "75.5%" }}>
-          <div className={styles.circleText}>0 М³/СУТ</div>
-          <div className={styles.circleSubText}>0 мПа</div>
+        <div className={styles.circle} style={{ top: "63%", left: "74%" }}>
+          <div className={styles.circleText}>{centerData.pressure} МПа</div>
+          <div className={styles.circleText}>{centerData.time}</div>
+          <div className={styles.circleText}>{centerData.temperature} °C</div>
         </div>
-        <div className={styles.line} style={{ top: "62.5%", left: "86.3%" }}></div>
+        <div className={styles.line} style={{ top: "62%", left: "83.8%" }}></div>
         <NavLink to="/scheme">
-          <Box boxText1="на ППН" top="58.3%" left="136%" />
+          <Box boxText1="на ППН" top="57.8%" left="132%" />
         </NavLink>
       </div>
     </div>

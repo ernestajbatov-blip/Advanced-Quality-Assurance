@@ -129,7 +129,22 @@ export default function Diagram() {
     "moisture_volume": "%",
 
     // Vlagomer
-    "VlagomerTFS_1": "м3/ч"
+    "VlagomerTFS_1": "м3/ч",
+
+    // PNK-1
+    "ARM_PNK1_LC": "°C",
+    "ARM_PNK1_PT": "°C",
+    "ARM_PNK1_TT": "МПа",
+
+    // PNK-2
+    "ARM_PNK2_LC": "°C",
+    "ARM_PNK2_PT": "°C",
+    "ARM_PNK2_TT": "МПа",
+
+    // PP-0,63
+    "ARM_PP063_LC": "°C",
+    "ARM_PP063_PT": "°C",
+    "ARM_PP063_TT": "МПа",
   };
 
   // New mapping for tag descriptions
@@ -182,6 +197,21 @@ export default function Diagram() {
     "ARM_ZN_EP2_LT": "Уровень",
     "ARM_ZN_EP3_LT": "Уровень",
 
+    // PNK-1
+    "ARM_PNK1_LC": "Темп. вход",
+    "ARM_PNK1_PT": "Темп. выход",
+    "ARM_PNK1_TT": "Давление",
+
+    // PNK-2
+    "ARM_PNK2_LC": "Темп. вход",
+    "ARM_PNK2_PT": "Темп. выход",
+    "ARM_PNK2_TT": "Давление",
+
+    // PP-0,63
+    "ARM_PP063_LC": "Темп. вход",
+    "ARM_PP063_PT": "Темп. выход",
+    "ARM_PP063_TT": "Давление",
+
     // Uzel ucheta descriptions
     "overpressure": "Избыточное давление",
     "temperature": "Температура",
@@ -217,13 +247,20 @@ export default function Diagram() {
     let transformedData;
 
     if (filterTags && filterTags.length > 0) {
-      // First filter
-      const filtered = oilProgressData.filter(item => filterTags.includes(item.tag_key));
+      let filteredData;
+      
+      // Check if we're requesting PNK or PP data (which are random)
+      if (filterTags.some(tag => tag.includes('PNK') || tag.includes('PP063'))) {
+        filteredData = generateRandomSensorData(filterTags);
+      } else {
+        // First filter from real data
+        filteredData = oilProgressData.filter(item => filterTags.includes(item.tag_key));
+      }
 
       // Sort by the order of filterTags array
       const sorted = filterTags.map(tag =>
-        filtered.find(item => item.tag_key === tag)
-      ).filter(Boolean); // remove any undefined if tag not found
+        filteredData.find(item => item.tag_key === tag)
+      ).filter(Boolean);
 
       transformedData = sorted.map(item => ({
         "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
@@ -387,6 +424,24 @@ export default function Diagram() {
   //   setVlagomerData(data);
   // };
 
+  const generateRandomSensorData = (tags) => {
+    return tags.map(tag => {
+      let value;
+      if (tag.includes('LC') || tag.includes('PT')) { // Temperature sensors
+        value = (Math.random() * 80 + 20).toFixed(2); // 20-100°C
+      } else if (tag.includes('TT')) { // Pressure sensors
+        value = (Math.random() * 5 + 1).toFixed(2); // 1-6 atm
+      } else {
+        value = (Math.random() * 100).toFixed(2);
+      }
+      
+      return {
+        tag_key: tag,
+        value: parseFloat(value)
+      };
+    });
+  };
+
   const handleVlagomerDateChange = (date) => {
     if (date) {
       setSelectedVlagomerDate(date);
@@ -481,6 +536,77 @@ export default function Diagram() {
             </div>
           </div>                    
         </>
+      ),
+    },
+    // ПНК-1 clickable area
+    {
+      top: "23.9%", // Adjust position as needed
+      left: "43.1%", // Adjust position as needed
+      content: (
+        <div 
+          onClick={() => handleTableClick(
+            ["ARM_PNK1_LC", "ARM_PNK1_PT", "ARM_PNK1_TT"], 
+            "ПНК-1"
+          )}
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "60px",
+            height: "40px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(255, 0, 0, 0.1)", // Optional: visible area for testing
+            // border: "1px solid rgba(255, 0, 0, 0.3)"
+          }}
+        />
+      ),
+    },
+
+    // ПНК-2 clickable area
+    {
+      top: "30.7%", // Adjust position as needed
+      left: "43.1%", // Adjust position as needed
+      content: (
+        <div 
+          onClick={() => handleTableClick(
+            ["ARM_PNK2_LC", "ARM_PNK2_PT", "ARM_PNK2_TT"], 
+            "ПНК-2"
+          )}
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "60px",
+            height: "40px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(0, 255, 0, 0.1)", // Optional: visible area for testing
+            // border: "1px solid rgba(0, 255, 0, 0.3)"
+          }}
+        />
+      ),
+    },
+
+    // ПП-0,63 clickable area
+    {
+      top: "37.3%", // Adjust position as needed
+      left: "43.1%", // Adjust position as needed
+      content: (
+        <div 
+          onClick={() => handleTableClick(
+            ["ARM_PP063_LC", "ARM_PP063_PT", "ARM_PP063_TT"], 
+            "ПП-0,63"
+          )}
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "60px",
+            height: "40px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(0, 0, 255, 0.1)", // Optional: visible area for testing
+            // border: "1px solid rgba(0, 0, 255, 0.3)"
+          }}
+        />
       ),
     },
     // {
