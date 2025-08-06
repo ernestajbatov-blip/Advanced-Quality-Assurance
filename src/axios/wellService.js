@@ -103,3 +103,11 @@ export const fetchAGZUCategories = () => {
 export const fetchWellNumber = () => {
   return api.get("/well-number");
 };
+
+export const fetchAGZUWellData = (wellName) => {
+  return api.get("/well/agzu-data", {
+    params: {
+      well: wellName,
+    },
+  });
+};

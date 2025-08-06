@@ -664,6 +664,32 @@ app.get("/api/well-number", (req, res) => {
   });
 });
 
+app.get("/api/well/agzu-data", (req, res) => {
+  const connection = getConnection();
+  const wellName = req.query.well;
+  if (!wellName) {
+    return res.status(400).json({ error: "Well name is required" });
+  }
+
+  const query = `
+    SELECT
+      well AS 'Скважина',
+      zamer_oil AS 'Нефть',
+      gas AS 'Газ', 
+      tr_water AS 'Обводненность'
+    FROM n_well_matrix
+    WHERE well = ?;
+  `;
+  
+  connection.query(query, [wellName], (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
 // ---- Static Frontend ----
 
 const distPath = path.join(__dirname, "../../dist");

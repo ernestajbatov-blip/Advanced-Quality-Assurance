@@ -20,6 +20,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { fetchVlagomerHistory, getAvailableVlagomerDates } from "../../axios/wellService";
 import { useUser } from "../../states/UserContext";
+import Furnace from "../Furnace/Furnace";
 
 const VlagomerTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -525,16 +526,16 @@ export default function Diagram() {
   // Array of objects for dynamically creating LabelBox + Table/Indicator/Pumps components with percentage positions
   const componentData = [
     
-    {
-      top: "16.2%",
-      left: "84.6%",
-      content: (
-        <>
-          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
-          <LabelBox label={"Расходомер"} width={60} height={5} fontSize={10} />
-        </>
-      ),
-    },
+    // {
+    //   top: "16.2%",
+    //   left: "84.6%",
+    //   content: (
+    //     <>
+    //       <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
+    //       <LabelBox label={"Расходомер"} width={60} height={5} fontSize={10} />
+    //     </>
+    //   ),
+    // },
     {
       top: "36.1%",
       left: "17%",
@@ -563,16 +564,16 @@ export default function Diagram() {
         </>
       ),
     },
-    {
-      top: "16.2%",
-      left: "75.8%",
-      content: (
-        <>
-          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
-          <LabelBox label={"Расходомер"} width={60} height={5} fontSize={10} />
-        </>
-      ),
-    },
+    // {
+    //   top: "16.2%",
+    //   left: "75.8%",
+    //   content: (
+    //     <>
+    //       <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
+    //       <LabelBox label={"Расходомер"} width={60} height={5} fontSize={10} />
+    //     </>
+    //   ),
+    // },
     {
       top: "20%",
       left: "33%",
@@ -829,6 +830,41 @@ export default function Diagram() {
         </>
       ),
     },
+
+    // Печи
+    {
+      top: "23%",
+      left: "39.5%", 
+      content: (
+        <>
+          <Furnace isActive={true} width={205} height={45} />
+          
+        </>
+      )
+    },
+    { top: "25%", left: "43.4%", content: "ПНК-1", size: "15px" },
+    {
+      top: "29.5%",
+      left: "39.5%", 
+      content: (
+        <>
+          <Furnace isActive={true} width={205} height={45} />
+          
+        </>
+      )
+    },
+    { top: "31.5%", left: "43.4%", content: "ПНК-2", size: "15px" },
+    {
+      top: "36%",
+      left: "39.5%", 
+      content: (
+        <>
+          <Furnace isActive={false} width={205} height={45} />
+          
+        </>
+      )
+    },
+    { top: "38%", left: "43.1%", content: "ПП-0,63", size: "15px" },
     {
       top: "54%", // Label for PBC-1
       left: "52%",
