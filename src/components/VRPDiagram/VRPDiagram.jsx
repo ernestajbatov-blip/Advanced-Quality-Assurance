@@ -89,7 +89,7 @@ export default function VRPDiagram({ filteredWells, boxIndex }) {
         {/* Line and additional box */}
         <div className={styles.line} style={{ top: "48.5%", left: "57.5%" }}></div>
         <NavLink to="/scheme">
-          <Box boxText1="на ППН" top="44.5%" left="90%" />
+          <Box boxText1="с УПН" top="44.5%" left="90%" />
         </NavLink>
       </div>
     </div>

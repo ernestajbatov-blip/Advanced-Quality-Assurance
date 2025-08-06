@@ -326,7 +326,7 @@ app.get("/api/vlagomer-history/:date?", (req, res) => {
   
   query += `
     ORDER BY vlog_arch DESC
-    LIMIT 20;
+    LIMIT 24;
   `;
   
   connection.query(query, params, (err, results) => {
@@ -659,7 +659,7 @@ app.get("/api/well-number", (req, res) => {
       return res.status(500).json({ error: "Database query failed" });
     }
     
-    const wellNumber = results && results[0] ? results[0].tag_value : 5; // Default to 5 if not found
+    const wellNumber = results && results[0] ? results[0].tag_value : 5;
     res.json({ wellNumber: parseInt(wellNumber) || 5 });
   });
 });

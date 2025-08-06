@@ -54,7 +54,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
 
   return (
     <div className={styles.container}>
-      <svg className="svgImage" viewBox="60 -40 1700 900" xmlns="http://www.w3.org/2000/svg">
+      <svg className="svgImage" viewBox="60 -30 1700 900" xmlns="http://www.w3.org/2000/svg">
         {/* Vertical Pipes */}
         {pipes.map((pipe, index) => (
           <line key={`v${index}`} {...pipe} stroke={getPipeColor(index)} strokeWidth="3" />
@@ -78,14 +78,14 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
             borderColor={getPipeColor(index, "#FFFFFF")}
           />
         ))}
-        <div className={styles.circle} style={{ top: "63%", left: "74%" }}>
+        <div className={styles.circle} style={{ top: "63.5%", left: "76%" }}>
           <div className={styles.circleText}>{centerData.pressure} МПа</div>
           <div className={styles.circleText}>{centerData.time}</div>
           <div className={styles.circleText}>{centerData.temperature} °C</div>
         </div>
-        <div className={styles.line} style={{ top: "62%", left: "83.8%" }}></div>
+        <div className={styles.line} style={{ top: "62%", left: "86.3%" }}></div>
         <NavLink to="/scheme">
-          <Box boxText1="на ППН" top="57.8%" left="132%" />
+          <Box boxText1="на УПН" top="57.5%" left="135%" />
         </NavLink>
       </div>
     </div>

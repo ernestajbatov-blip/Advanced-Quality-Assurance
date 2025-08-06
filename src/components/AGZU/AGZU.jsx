@@ -16,7 +16,7 @@ function Button({ label, active, onClick }) {
 
 function Dropdown({ options, active, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
-  
+
   return (
     <div className={styles.dropdown}>
       <div
@@ -62,18 +62,23 @@ export default function AGZU({ wells, index }) {
           fetchAGZUCategories(),
           fetchWellNumber()
         ]);
-        
-        const fetchedCategories = categoriesResponse.data || [];
+
+        const allCategories = categoriesResponse.data || [];
         const fetchedWellNumber = wellNumberResponse.data?.wellNumber || 5;
-        
-        setCategories(fetchedCategories);
+
+        // Filter categories to only show those starting with "АГЗУ" or "МФ"
+        const filteredCategories = allCategories.filter(category => 
+          category.startsWith("АГЗУ") || category.startsWith("МФ №")
+        );
+
+        setCategories(filteredCategories);
         setWellNumber(fetchedWellNumber);
-        
+
         // Set the first category as active by default
-        if (fetchedCategories.length > 0) {
-          setActiveButton(fetchedCategories[0]);
+        if (filteredCategories.length > 0) {
+          setActiveButton(filteredCategories[0]);
         }
-        
+
         setLoading(false);
       } catch (err) {
         console.error("Error loading AGZU data:", err);

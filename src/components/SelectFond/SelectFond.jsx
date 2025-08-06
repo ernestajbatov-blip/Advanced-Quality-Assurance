@@ -1,19 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import styles from "./SelectFond.module.css";
 import { fetchLastUpdate } from "../../axios/wellService";
 
-export default function SelectFond({ 
-  setFond, 
-  wells = [], 
+export default function SelectFond({
+  setFond,
+  wells = [],
   hideWorkingStatusLegend = false,
   chrpFilter,
   setChrpFilter,
   fond
 }) {
   const [lastUpdate, setLastUpdate] = useState(null);
-
-  // Count wells by working status
-  const statusCounts = wells.reduce(
+  
+  // Filter wells based on ЧРП filter when applicable
+  const filteredWells = useMemo(() => {
+    if (chrpFilter && fond === 0) {
+      return wells.filter(well => well.type === 1);
+    }
+    return wells;
+  }, [wells, chrpFilter, fond]);
+  
+  // Count wells by working status using filtered wells
+  const statusCounts = filteredWells.reduce(
     (acc, well) => {
       if (well.working === 1) acc.working++;
       else if (well.working === 2) acc.noData++;
@@ -22,10 +30,10 @@ export default function SelectFond({
     },
     { working: 0, noData: 0, notWorking: 0 }
   );
-
+  
   // Count ЧРП wells
   const chrpCount = wells.filter(well => well.type === 1).length;
-
+  
   // Fetch last update timestamp
   useEffect(() => {
     const getLastUpdate = async () => {
@@ -40,11 +48,11 @@ export default function SelectFond({
     };
     getLastUpdate();
   }, []);
-
+  
   const handleChrpChange = (e) => {
     setChrpFilter(e.target.checked);
   };
-
+  
   return (
     <div className={styles.container}>
       <select
@@ -54,7 +62,7 @@ export default function SelectFond({
         <option value="0">Добывающий фонд</option>
         <option value="1">Нагнетательный фонд</option>
       </select>
-
+      
       {/* ЧРП Checkbox - only show for добывающий фонд (nagn = 0) */}
       {fond === 0 && (
         <div className={styles.chrpCheckbox}>
@@ -71,7 +79,7 @@ export default function SelectFond({
           </label>
         </div>
       )}
-
+      
       {/* Only show working status legend if hideWorkingStatusLegend is false */}
       {!hideWorkingStatusLegend && (
         <div className={styles.legend}>
@@ -82,7 +90,7 @@ export default function SelectFond({
               {lastUpdate || 'Загрузка...'}
             </span>
           </div> */}
-
+          
           {/* Working Status Legend */}
           <LegendRow color="green" label="В сети" count={statusCounts.working} />
           <LegendRow color="yellow" label="Нет данных" count={statusCounts.noData} />

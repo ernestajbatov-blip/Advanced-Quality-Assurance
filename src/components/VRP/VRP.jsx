@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./VRP.module.css";
 import VRPDiagram from "../VRPDiagram/VRPDiagram";
+import { fetchAGZUCategories } from "../../axios/wellService";
 
 function Button({ label, active, onClick }) {
   return (
@@ -13,8 +14,73 @@ function Button({ label, active, onClick }) {
   );
 }
 
+function Dropdown({ options, active, onSelect }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className={styles.dropdown}>
+      <div
+        className={`${styles.button} ${styles.dropdownButton}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {active || "Выберите ВРП"} ▼
+      </div>
+      {isOpen && (
+        <div className={styles.dropdownMenu}>
+          {options.map((option) => (
+            <div
+              key={option}
+              className={`${styles.dropdownItem} ${
+                active === option ? styles.active : ""
+              }`}
+              onClick={() => {
+                onSelect(option);
+                setIsOpen(false);
+              }}
+            >
+              {option}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function VRP({ wells }) {
-  const [activeButton, setActiveButton] = useState("ВРП-1");
+  const [categories, setCategories] = useState([]);
+  const [activeButton, setActiveButton] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const categoriesResponse = await fetchAGZUCategories();
+        const allCategories = categoriesResponse.data || [];
+
+        // Filter categories to only show those starting with "ВРП"
+        const filteredCategories = allCategories.filter(category => 
+          category.startsWith("ВРП")
+        );
+
+        setCategories(filteredCategories);
+
+        // Set the first category as active by default
+        if (filteredCategories.length > 0) {
+          setActiveButton(filteredCategories[0]);
+        }
+
+        setLoading(false);
+      } catch (err) {
+        console.error("Error loading VRP data:", err);
+        setError("Failed to load VRP data");
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const handleButtonClick = (label) => {
     setActiveButton(label);
@@ -23,27 +89,62 @@ export default function VRP({ wells }) {
   const filteredWells = wells.filter(
     (well) => well.agzu === activeButton && well.nagn == 1
   );
-  
-  console.log(filteredWells);
+
+  console.log("VRP Filtered Wells:", filteredWells);
+  console.log("VRP Active Button:", activeButton);
+  console.log("VRP Categories:", categories);
+
+  if (loading) {
+    return (
+      <div className={styles.upperDiv}>
+        <div className={styles.container}>
+          <div className={styles.loading}>Загрузка данных...</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.upperDiv}>
+        <div className={styles.container}>
+          <div className={styles.error}>{error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  if (categories.length === 0) {
+    return (
+      <div className={styles.upperDiv}>
+        <div className={styles.container}>
+          <div className={styles.noData}>Нет доступных ВРП категорий</div>
+        </div>
+      </div>
+    );
+  }
+
+  const useDropdown = categories.length > 8;
 
   return (
     <div className={styles.upperDiv}>
       <div className={styles.container}>
-        <Button
-          label="ВРП-1"
-          active={activeButton === "ВРП-1"}
-          onClick={() => handleButtonClick("ВРП-1")}
-        />
-        <Button
-          label="ВРП-2"
-          active={activeButton === "ВРП-2"}
-          onClick={() => handleButtonClick("ВРП-2")}
-        />
-        <Button
-          label="ВРП-3"
-          active={activeButton === "ВРП-3"}
-          onClick={() => handleButtonClick("ВРП-3")}
-        />
+        {useDropdown ? (
+          <Dropdown
+            options={categories}
+            active={activeButton}
+            onSelect={handleButtonClick}
+          />
+        ) : (
+          categories.map((category) => (
+            <Button
+              key={category}
+              label={category}
+              active={activeButton === category}
+              onClick={() => handleButtonClick(category)}
+            />
+          ))
+        )}
       </div>
       <VRPDiagram filteredWells={filteredWells} boxIndex={2} />
     </div>

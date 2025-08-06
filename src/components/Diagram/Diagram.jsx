@@ -33,7 +33,7 @@ const VlagomerTooltip = ({ active, payload, label }) => {
       }}>
         <p style={{ margin: 0, fontWeight: 'bold' }}>{`Время: ${label}`}</p>
         <p style={{ margin: 0, color: '#2563eb' }}>
-          {`Влажность: ${payload[0].value}%`}
+          {`Обводненность: ${payload[0].value}%`}
         </p>
       </div>
     );
@@ -53,6 +53,7 @@ export default function Diagram() {
   const [selectedVlagomerDate, setSelectedVlagomerDate] = useState(null);
   const [availableVlagomerDates, setAvailableVlagomerDates] = useState([]);
   const [isVlagomerArchiveMode, setIsVlagomerArchiveMode] = useState(false);
+  const [vlagomerAverage, setVlagomerAverage] = useState(0);
 
   useEffect(() => {
     axios.get("http://localhost:3000/api/progress-oil")
@@ -68,6 +69,15 @@ export default function Diagram() {
   useEffect(() => {
     loadAvailableVlagomerDates();
   }, []);
+
+  // Calculate 24-hour average whenever vlagomerData changes
+  useEffect(() => {
+    if (vlagomerData.length > 0) {
+      const sum = vlagomerData.reduce((acc, item) => acc + item.value, 0);
+      const avg = sum / vlagomerData.length;
+      setVlagomerAverage(Math.round(avg * 100) / 100);
+    }
+  }, [vlagomerData]);
 
   const TAG_UNITS = {
     // tfs-1
@@ -145,6 +155,22 @@ export default function Diagram() {
     "ARM_PP063_LC": "°C",
     "ARM_PP063_PT": "°C",
     "ARM_PP063_TT": "МПа",
+
+    // МФН-1
+    "ARM_MFN1_TEMP": "°C",
+    "ARM_MFN1_P_IN": "атм",
+    "ARM_MFN1_P_OUT": "атм", 
+    "ARM_MFN1_CURRENT": "А",
+    "ARM_MFN1_POWER": "кВт",
+    "ARM_MFN1_FREQ": "Гц",
+
+    // МФН-2
+    "ARM_MFN2_TEMP": "°C",
+    "ARM_MFN2_P_IN": "атм",
+    "ARM_MFN2_P_OUT": "атм",
+    "ARM_MFN2_CURRENT": "А", 
+    "ARM_MFN2_POWER": "кВт",
+    "ARM_MFN2_FREQ": "Гц",
   };
 
   // New mapping for tag descriptions
@@ -212,6 +238,22 @@ export default function Diagram() {
     "ARM_PP063_PT": "Темп. выход",
     "ARM_PP063_TT": "Давление",
 
+    // МФН-1
+    "ARM_MFN1_TEMP": "Темп. насоса",
+    "ARM_MFN1_P_IN": "Давление вход.",
+    "ARM_MFN1_P_OUT": "Давление выход.",
+    "ARM_MFN1_CURRENT": "Ток двиг.",
+    "ARM_MFN1_POWER": "Мощность",
+    "ARM_MFN1_FREQ": "Частота",
+
+    // МФН-2
+    "ARM_MFN2_TEMP": "Темп. насоса",
+    "ARM_MFN2_P_IN": "Давление вход.",
+    "ARM_MFN2_P_OUT": "Давление выход.",
+    "ARM_MFN2_CURRENT": "Ток двиг.",
+    "ARM_MFN2_POWER": "Мощность",
+    "ARM_MFN2_FREQ": "Частота",
+
     // Uzel ucheta descriptions
     "overpressure": "Избыточное давление",
     "temperature": "Температура",
@@ -249,8 +291,8 @@ export default function Diagram() {
     if (filterTags && filterTags.length > 0) {
       let filteredData;
       
-      // Check if we're requesting PNK or PP data (which are random)
-      if (filterTags.some(tag => tag.includes('PNK') || tag.includes('PP063'))) {
+      // Check if we're requesting PNK, PP, or MFN data (which are random)
+      if (filterTags.some(tag => tag.includes('PNK') || tag.includes('PP063') || tag.includes('MFN'))) {
         filteredData = generateRandomSensorData(filterTags);
       } else {
         // First filter from real data
@@ -357,7 +399,7 @@ export default function Diagram() {
       
       const processedData = response.data
         .sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp))
-        .slice(-20)
+        .slice(-24) // Changed from -20 to -24
         .map(item => ({
           time: format(parseISO(item.timestamp), 'HH:mm'),
           value: Math.round(item.value * 100) / 100,
@@ -427,9 +469,21 @@ export default function Diagram() {
   const generateRandomSensorData = (tags) => {
     return tags.map(tag => {
       let value;
-      if (tag.includes('LC') || tag.includes('PT')) { // Temperature sensors
+      if (tag.includes('TEMP')) { // Temperature sensors
+        value = (Math.random() * 60 + 40).toFixed(2); // 40-100°C
+      } else if (tag.includes('P_IN')) { // Input pressure
+        value = (Math.random() * 3 + 2).toFixed(2); // 2-5 atm
+      } else if (tag.includes('P_OUT')) { // Output pressure  
+        value = (Math.random() * 2 + 4).toFixed(2); // 4-6 atm
+      } else if (tag.includes('CURRENT')) { // Current
+        value = (Math.random() * 20 + 10).toFixed(2); // 10-30 A
+      } else if (tag.includes('POWER')) { // Power
+        value = (Math.random() * 50 + 25).toFixed(2); // 25-75 kW
+      } else if (tag.includes('FREQ')) { // Frequency
+        value = (Math.random() * 10 + 45).toFixed(2); // 45-55 Hz
+      } else if (tag.includes('LC') || tag.includes('PT')) { // Temperature sensors (existing)
         value = (Math.random() * 80 + 20).toFixed(2); // 20-100°C
-      } else if (tag.includes('TT')) { // Pressure sensors
+      } else if (tag.includes('TT')) { // Pressure sensors (existing)
         value = (Math.random() * 5 + 1).toFixed(2); // 1-6 atm
       } else {
         value = (Math.random() * 100).toFixed(2);
@@ -470,7 +524,7 @@ export default function Diagram() {
 
   // Array of objects for dynamically creating LabelBox + Table/Indicator/Pumps components with percentage positions
   const componentData = [
-    { top: "2.5%", left: "22.5%", content: "ГПС-1" },
+    
     {
       top: "16.2%",
       left: "84.6%",
@@ -483,17 +537,27 @@ export default function Diagram() {
     },
     {
       top: "36.1%",
-      left: "19.9%",
+      left: "17%",
       content: (
         <>
           <div 
             onClick={handleVlagomerClick}
             style={{ cursor: "pointer" }}
           >
-            <Indicator 
-              indicatorNumber={Math.round((oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.value || oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.tag_value || 0) * 100) / 100} 
-              indicatorUnits={"%"}
-            />
+            <div style={{ position: "relative" }}>
+              <div title="Текущие показания влагомера">
+                <Indicator 
+                  indicatorNumber={Math.round((oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.value || oilProgressData.find(d => d.tag_key === "VlagomerTFS_1")?.tag_value || 0) * 100) / 100} 
+                  indicatorUnits={"%"}
+                />
+              </div>
+              <div title="Среднее за 24 часа" style={{ marginTop: "2px" }}>
+                <Indicator 
+                  indicatorNumber={vlagomerAverage} 
+                  indicatorUnits={"%"}
+                />
+              </div>
+            </div>
             <LabelBox label={"Влагомер"} width={60} height={5} fontSize={10} />
           </div>
         </>
@@ -509,8 +573,88 @@ export default function Diagram() {
         </>
       ),
     },
-    { top: "10.5%", left: "22.5%", content: "ГПС-2" },
-    { top: "18%", left: "22.5%", content: "ГПС-3" },
+    {
+      top: "20%",
+      left: "33%",
+      content: (
+        <>
+          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
+          <LabelBox label={"Счетчик"} width={60} height={5} fontSize={10} />
+        </>
+      ),
+    },
+    {
+      top: "65%",
+      left: "25.25%",
+      content: (
+        <>
+          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
+          <LabelBox label={"Счетчик"} width={60} height={5} fontSize={10} />
+        </>
+      ),
+    },
+    {
+      top: "11.5%",
+      left: "33%",
+      content: (
+        <>
+          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
+          <LabelBox label={"Счетчик"} width={60} height={5} fontSize={10} />
+        </>
+      ),
+    },
+    { top: "45%", left: "22.5%", content: "ГПС-1" },
+    { top: "53%", left: "22.5%", content: "ГПС-2" },
+    { top: "60.5%", left: "22.5%", content: "ГПС-3" },
+    { top: "7.5%", left: "22.25%", content: "МФН-1" },
+    { top: "15.25%", left: "22.25%", content: "МФН-2" },
+      // МФН-1 clickable area
+    {
+      top: "7.5%", // Position matches your existing МФН-1 label
+      left: "22.25%", // Position matches your existing МФН-1 label
+      content: (
+        <div 
+          onClick={() => handleTableClick(
+            ["ARM_MFN1_TEMP", "ARM_MFN1_P_IN", "ARM_MFN1_P_OUT", "ARM_MFN1_CURRENT", "ARM_MFN1_POWER", "ARM_MFN1_FREQ"], 
+            "МФН-1"
+          )}
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "60px",
+            height: "40px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(255, 255, 0, 0.1)", // Optional: visible area for testing
+            // border: "1px solid rgba(255, 255, 0, 0.3)"
+          }}
+        />
+      ),
+    },
+
+    // МФН-2 clickable area
+    {
+      top: "15.25%", // Position matches your existing МФН-2 label
+      left: "22.25%", // Position matches your existing МФН-2 label
+      content: (
+        <div 
+          onClick={() => handleTableClick(
+            ["ARM_MFN2_TEMP", "ARM_MFN2_P_IN", "ARM_MFN2_P_OUT", "ARM_MFN2_CURRENT", "ARM_MFN2_POWER", "ARM_MFN2_FREQ"], 
+            "МФН-2"
+          )}
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "60px",
+            height: "40px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(255, 0, 255, 0.1)", // Optional: visible area for testing
+            // border: "1px solid rgba(255, 0, 255, 0.3)"
+          }}
+        />
+      ),
+    },
     {
       top: "54%",
       left: "30.75%",
@@ -642,12 +786,27 @@ export default function Diagram() {
     // },
     {
       top: "85%",
-      left: "83.7%",
+      left: "79.4%",
       content: (
         <>
-          <Pumps numberOfSquares={4} activeIndex={0} width={41} height={52} />
+          <Pumps numberOfSquares={2} activeIndex={0} width={80} height={52} />
           <LabelBox
             label={"Насосная пожаротушения"}
+            width={140}
+            height={10}
+            fontSize={10}
+          />
+        </>
+      ),
+    },
+    {
+      top: "34.5%",
+      left: "91.2%",
+      content: (
+        <>
+          <Pumps numberOfSquares={3} activeIndex={0} width={55} height={52} />
+          <LabelBox
+            label={"БКСН"}
             width={150}
             height={10}
             fontSize={10}
@@ -656,14 +815,14 @@ export default function Diagram() {
       ),
     },
     {
-      top: "27%",
-      left: "31.2%",
+      top: "27.2%",
+      left: "32%",
       content: (
         <>
-          <Pumps numberOfSquares={2} activeIndex={0} width={85} height={50} />
+          <Pumps numberOfSquares={2} activeIndex={0} width={80} height={50} />
           <LabelBox
             label={"Насосная перекачка нефти"}
-            width={150}
+            width={140}
             height={10}
             fontSize={10}
           />
@@ -730,14 +889,14 @@ export default function Diagram() {
     // Water
     {
       top: "70.2%", // Label for PBC-1
-      left: "84.8%",
+      left: "78.5%",
       content: "PBC-1",
       color: "#000",
       size: "10px",
     },
     {
       top: "75%", // Label for PBC-1
-      left: "84.8%",
+      left: "78.5%",
       content: "V 500м³",
       color: "#000",
       size: "8px",
@@ -745,28 +904,28 @@ export default function Diagram() {
 
     {
       top: "50%", // Label for PBC-2
-      left: "84.8%",
+      left: "78.5%",
       content: "PBC-2",
       color: "#000",
       size: "10px",
     },
     {
       top: "54.8%", // Label for PBC-2
-      left: "84.8%",
+      left: "78.5%",
       content: "V 500м³",
       color: "#000",
       size: "8px",
     },
     {
       top: "50%", // Label for PBC-3
-      left: "93.5%",
+      left: "87.2%",
       content: "PBC-3",
       color: "#000",
       size: "10px",
     },
     {
       top: "54.8%", // Label for PBC-3
-      left: "93.5%",
+      left: "87.2%",
       content: "V 500м³",
       color: "#000",
       size: "8px",
@@ -774,14 +933,14 @@ export default function Diagram() {
 
     {
       top: "70.2%", // Label for PBC-4
-      left: "93.5%",
+      left: "87.2%",
       content: "PBC-4",
       color: "#000",
       size: "10px",
     },
     {
       top: "75%", // Label for PBC-4
-      left: "93.5%",
+      left: "87.2%",
       content: "V 500м³",
       color: "#000",
       size: "8px",
@@ -872,7 +1031,7 @@ export default function Diagram() {
       ),
     },
     {
-      top: "28.3%",
+      top: "38%",
       left: "27.2%",
       content: (
         <div 
@@ -887,6 +1046,7 @@ export default function Diagram() {
             width: "29px",
             height: "55px",
             cursor: "pointer",
+            // backgroundColor: "red"
           }}
         />
 
@@ -974,7 +1134,7 @@ export default function Diagram() {
     {
       // 2
       top: "49.2%",
-      left: "86.8%",
+      left: "80.5%",
       key: "pbc5L",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS6_LT")?.value || 0),
       maxValue: 500,
@@ -988,7 +1148,7 @@ export default function Diagram() {
     {
       // 3
       top: "49.2%",
-      left: "95.4%",
+      left: "89.2%",
       key: "pbc5L",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS5_LT")?.value || 0),
       maxValue: 500,
@@ -1003,7 +1163,7 @@ export default function Diagram() {
     {
       // 4
       top: "69.3%",
-      left: "95.4%",
+      left: "89.2%",
       key: "pbc5L",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS3_LT")?.value || 0),
       maxValue: 500,
@@ -1017,7 +1177,7 @@ export default function Diagram() {
     {
       // 1
       top: "69.3%",
-      left: "86.8%",
+      left: "80.5%",
       key: "pbc5L",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS4_LT")?.value || 0),
       maxValue: 500,
@@ -1262,8 +1422,10 @@ export default function Diagram() {
                       tickLine={{ stroke: "#666" }}
                     />
                     <YAxis 
+                      domain={[0, 100]}
+                      ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
                       label={{ 
-                        value: 'Влажность (%)', 
+                        value: 'Обводненность (%)', 
                         angle: -90, 
                         position: 'insideLeft',
                         style: { textAnchor: 'middle', fill: '#e5e5e5' }
@@ -1282,7 +1444,7 @@ export default function Diagram() {
                     <Line 
                       type="monotone" 
                       dataKey="value" 
-                      name="Влажность"
+                      name="Обводненность"
                       stroke="#60a5fa"
                       strokeWidth={2}
                       dot={{ fill: '#60a5fa', strokeWidth: 2, r: 3 }}
@@ -1297,7 +1459,7 @@ export default function Diagram() {
                   fontSize: "12px",
                   textAlign: "center"
                 }}>
-                  Последние 20 измерений • 
+                  Последние 24 измерений • 
                   {isVlagomerArchiveMode && selectedVlagomerDate ? 
                     `Архив: ${format(selectedVlagomerDate, "dd.MM.yyyy")}` : 
                     `Обновлено: ${new Date().toLocaleTimeString('ru-RU')}`
