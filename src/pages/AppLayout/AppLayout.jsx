@@ -47,12 +47,20 @@ export default function AppLayout() {
   }), [chartType]);
 
   const calculateMiddleValue = (wells, values) => {
-    return parseFloat(((values.middle - values.leftBottom) / values.leftBottom * 100).toFixed(2));
+    // Choose the base value based on chart type
+    const baseValue = chartType === "oil" ? values.rightTop : values.leftBottom;
+    
+    // Calculate percentage difference
+    return parseFloat(((values.middle - baseValue) / baseValue * 100).toFixed(2));
   };
 
   const isWellStopped = (well) => {
-    if (fond === 0 && well.c_current !== undefined && well.c_current < 1) {
-      return true;
+    if (fond === 0 && well.c_current !== undefined && well.c_current !== null) {
+      const current = parseFloat(well.c_current);
+      // Only consider stopped if it's actually a number and less than 1
+      if (!isNaN(current)) {
+        return current < 1;
+      }
     }
     return false;
   };
@@ -99,6 +107,18 @@ export default function AppLayout() {
     }
   };
 
+  const formatModalValue = (value) => {
+    if (value === null || value === undefined || value === '') {
+      return "N/A";
+    }
+    // Convert to number to check if it's a valid number
+    const numValue = parseFloat(value);
+    if (isNaN(numValue)) {
+      return value; // Return original value if it's not a number (like strings)
+    }
+    return numValue.toString(); // Return the number as string, including "0"
+  };
+
   const handleWellClick = async (wellNumber) => {
     try {
       setWellModalLoading(true);
@@ -115,14 +135,13 @@ export default function AppLayout() {
       const transformedData = [
         { "Параметр": "Скважина", "Значение": wellData["Скважина"] || wellNumber },
         { "Параметр": "Последнее обновление", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
-        { "Параметр": "Напряжение", "Значение": wellData["Напряжение"] || "N/A" },
-        { "Параметр": "Мощность", "Значение": wellData["Мощность"] || "N/A" },
-        { "Параметр": "Частота", "Значение": wellData["Частота"] || "N/A" },
-        { "Параметр": "Ток", "Значение": wellData["Ток"] || "N/A" },
-        { "Параметр": "Скорость двигателя", "Значение": wellData["Скорость двигателя"] || "N/A" },
+        { "Параметр": "Напряжение", "Значение": formatModalValue(wellData["Напряжение"]) },
+        { "Параметр": "Мощность", "Значение": formatModalValue(wellData["Мощность"]) },
+        { "Параметр": "Частота", "Значение": formatModalValue(wellData["Частота"]) },
+        { "Параметр": "Ток", "Значение": formatModalValue(wellData["Ток"]) },
+        { "Параметр": "Скорость двигателя", "Значение": formatModalValue(wellData["Скорость двигателя"]) },
         { "Параметр": "Тип", "Значение": wellData["Тип"] === 1 ? "ЧРП" : "Обычная" }
       ];
-
       setWellModalData(transformedData);
 
     } catch (error) {
@@ -134,8 +153,8 @@ export default function AppLayout() {
           { "Параметр": "Номер скважины", "Значение": selectedWell.well || "N/A" },
           { "Параметр": "Последнее обновление", "Значение": "Не удалось загрузить" },
           { "Параметр": "Ошибка", "Значение": "Не удалось загрузить подробные данные. Показаны базовые данные из кэша." },
-          { "Параметр": "Тех. режим по жидкости", "Значение": `${selectedWell.tr_fluid?.toFixed(2) || 0} м³/сут` },
-          { "Параметр": "Замер", "Значение": `${selectedWell.zamer?.toFixed(2) || 0}` },
+          { "Параметр": "Тех. режим по жидкости", "Значение": selectedWell.tr_fluid != null ? `${selectedWell.tr_fluid.toFixed(2)} м³/сут` : "N/A" },
+          { "Параметр": "Замер", "Значение": selectedWell.zamer != null ? `${selectedWell.zamer.toFixed(2)}` : "N/A" },
           { "Параметр": "Тип", "Значение": selectedWell.type === 1 ? "ЧРП" : "Обычная" }
         ];
         setWellModalData(fallbackData);

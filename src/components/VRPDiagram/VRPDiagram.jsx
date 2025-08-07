@@ -6,6 +6,9 @@ import ResponsiveTable from "../ResponsiveTable/ResponsiveTable";
 import { NavLink } from "react-router-dom";
 import { fetchAGZUWellData } from "../../axios/wellService";
 
+// Store generated data outside component to persist across re-renders and category changes
+const categoryDataCache = {};
+
 export default function VRPDiagram({ filteredWells, boxIndex, category }) {
   const [centerData, setCenterData] = useState({
     flow: 0,
@@ -19,30 +22,56 @@ export default function VRPDiagram({ filteredWells, boxIndex, category }) {
   const [wellModalTitle, setWellModalTitle] = useState("Данные ВРП скважины");
   const [wellModalLoading, setWellModalLoading] = useState(false);
 
-  // Generate random data on component mount and update periodically
+  // Generate category-specific random data that persists
   useEffect(() => {
-    const generateRandomData = () => {
-      const now = new Date();
-      return {
-        flow: (Math.random() * 100).toFixed(0), // Random flow 0-100 М³/СУТ
-        pressure: (Math.random() * 5).toFixed(1), // Random pressure 0-5 МПа
-        time: now.toLocaleTimeString('ru-RU', {
+    const generateCategorySpecificData = (categoryName) => {
+      // If we already have data for this category, use it
+      if (categoryDataCache[categoryName]) {
+        return categoryDataCache[categoryName];
+      }
+
+      // Generate new data for this category
+      const categoryHash = categoryName ? categoryName.split('').reduce((a, b) => {
+        a = ((a << 5) - a) + b.charCodeAt(0);
+        return a & a;
+      }, 0) : 0;
+      
+      // Create category-specific random ranges using hash as seed
+      const seed = Math.abs(categoryHash) % 1000;
+      const flowBase = (seed % 50) + 30; // 30-80 base flow
+      const pressureBase = (seed % 3) + 2; // 2-5 base pressure
+      
+      const newData = {
+        flow: Math.floor(flowBase + (seed % 30)), // Category-specific flow range
+        pressure: (pressureBase + (seed % 100) / 100 * 2).toFixed(1), // Category-specific pressure
+        time: new Date().toLocaleTimeString('ru-RU', {
           hour: '2-digit',
           minute: '2-digit'
         })
       };
+
+      // Cache the generated data for this category
+      categoryDataCache[categoryName] = newData;
+      return newData;
     };
 
-    // Set initial random data
-    setCenterData(generateRandomData());
+    // Generate and set data for current category
+    const data = generateCategorySpecificData(category);
+    setCenterData(data);
 
-    // Update data every 30 seconds (optional)
+    // Update only the time every 30 seconds, keep flow and pressure the same
     const interval = setInterval(() => {
-      setCenterData(generateRandomData());
+      setCenterData(prev => ({
+        ...prev,
+        time: new Date().toLocaleTimeString('ru-RU', {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      }));
     }, 30000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [category]); // Only re-run when category changes
 
   // Change from 4 to 5 boxes
   const boxes = new Array(5).fill(null);
@@ -176,7 +205,7 @@ export default function VRPDiagram({ filteredWells, boxIndex, category }) {
           />
         ))}
 
-        {/* Central circle data */}
+        {/* Central circle with category-specific persistent random data */}
         <div className={styles.circle} style={{ top: "49%", left: "50.5%" }}>
           <div className={styles.circleText}>{centerData.flow} М³/СУТ</div>
           <div className={styles.circleSubText}>{centerData.pressure} МПа</div>

@@ -57,13 +57,35 @@ export default function WellCard({
     }
   };
 
+  // Helper function to format numeric values
+  const formatValue = (value, decimals = 2) => {
+    // Check for null, undefined, or empty string
+    if (value === null || value === undefined || value === '') {
+      return "N/A";
+    }
+    
+    // Convert to number
+    const numValue = parseFloat(value);
+    
+    // Check if conversion resulted in NaN or Infinity
+    if (isNaN(numValue) || !isFinite(numValue)) {
+      return "N/A";
+    }
+    
+    // Return formatted number (including 0.00)
+    return numValue.toFixed(decimals);
+  };
+
   // DEBUG: Log the values to see what's happening
   console.log(`Well ${leftTop}:`, {
     fond: fond,
     wellStopped: wellStopped,
     middle: middle,
     minThreshold: minThreshold,
-    maxThreshold: maxThreshold
+    maxThreshold: maxThreshold,
+    rightTop: rightTop,
+    leftBottom: leftBottom,
+    rightBottom: rightBottom
   });
 
   let cardColorClass = styles.grayCard;
@@ -117,10 +139,12 @@ export default function WellCard({
 
         <div className={styles.cardRow}>
           <span>{leftTop}</span>
-          <span>{rightTop.toFixed(2)}</span>
+          <span>{formatValue(rightTop, 2)}</span>
         </div>
 
-        <h3 className={styles.cardHeader}>{realMiddle.toFixed(2)}</h3>
+        <h3 className={styles.cardHeader}>
+          {formatValue(realMiddle, 2)}
+        </h3>
 
         <div className={styles.cardRow}>
           {fond === 1 ? (
@@ -130,8 +154,8 @@ export default function WellCard({
             </>
           ) : (
             <>
-              <span>{leftBottom.toFixed(1)}</span>
-              <span>{rightBottom.toFixed(1)}</span>
+              <span>{formatValue(leftBottom, 1)}</span>
+              <span>{formatValue(rightBottom, 1)}</span>
             </>
           )}
         </div>

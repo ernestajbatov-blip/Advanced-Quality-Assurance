@@ -23,7 +23,6 @@ export default function Grid({
   return (
     <div className={styles.gridContainer}>
       {wells.map((well, index) => {
-        // Get values from well object based on field mappings
         const wellValues = {
           leftTop: well[fieldMappings.leftTop],
           rightTop: well[fieldMappings.rightTop],
@@ -38,13 +37,11 @@ export default function Grid({
 
         const middleValue = realMiddle === true ? wellValues.middle : calculatedMiddleValue;
 
-        // ABSOLUTELY ensure wellStopped is false for injection wells
         let wellStopped = false;
         if (fond === 0 && isWellStopped) {
           wellStopped = isWellStopped(well);
         }
 
-        // DEBUG: Log well data to see what's happening
         console.log(`Grid - Well ${wellValues.leftTop}:`, {
           fond: fond,
           nagn: well.nagn,

@@ -80,6 +80,11 @@ export default function Diagram() {
     }
   }, [vlagomerData]);
 
+  useEffect(() => {
+    // Load vlagometer data immediately when component mounts
+    fetchVlagomerData();
+  }, []);
+
   const TAG_UNITS = {
     // tfs-1
     "ARM_TFS_LC1_L": "см",
@@ -521,6 +526,50 @@ export default function Diagram() {
     setShowVlagomerChart(false);
   };
 
+  // Generate random data for БКНС
+  const generateBKNSData = () => {
+    return [
+      {
+        "Параметр": "Частота",
+        "Значение": `${(Math.random() * 10 + 45).toFixed(2)} Гц`
+      },
+      {
+        "Параметр": "Ток", 
+        "Значение": `${(Math.random() * 20 + 10).toFixed(2)} А`
+      },
+      {
+        "Параметр": "Мощность",
+        "Значение": `${(Math.random() * 50 + 25).toFixed(2)} кВт`
+      }
+    ];
+  };
+
+  // Generate random data for Насосная перекачка нефти
+  const generateNasosPerekachkaData = () => {
+    return [
+      {
+        "Параметр": "Давление на выходе",
+        "Значение": `${(Math.random() * 5 + 2).toFixed(2)} атм`
+      }
+    ];
+  };
+
+  // Handle БКНС click
+  const handleBKNSClick = () => {
+    const bknsData = generateBKNSData();
+    setTableData(bknsData);
+    setTableTitle("БКНС");
+    setShowTable(true);
+  };
+
+  // Handle Насосная перекачка нефти click
+  const handleNasosPerekachkaClick = () => {
+    const nasosData = generateNasosPerekachkaData();
+    setTableData(nasosData);
+    setTableTitle("Насосная перекачка нефти");
+    setShowTable(true);
+  };
+
   const realUzelUchetaData = getRealUzelUchetaData();
 
   // Array of objects for dynamically creating LabelBox + Table/Indicator/Pumps components with percentage positions
@@ -805,13 +854,23 @@ export default function Diagram() {
       left: "91.2%",
       content: (
         <>
-          <Pumps numberOfSquares={3} activeIndex={0} width={55} height={52} />
-          <LabelBox
-            label={"БКСН"}
-            width={150}
-            height={10}
-            fontSize={10}
-          />
+          <div 
+            onClick={handleBKNSClick}
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+            <Pumps numberOfSquares={3} activeIndex={2} width={55} height={52} />
+            <LabelBox
+              label={"БКНС"}
+              width={150}
+              height={10}
+              fontSize={10}
+            />
+          </div>
         </>
       ),
     },
@@ -820,13 +879,23 @@ export default function Diagram() {
       left: "32%",
       content: (
         <>
-          <Pumps numberOfSquares={2} activeIndex={0} width={80} height={50} />
-          <LabelBox
-            label={"Насосная перекачка нефти"}
-            width={140}
-            height={10}
-            fontSize={10}
-          />
+          <div 
+            onClick={handleNasosPerekachkaClick}
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center"
+            }}
+          >
+            <Pumps numberOfSquares={2} activeIndex={0} width={80} height={50} />
+            <LabelBox
+              label={"Насосная перекачка нефти"}
+              width={140}
+              height={10}
+              fontSize={10}
+            />
+          </div>
         </>
       ),
     },
@@ -1118,7 +1187,7 @@ export default function Diagram() {
       left: "54.7%",
       key: "rvs-1",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS1_LT")?.value || 0),
-      maxValue: 1000,
+      maxValue: 1020,
       color: "#8d730e",
       width: 11,
       height: 90,
@@ -1131,7 +1200,7 @@ export default function Diagram() {
       left: "54.7%",
       key: "rvs-2",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS2_LT")?.value || 0),
-      maxValue: 1000,
+      maxValue: 1020,
       color: "#8d730e",
       width: 11,
       height: 90,
@@ -1144,7 +1213,7 @@ export default function Diagram() {
       left: "67.3%",
       key: "rvs-3",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS7_LT")?.value || 0),
-      maxValue: 1000,
+      maxValue: 1020,
       color: "#8d730e",
       width: 11,
       height: 90,
@@ -1157,7 +1226,7 @@ export default function Diagram() {
       left: "67.3%",
       key: "rvs-4",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS8_LT")?.value || 0),
-      maxValue: 1000,
+      maxValue: 1020,
       color: "#8d730e",
       width: 11,
       height: 90,
@@ -1173,7 +1242,7 @@ export default function Diagram() {
       left: "80.5%",
       key: "pbc5L",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS6_LT")?.value || 0),
-      maxValue: 500,
+      maxValue: 510,
       color: "#0C5D81", // Blue color
       width: 9,
       height: 68,
@@ -1187,7 +1256,7 @@ export default function Diagram() {
       left: "89.2%",
       key: "pbc5L",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS5_LT")?.value || 0),
-      maxValue: 500,
+      maxValue: 510,
       color: "#0C5D81", // Blue color
       width: 9,
       height: 68,
@@ -1202,7 +1271,7 @@ export default function Diagram() {
       left: "89.2%",
       key: "pbc5L",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS3_LT")?.value || 0),
-      maxValue: 500,
+      maxValue: 510,
       color: "#0C5D81", // Blue color
       width: 9,
       height: 68,
@@ -1216,7 +1285,7 @@ export default function Diagram() {
       left: "80.5%",
       key: "pbc5L",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS4_LT")?.value || 0),
-      maxValue: 500,
+      maxValue: 510,
       color: "#0C5D81", // Blue color
       width: 9,
       height: 68,

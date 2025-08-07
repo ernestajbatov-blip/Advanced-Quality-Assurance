@@ -6,7 +6,11 @@ import ResponsiveTable from "../ResponsiveTable/ResponsiveTable";
 import { NavLink } from "react-router-dom";
 import { fetchAGZUWellData } from "../../axios/wellService";
 
-export default function AgzuDiagram({ filteredWells, boxIndex }) {
+// Store generated data outside component to persist across re-renders and category changes
+const categoryDataCache = {};
+
+export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
+  // Random data for center circle based on category
   const [centerData, setCenterData] = useState({
     pressure: 0,
     time: "00:00",
@@ -19,30 +23,56 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
   const [wellModalTitle, setWellModalTitle] = useState("Данные скважины");
   const [wellModalLoading, setWellModalLoading] = useState(false);
 
-  // Generate random data on component mount and update periodically
+  // Generate category-specific random data that persists
   useEffect(() => {
-    const generateRandomData = () => {
-      const now = new Date();
-      return {
-        pressure: (Math.random() * 10).toFixed(1), // Random pressure 0-10 МПа
-        time: now.toLocaleTimeString('ru-RU', {
+    const generateCategorySpecificData = (categoryName) => {
+      // If we already have data for this category, use it
+      if (categoryDataCache[categoryName]) {
+        return categoryDataCache[categoryName];
+      }
+
+      // Generate new data for this category
+      const categoryHash = categoryName ? categoryName.split('').reduce((a, b) => {
+        a = ((a << 5) - a) + b.charCodeAt(0);
+        return a & a;
+      }, 0) : 0;
+      
+      // Create category-specific random ranges using hash as seed
+      const seed = Math.abs(categoryHash) % 1000;
+      const pressureBase = (seed % 5) + 3; // 3-8 base pressure
+      const tempBase = (seed % 20) + 20; // 20-40 base temperature
+      
+      const newData = {
+        pressure: (pressureBase + (seed % 100) / 100 * 3).toFixed(1), // Category-specific pressure
+        time: new Date().toLocaleTimeString('ru-RU', {
           hour: '2-digit',
           minute: '2-digit'
         }),
-        temperature: Math.floor(Math.random() * 50 + 10) // Random temp 10-60°C
+        temperature: Math.floor(tempBase + (seed % 20)) // Category-specific temperature
       };
+
+      // Cache the generated data for this category
+      categoryDataCache[categoryName] = newData;
+      return newData;
     };
 
-    // Set initial random data
-    setCenterData(generateRandomData());
+    // Generate and set data for current category
+    const data = generateCategorySpecificData(category);
+    setCenterData(data);
 
-    // Update data every 30 seconds (optional - remove if you don't want periodic updates)
+    // Update only the time every 20 seconds, keep pressure and temperature the same
     const interval = setInterval(() => {
-      setCenterData(generateRandomData());
-    }, 30000);
+      setCenterData(prev => ({
+        ...prev,
+        time: new Date().toLocaleTimeString('ru-RU', {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      }));
+    }, 20000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [category]); // Only re-run when category changes
 
   const boxes = Array(14).fill(null);
   filteredWells.forEach((well) => {
@@ -77,7 +107,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
       return;
     }
 
-    // Handle regular wells
+    // Handle regular wells - use REAL DATABASE DATA for modal
     const wellNumber = well.well;
     
     try {
@@ -85,7 +115,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
       setWellModalTitle(`Данные скважины ${wellNumber}`);
       setShowWellModal(true);
 
-      // Fetch AGZU specific well data
+      // Fetch AGZU specific well data from DATABASE
       const response = await fetchAGZUWellData(wellNumber);
       const agzuWellData = response.data;
 
@@ -105,7 +135,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
     } catch (error) {
       console.error("Error fetching AGZU well data:", error);
       
-      // Fallback data from filteredWells if API fails
+      // Fallback data from filteredWells if API fails - STILL REAL DATA
       const fallbackData = [
         { "Параметр": "Скважина", "Значение": well.well || wellNumber },
         { "Параметр": "Жидкость", "Значение": "N/A" },
@@ -158,20 +188,86 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
           />
         ))}
 
-        <div className={styles.circle} style={{ top: "63.5%", left: "76%" }}>
-          <div className={styles.circleText}>{centerData.pressure} МПа</div>
-          <div className={styles.circleText}>{centerData.time}</div>
-          <div className={styles.circleText}>{centerData.temperature} °C</div>
+        {/* Center Circle with category-specific persistent random data */}
+        <div className={styles.circle} style={{ 
+          position: 'absolute',
+          top: '62.5%', 
+          left: '75.5%', 
+          transform: 'translate(-50%, -50%)',
+          width: '120px',
+          height: '120px',
+          borderRadius: '50%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'transparent',
+          pointerEvents: 'none'
+        }}>
+          <div className={styles.circleText} style={{
+            fontSize: '17px',
+            color: 'white',
+            textAlign: 'center',
+            lineHeight: '1.2',
+            margin: '2px 0'
+          }}>
+            {centerData.pressure} МПа
+          </div>
+          <div className={styles.circleText} style={{
+            fontSize: '17px',
+            color: 'white',
+            textAlign: 'center',
+            lineHeight: '1.2',
+            margin: '2px 0'
+          }}>
+            {centerData.time}
+          </div>
+          <div className={styles.circleText} style={{
+            fontSize: '17px',
+            color: 'white',
+            textAlign: 'center',
+            lineHeight: '1.2',
+            margin: '2px 0'
+          }}>
+            {centerData.temperature} °C
+          </div>
         </div>
 
         <div className={styles.line} style={{ top: "62%", left: "86.3%" }}></div>
-
-        <NavLink to="/scheme">
-          <Box boxText1="на УПН" top="57.5%" left="135%" />
-        </NavLink>
       </div>
 
-      {/* Well Data Modal */}
+        {/* Fixed NavLink button with proper positioning and z-index */}
+        <div style={{
+          position: 'absolute',
+          top: '48%',
+          left: '90%',
+          zIndex: 1000,
+          pointerEvents: 'auto',
+          backgroundColor: '#50505a'
+        }}>
+          <NavLink 
+            to="/scheme" 
+            style={{
+              display: 'block',
+              textDecoration: 'none',
+              pointerEvents: 'auto'
+            }}
+          >
+            <button style={{
+              padding: '8px 12px',
+              backgroundColor: 'transparent',
+              color: 'white',
+              border: '1px solid white',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '12px'
+            }}>
+              на УПН
+            </button>
+          </NavLink>
+        </div>
+
+      {/* Well Data Modal - USES REAL DATABASE DATA */}
       {showWellModal && (
         <Modal onClose={handleCloseWellModal}>
           <div style={{ padding: "20px" }}>

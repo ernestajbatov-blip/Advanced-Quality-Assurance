@@ -694,7 +694,7 @@ app.get("/api/well/agzu-data", (req, res) => {
 function convertCategoryToTagKey(category) {
   if (!category) return null;
   
-  console.log("Converting category to tag key:", category);
+  // console.log("Converting category to tag key:", category);
   
   // Convert to lowercase and replace common Russian terms with English equivalents
   let converted = category.toLowerCase()
@@ -708,15 +708,15 @@ function convertCategoryToTagKey(category) {
   
   const tagKey = `${converted}-num`;
   
-  console.log("Converted tag key:", tagKey);
+  // console.log("Converted tag key:", tagKey);
   
   return tagKey;
 }
 
 // Test the function with your categories
-console.log("АГЗУ-1 ->", convertCategoryToTagKey("АГЗУ-1"));     // Should be: agzu-1-num
-console.log("АГЗУ-2 ->", convertCategoryToTagKey("АГЗУ-2"));     // Should be: agzu-2-num  
-console.log("МФ №3 ->", convertCategoryToTagKey("МФ №3"));       // Should be: mf-3-num
+// console.log("АГЗУ-1 ->", convertCategoryToTagKey("АГЗУ-1"));     // Should be: agzu-1-num
+// console.log("АГЗУ-2 ->", convertCategoryToTagKey("АГЗУ-2"));     // Should be: agzu-2-num  
+// console.log("МФ №3 ->", convertCategoryToTagKey("МФ №3"));       // Should be: mf-3-num
 
 app.get("/api/well-number/:category", (req, res) => {
   const connection = getConnection();
