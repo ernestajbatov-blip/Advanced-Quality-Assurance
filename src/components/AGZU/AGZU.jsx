@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import styles from "./AGZU.module.css";
 import AgzuDiagram from "../AgzuDiagram/AgzuDiagram";
-import { fetchAGZUCategories, fetchWellNumber } from "../../axios/wellService";
+import { fetchAGZUCategories, fetchCategoryWellNumber } from "../../axios/wellService";
 
 function Button({ label, active, onClick }) {
   return (
@@ -50,21 +50,92 @@ function Dropdown({ options, active, onSelect }) {
 export default function AGZU({ wells, index }) {
   const [categories, setCategories] = useState([]);
   const [activeButton, setActiveButton] = useState("");
-  const [wellNumber, setWellNumber] = useState(5);
+  const [wellNumber, setWellNumber] = useState(5); // Default fallback
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // Define manual entries for specific otvod positions
+  const manualEntries = [
+    {
+      otvod: 13,
+      well: "МФ-4",
+      agzu: "АГЗУ-1", // Match this to your category filter
+      nagn: 0,
+      tr_fluid: null, // No second line text
+      isManual: true // Flag to identify manual entries
+    },
+    {
+      otvod: 14,
+      well: "МФ-1",
+      agzu: "АГЗУ-1", // Match this to your category filter
+      nagn: 0,
+      tr_fluid: null, // No second line text
+      isManual: true // Flag to identify manual entries
+    },
+    {
+      otvod: 8,
+      well: "МФ-2",
+      agzu: "АГЗУ-2", // Match this to your category filter
+      nagn: 0,
+      tr_fluid: null, // No second line text
+      isManual: true // Flag to identify manual entries
+    },
+    {
+      otvod: 14,
+      well: "МФ-1",
+      agzu: "АГЗУ-1", // Match this to your category filter
+      nagn: 0,
+      tr_fluid: null, // No second line text
+      isManual: true // Flag to identify manual entries
+    },
+    {
+      otvod: 2,
+      well: "МФ-4",
+      agzu: "МФ №3", // Match this to your category filter
+      nagn: 0,
+      tr_fluid: null, // No second line text
+      isManual: true // Flag to identify manual entries
+    },
+    {
+      otvod: 14,
+      well: "МФ-1",
+      agzu: "АГЗУ-1", // Match this to your category filter
+      nagn: 0,
+      tr_fluid: null, // No second line text
+      isManual: true // Flag to identify manual entries
+    },
+  ];
+
+  // Function to fetch well number for a specific category
+  const fetchWellNumberForCategory = async (category) => {
+    try {
+      console.log("Fetching well number for category:", category);
+      const response = await fetchCategoryWellNumber(category);
+      const fetchedWellNumber = response.data?.wellNumber;
+      
+      console.log("API Response for category:", category, response.data);
+      
+      if (fetchedWellNumber !== null && fetchedWellNumber !== undefined) {
+        setWellNumber(fetchedWellNumber);
+        console.log("Updated wellNumber to:", fetchedWellNumber);
+      } else {
+        // If no specific well number found for this category, use default
+        console.log("No well number found for category:", category, "using default: 5");
+        setWellNumber(5);
+      }
+    } catch (err) {
+      console.error("Error fetching well number for category:", category, err);
+      // Fallback to default on error
+      setWellNumber(5);
+    }
+  };
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load both categories and well number in parallel
-        const [categoriesResponse, wellNumberResponse] = await Promise.all([
-          fetchAGZUCategories(),
-          fetchWellNumber()
-        ]);
-
+        // Load categories first
+        const categoriesResponse = await fetchAGZUCategories();
         const allCategories = categoriesResponse.data || [];
-        const fetchedWellNumber = wellNumberResponse.data?.wellNumber || 5;
 
         // Filter categories to only show those starting with "АГЗУ" or "МФ"
         const filteredCategories = allCategories.filter(category => 
@@ -72,11 +143,16 @@ export default function AGZU({ wells, index }) {
         );
 
         setCategories(filteredCategories);
-        setWellNumber(fetchedWellNumber);
 
         // Set the first category as active by default
         if (filteredCategories.length > 0) {
-          setActiveButton(filteredCategories[0]);
+          const firstCategory = filteredCategories[0];
+          setActiveButton(firstCategory);
+          // Fetch well number for the first category
+          await fetchWellNumberForCategory(firstCategory);
+        } else {
+          // No categories found, use default
+          setWellNumber(5);
         }
 
         setLoading(false);
@@ -90,15 +166,21 @@ export default function AGZU({ wells, index }) {
     loadData();
   }, []);
 
-  const handleButtonClick = (label) => {
+  const handleButtonClick = async (label) => {
+    console.log("Button clicked:", label);
     setActiveButton(label);
+    
+    // Fetch well number for the selected category
+    await fetchWellNumberForCategory(label);
   };
 
-  const filteredWells = wells.filter(
-    (well) => well.agzu === activeButton && well.nagn == 0
-  );
+  // Combine real wells with manual entries
+  const combinedWells = [
+    ...wells.filter((well) => well.agzu === activeButton && well.nagn == 0),
+    ...manualEntries.filter((entry) => entry.agzu === activeButton)
+  ];
 
-  console.log("Filtered Wells:", filteredWells);
+  console.log("Combined Wells:", combinedWells);
   console.log("Active Button:", activeButton);
   console.log("Categories:", categories);
   console.log("Well Number:", wellNumber);
@@ -145,7 +227,11 @@ export default function AGZU({ wells, index }) {
           ))
         )}
       </div>
-      <AgzuDiagram filteredWells={filteredWells} boxIndex={wellNumber-1} />
+      <AgzuDiagram 
+        filteredWells={combinedWells} 
+        boxIndex={wellNumber-1} 
+        category={activeButton}
+      />
     </div>
   );
 }

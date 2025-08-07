@@ -1,12 +1,51 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./VRPDiagram.module.css";
 import Box from "../Box/Box";
+import Modal from "../Modal/Modal";
+import ResponsiveTable from "../ResponsiveTable/ResponsiveTable";
 import { NavLink } from "react-router-dom";
+import { fetchAGZUWellData } from "../../axios/wellService";
 
-export default function VRPDiagram({ filteredWells, boxIndex }) {
+export default function VRPDiagram({ filteredWells, boxIndex, category }) {
+  const [centerData, setCenterData] = useState({
+    flow: 0,
+    pressure: 0,
+    time: "00:00"
+  });
+
+  // Modal state management
+  const [showWellModal, setShowWellModal] = useState(false);
+  const [wellModalData, setWellModalData] = useState([]);
+  const [wellModalTitle, setWellModalTitle] = useState("Данные ВРП скважины");
+  const [wellModalLoading, setWellModalLoading] = useState(false);
+
+  // Generate random data on component mount and update periodically
+  useEffect(() => {
+    const generateRandomData = () => {
+      const now = new Date();
+      return {
+        flow: (Math.random() * 100).toFixed(0), // Random flow 0-100 М³/СУТ
+        pressure: (Math.random() * 5).toFixed(1), // Random pressure 0-5 МПа
+        time: now.toLocaleTimeString('ru-RU', {
+          hour: '2-digit',
+          minute: '2-digit'
+        })
+      };
+    };
+
+    // Set initial random data
+    setCenterData(generateRandomData());
+
+    // Update data every 30 seconds (optional)
+    const interval = setInterval(() => {
+      setCenterData(generateRandomData());
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Change from 4 to 5 boxes
   const boxes = new Array(5).fill(null);
-  
   filteredWells.forEach((well) => {
     // Make sure otvod is within bounds (1-5)
     if (well.otvod >= 1 && well.otvod <= 5) {
@@ -24,16 +63,66 @@ export default function VRPDiagram({ filteredWells, boxIndex }) {
     { x1: 648, y1: 165, x2: 648, y2: 305 },
     { x1: 918, y1: 165, x2: 918, y2: 305 },
     { x1: 1181, y1: 165, x2: 1181, y2: 305 }, // 5th box pipe
-    // { x1: 1445, y1: 165, x2: 1445, y2: 305 },
-    // { x1: 1713, y1: 165, x2: 1713, y2: 305 },
-    // { x1: 116, y1: 693, x2: 116, y2: 563 },
-    // { x1: 380, y1: 693, x2: 380, y2: 563 },
-    // { x1: 648, y1: 693, x2: 648, y2: 563 },
-    // { x1: 918, y1: 693, x2: 918, y2: 563 },
-    // { x1: 1181, y1: 693, x2: 1181, y2: 563 },
-    // { x1: 1445, y1: 693, x2: 1445, y2: 563 },
-    // { x1: 1713, y1: 693, x2: 1713, y2: 563 },
   ];
+
+  const formatValue = (value, unit = "", decimals = 2) => {
+    if (value === null || value === undefined || value === "") return "N/A";
+    if (typeof value === 'number') {
+      return `${value.toFixed(decimals)} ${unit}`.trim();
+    }
+    return value;
+  };
+
+  const handleWellClick = async (well) => {
+    if (!well || !well.well) return;
+
+    const wellNumber = well.well;
+    
+    try {
+      setWellModalLoading(true);
+      setWellModalTitle(`Данные ВРП скважины ${wellNumber}`);
+      setShowWellModal(true);
+
+      // Fetch VRP specific well data (using AGZU endpoint for now)
+      const response = await fetchAGZUWellData(wellNumber);
+      const vrpWellData = response.data;
+
+      // If API returns array, use first item, otherwise use the data directly
+      const wellData = Array.isArray(vrpWellData) ? vrpWellData[0] : vrpWellData;
+
+      const transformedData = [
+        { "Параметр": "Скважина", "Значение": wellData["Скважина"] || wellNumber },
+        { "Параметр": "Категория", "Значение": category || "N/A" },
+        { "Параметр": "Закачка", "Значение": formatValue(well.tr_fluid, "м³/сут") },
+        { "Параметр": "Давление", "Значение": formatValue(well.pressure || Math.random() * 10, "МПа", 1) },
+        { "Параметр": "Расход", "Значение": formatValue(well.flow || Math.random() * 50, "м³/сут") }
+      ];
+
+      setWellModalData(transformedData);
+
+    } catch (error) {
+      console.error("Error fetching VRP well data:", error);
+      
+      // Fallback data from filteredWells if API fails
+      const fallbackData = [
+        { "Параметр": "Скважина", "Значение": well.well || wellNumber },
+        { "Параметр": "Категория", "Значение": category || "N/A" },
+        { "Параметр": "Закачка", "Значение": formatValue(well.tr_fluid, "м³/сут") },
+        { "Параметр": "Давление", "Значение": "N/A" },
+        { "Параметр": "Расход", "Значение": "N/A" },
+        { "Параметр": "Ошибка", "Значение": "Не удалось загрузить подробные данные. Показаны базовые данные." }
+      ];
+      setWellModalData(fallbackData);
+    } finally {
+      setWellModalLoading(false);
+    }
+  };
+
+  const handleCloseWellModal = () => {
+    setShowWellModal(false);
+    setWellModalData([]);
+    setWellModalLoading(false);
+  };
 
   return (
     <div className={styles.container}>
@@ -54,6 +143,7 @@ export default function VRPDiagram({ filteredWells, boxIndex }) {
             strokeWidth="3"
           />
         ))}
+
         {/* Diagonal Pipes */}
         {pipes.map((pipe, index) => (
           <line
@@ -66,9 +156,11 @@ export default function VRPDiagram({ filteredWells, boxIndex }) {
             strokeWidth="2"
           />
         ))}
+
         {/* Center Circle */}
         <ellipse cx="918" cy="438" rx="120" ry="120" fill="#50505a" />
       </svg>
+
       <div className={styles.overlay}>
         {boxes.map((well, index) => (
           <Box
@@ -79,19 +171,55 @@ export default function VRPDiagram({ filteredWells, boxIndex }) {
             left={`${10 + (index % 5) * 139}px`} // Adjust modulo for 5 boxes
             number={index + 1}
             borderColor={getPipeColor(index, "#FFFFFF")}
+            onClick={well?.well ? () => handleWellClick(well) : undefined}
+            style={{ cursor: well?.well ? 'pointer' : 'default' }}
           />
         ))}
+
         {/* Central circle data */}
         <div className={styles.circle} style={{ top: "49%", left: "50.5%" }}>
-          <div className={styles.circleText}>0 М³/СУТ</div>
-          <div className={styles.circleSubText}>0 мПа</div>
+          <div className={styles.circleText}>{centerData.flow} М³/СУТ</div>
+          <div className={styles.circleSubText}>{centerData.pressure} МПа</div>
+          <div className={styles.circleTime}>{centerData.time}</div>
         </div>
+
         {/* Line and additional box */}
         <div className={styles.line} style={{ top: "48.5%", left: "57.5%" }}></div>
+
         <NavLink to="/scheme">
           <Box boxText1="с УПН" top="44.5%" left="90%" />
         </NavLink>
       </div>
+
+      {/* Well Data Modal */}
+      {showWellModal && (
+        <Modal onClose={handleCloseWellModal}>
+          <div style={{ padding: "20px" }}>
+            <h2 style={{ 
+              marginTop: 0, 
+              marginBottom: "20px",
+              fontSize: "24px",
+              color: "white"
+            }}>
+              {wellModalTitle}
+            </h2>
+            {wellModalLoading ? (
+              <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
+                Загрузка данных ВРП скважины...
+              </div>
+            ) : (
+              wellModalData.length > 0 && (
+                <div style={{ 
+                  overflow: "auto",
+                  maxHeight: "70vh"
+                }}>
+                  <ResponsiveTable data={wellModalData} />
+                </div>
+              )
+            )}
+          </div>
+        </Modal>
+      )}
     </div>
   );
 }

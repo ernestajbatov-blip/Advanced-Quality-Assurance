@@ -104,6 +104,10 @@ export const fetchWellNumber = () => {
   return api.get("/well-number");
 };
 
+export const fetchCategoryWellNumber = (category) => {
+  return api.get(`/well-number/${encodeURIComponent(category)}`);
+};
+
 export const fetchAGZUWellData = (wellName) => {
   return api.get("/well/agzu-data", {
     params: {

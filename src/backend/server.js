@@ -690,6 +690,97 @@ app.get("/api/well/agzu-data", (req, res) => {
   });
 });
 
+// Function to convert Russian category names to English tag keys
+function convertCategoryToTagKey(category) {
+  if (!category) return null;
+  
+  console.log("Converting category to tag key:", category);
+  
+  // Convert to lowercase and replace common Russian terms with English equivalents
+  let converted = category.toLowerCase()
+    .replace(/агзу/g, 'agzu')          // АГЗУ -> agzu
+    .replace(/мф/g, 'mf')              // МФ -> mf  
+    .replace(/врп/g, 'vrp')            // ВРП -> vrp
+    .replace(/№/g, '')                 // Remove №
+    .replace(/\s+/g, '-')              // Replace spaces with hyphens
+    .replace(/-+/g, '-')               // Replace multiple hyphens with single
+    .replace(/^-|-$/g, '');            // Remove leading/trailing hyphens
+  
+  const tagKey = `${converted}-num`;
+  
+  console.log("Converted tag key:", tagKey);
+  
+  return tagKey;
+}
+
+// Test the function with your categories
+console.log("АГЗУ-1 ->", convertCategoryToTagKey("АГЗУ-1"));     // Should be: agzu-1-num
+console.log("АГЗУ-2 ->", convertCategoryToTagKey("АГЗУ-2"));     // Should be: agzu-2-num  
+console.log("МФ №3 ->", convertCategoryToTagKey("МФ №3"));       // Should be: mf-3-num
+
+app.get("/api/well-number/:category", (req, res) => {
+  const connection = getConnection();
+  const category = req.params.category;
+  
+  if (!category) {
+    return res.status(400).json({ error: "Category is required" });
+  }
+  
+  // Convert Russian category name to English tag key
+  // For example: "АГЗУ-1" -> "agzu-1-num", "МФ №3" -> "mf-3-num"
+  const tagKey = convertCategoryToTagKey(category);
+  
+  if (!tagKey) {
+    return res.status(400).json({ error: "Invalid category format" });
+  }
+  
+  const query = `
+    SELECT tag_value 
+    FROM n_wincctags 
+    WHERE tag_key = ?
+    LIMIT 1;
+  `;
+  
+  connection.query(query, [tagKey], (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    // If no specific tag found for this category, return null
+    const wellNumber = results && results[0] && results[0].tag_value 
+      ? parseInt(results[0].tag_value) 
+      : null;
+      
+    res.json({ 
+      wellNumber: wellNumber,
+      originalCategory: category,
+      tagKey: tagKey 
+    });
+  });
+});
+
+// Keep the old endpoint for backward compatibility, but make it more generic
+app.get("/api/well-number", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT tag_value 
+    FROM n_wincctags 
+    WHERE tag_key = 'well_num'
+    LIMIT 1;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    const wellNumber = results && results[0] ? results[0].tag_value : null;
+    res.json({ wellNumber: wellNumber ? parseInt(wellNumber) : null });
+  });
+});
+
 // ---- Static Frontend ----
 
 const distPath = path.join(__dirname, "../../dist");

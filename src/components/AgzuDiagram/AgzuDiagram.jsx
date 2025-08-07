@@ -69,9 +69,17 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
     return value;
   };
 
-  const handleWellClick = async (wellNumber) => {
-    if (!wellNumber) return;
+  const handleWellClick = async (well) => {
+    if (!well || !well.well) return;
 
+    // Don't handle clicks for manual entries - they are just text displays
+    if (well.isManual) {
+      return;
+    }
+
+    // Handle regular wells
+    const wellNumber = well.well;
+    
     try {
       setWellModalLoading(true);
       setWellModalTitle(`Данные скважины ${wellNumber}`);
@@ -98,23 +106,15 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
       console.error("Error fetching AGZU well data:", error);
       
       // Fallback data from filteredWells if API fails
-      const selectedWell = filteredWells.find(well => well.well === wellNumber);
-      if (selectedWell) {
-        const fallbackData = [
-          { "Параметр": "Скважина", "Значение": selectedWell.well || wellNumber },
-          { "Параметр": "Жидкость", "Значение": "N/A" },
-          { "Параметр": "Нефть", "Значение": formatValue(selectedWell.zamer_oil, "т/сут") },
-          { "Параметр": "Газ", "Значение": formatValue(selectedWell.gas, "м³/сут") },
-          { "Параметр": "Обводненность", "Значение": formatValue(selectedWell.tr_water, "%") },
-          { "Параметр": "Ошибка", "Значение": "Не удалось загрузить подробные данные. Показаны базовые данные." }
-        ];
-        setWellModalData(fallbackData);
-      } else {
-        setWellModalData([
-          { "Параметр": "Ошибка", "Значение": "Не удалось загрузить данные скважины" },
-          { "Параметр": "Скважина", "Значение": wellNumber }
-        ]);
-      }
+      const fallbackData = [
+        { "Параметр": "Скважина", "Значение": well.well || wellNumber },
+        { "Параметр": "Жидкость", "Значение": "N/A" },
+        { "Параметр": "Нефть", "Значение": formatValue(well.zamer_oil, "т/сут") },
+        { "Параметр": "Газ", "Значение": formatValue(well.gas, "м³/сут") },
+        { "Параметр": "Обводненность", "Значение": formatValue(well.tr_water, "%") },
+        { "Параметр": "Ошибка", "Значение": "Не удалось загрузить подробные данные. Показаны базовые данные." }
+      ];
+      setWellModalData(fallbackData);
     } finally {
       setWellModalLoading(false);
     }
@@ -153,8 +153,8 @@ export default function AgzuDiagram({ filteredWells, boxIndex }) {
             left={`${10 + (index % 7) * 135}px`}
             number={index + 1}
             borderColor={getPipeColor(index, "#FFFFFF")}
-            onClick={well?.well ? () => handleWellClick(well.well) : undefined}
-            style={{ cursor: well?.well ? 'pointer' : 'default' }}
+            onClick={well?.well && !well?.isManual ? () => handleWellClick(well) : undefined}
+            style={{ cursor: well?.well && !well?.isManual ? 'pointer' : 'default' }}
           />
         ))}
 
