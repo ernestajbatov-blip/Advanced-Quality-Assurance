@@ -40,9 +40,9 @@ export default function AppLayout() {
 
   const fieldMappings = useMemo(() => ({
     leftTop: "well",
-    rightTop: "tr_fluid",
+    rightTop: "tr_oil",
     middle: chartType === "liquid" ? "zamer" : "zamer_oil",
-    leftBottom: "tr_oil",
+    leftBottom: "tr_fluid",
     rightBottom: "tr_water",
   }), [chartType]);
 

@@ -150,17 +150,17 @@ export default function Diagram() {
     // PNK-1
     "ARM_PNK1_LC": "°C",
     "ARM_PNK1_PT": "°C",
-    "ARM_PNK1_TT": "МПа",
+    // "ARM_PNK1_TT": "МПа",
 
     // PNK-2
     "ARM_PNK2_LC": "°C",
     "ARM_PNK2_PT": "°C",
-    "ARM_PNK2_TT": "МПа",
+    // "ARM_PNK2_TT": "МПа",
 
     // PP-0,63
     "ARM_PP063_LC": "°C",
     "ARM_PP063_PT": "°C",
-    "ARM_PP063_TT": "МПа",
+    // "ARM_PP063_TT": "МПа",
 
     // МФН-1
     "ARM_MFN1_TEMP": "°C",
@@ -232,17 +232,17 @@ export default function Diagram() {
     // PNK-1
     "ARM_PNK1_LC": "Темп. вход",
     "ARM_PNK1_PT": "Темп. выход",
-    "ARM_PNK1_TT": "Давление",
+    // "ARM_PNK1_TT": "Давление",
 
     // PNK-2
     "ARM_PNK2_LC": "Темп. вход",
     "ARM_PNK2_PT": "Темп. выход",
-    "ARM_PNK2_TT": "Давление",
+    // "ARM_PNK2_TT": "Давление",
 
     // PP-0,63
     "ARM_PP063_LC": "Темп. вход",
     "ARM_PP063_PT": "Темп. выход",
-    "ARM_PP063_TT": "Давление",
+    // "ARM_PP063_TT": "Давление",
 
     // МФН-1
     "ARM_MFN1_TEMP": "Темп. насоса",
@@ -475,11 +475,11 @@ export default function Diagram() {
   const generateRandomSensorData = (tags) => {
     return tags.map(tag => {
       let value;
-      if (tag.includes('TEMP')) { // Temperature sensors
+      if (tag.includes('TEMP')) { // Temperature sensors for MFN
         value = (Math.random() * 60 + 40).toFixed(2); // 40-100°C
-      } else if (tag.includes('P_IN')) { // Input pressure
+      } else if (tag.includes('P_IN')) { // Input pressure for MFN
         value = (Math.random() * 3 + 2).toFixed(2); // 2-5 atm
-      } else if (tag.includes('P_OUT')) { // Output pressure  
+      } else if (tag.includes('P_OUT')) { // Output pressure for MFN 
         value = (Math.random() * 2 + 4).toFixed(2); // 4-6 atm
       } else if (tag.includes('CURRENT')) { // Current
         value = (Math.random() * 20 + 10).toFixed(2); // 10-30 A
@@ -487,10 +487,14 @@ export default function Diagram() {
         value = (Math.random() * 50 + 25).toFixed(2); // 25-75 kW
       } else if (tag.includes('FREQ')) { // Frequency
         value = (Math.random() * 10 + 45).toFixed(2); // 45-55 Hz
-      } else if (tag.includes('LC') || tag.includes('PT')) { // Temperature sensors (existing)
-        value = (Math.random() * 80 + 20).toFixed(2); // 20-100°C
-      } else if (tag.includes('TT')) { // Pressure sensors (existing)
-        value = (Math.random() * 5 + 1).toFixed(2); // 1-6 atm
+      } else if (tag.includes('PNK') && (tag.includes('LC') || tag.includes('PT'))) { 
+        // Temperature sensors for PNK
+        value = (Math.random() * 80 + 60).toFixed(2); // 60-140°C
+      } else if (tag.includes('PP063') && (tag.includes('LC') || tag.includes('PT'))) { 
+        // Temperature sensors for PP-0,63
+        value = (Math.random() * 80 + 60).toFixed(2); // 60-140°C
+      } else if (tag.includes('TT')) { // Pressure sensors
+        value = (Math.random() * 5 + 1).toFixed(2); // 1-6 atm or MPa
       } else {
         value = (Math.random() * 100).toFixed(2);
       }
@@ -608,7 +612,7 @@ export default function Diagram() {
                 />
               </div>
             </div>
-            <LabelBox label={"Влагомер"} width={60} height={5} fontSize={10} />
+            <LabelBox label={"Влагомер"} width={65} height={5} fontSize={10} />
           </div>
         </>
       ),
@@ -629,7 +633,7 @@ export default function Diagram() {
       content: (
         <>
           <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
-          <LabelBox label={"Счетчик"} width={60} height={5} fontSize={10} />
+          <LabelBox label={"Счетчик ГС"} width={65} height={5} fontSize={10} />
         </>
       ),
     },
@@ -639,7 +643,7 @@ export default function Diagram() {
       content: (
         <>
           <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
-          <LabelBox label={"Счетчик"} width={60} height={5} fontSize={10} />
+          <LabelBox label={"Счетчик ГПС"} width={65} height={5} fontSize={10} />
         </>
       ),
     },
@@ -648,8 +652,8 @@ export default function Diagram() {
       left: "33%",
       content: (
         <>
-          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
-          <LabelBox label={"Счетчик"} width={60} height={5} fontSize={10} />
+          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
+          <LabelBox label={"Счетчик ОГН"} width={65} height={5} fontSize={10} />
         </>
       ),
     },
@@ -660,8 +664,8 @@ export default function Diagram() {
     { top: "15.25%", left: "22.25%", content: "МФН-2" },
       // МФН-1 clickable area
     {
-      top: "7.5%", // Position matches your existing МФН-1 label
-      left: "22.25%", // Position matches your existing МФН-1 label
+      top: "7.5%",
+      left: "22.25%", 
       content: (
         <div 
           onClick={() => handleTableClick(
@@ -675,7 +679,7 @@ export default function Diagram() {
             width: "60px",
             height: "40px",
             cursor: "pointer",
-            // backgroundColor: "rgba(255, 255, 0, 0.1)", // Optional: visible area for testing
+            // backgroundColor: "rgba(255, 255, 0, 0.1)", 
             // border: "1px solid rgba(255, 255, 0, 0.3)"
           }}
         />
@@ -684,8 +688,8 @@ export default function Diagram() {
 
     // МФН-2 clickable area
     {
-      top: "15.25%", // Position matches your existing МФН-2 label
-      left: "22.25%", // Position matches your existing МФН-2 label
+      top: "15.25%",
+      left: "22.25%", 
       content: (
         <div 
           onClick={() => handleTableClick(
@@ -734,12 +738,16 @@ export default function Diagram() {
     },
     // ПНК-1 clickable area
     {
-      top: "23.9%", // Adjust position as needed
-      left: "43.1%", // Adjust position as needed
+      top: "23.9%", 
+      left: "43.1%",
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["ARM_PNK1_LC", "ARM_PNK1_PT", "ARM_PNK1_TT"], 
+            [
+              "ARM_PNK1_LC", 
+              "ARM_PNK1_PT", 
+              // "ARM_PNK1_TT"
+            ], 
             "ПНК-1"
           )}
           style={{
@@ -750,7 +758,8 @@ export default function Diagram() {
             height: "40px",
             cursor: "pointer",
             // backgroundColor: "rgba(255, 0, 0, 0.1)", // Optional: visible area for testing
-            // border: "1px solid rgba(255, 0, 0, 0.3)"
+            // border: "1px solid rgba(255, 0, 0, 0.3)",
+            zIndex: 1500,
           }}
         />
       ),
@@ -758,12 +767,16 @@ export default function Diagram() {
 
     // ПНК-2 clickable area
     {
-      top: "30.7%", // Adjust position as needed
-      left: "43.1%", // Adjust position as needed
+      top: "30.7%", 
+      left: "43.1%", 
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["ARM_PNK2_LC", "ARM_PNK2_PT", "ARM_PNK2_TT"], 
+            [
+              "ARM_PNK2_LC", 
+              "ARM_PNK2_PT", 
+              // "ARM_PNK2_TT"
+            ], 
             "ПНК-2"
           )}
           style={{
@@ -773,6 +786,7 @@ export default function Diagram() {
             width: "60px",
             height: "40px",
             cursor: "pointer",
+            zIndex: 1500,
             // backgroundColor: "rgba(0, 255, 0, 0.1)", // Optional: visible area for testing
             // border: "1px solid rgba(0, 255, 0, 0.3)"
           }}
@@ -782,12 +796,16 @@ export default function Diagram() {
 
     // ПП-0,63 clickable area
     {
-      top: "37.3%", // Adjust position as needed
-      left: "43.1%", // Adjust position as needed
+      top: "37.3%", 
+      left: "43.1%", 
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["ARM_PP063_LC", "ARM_PP063_PT", "ARM_PP063_TT"], 
+            [
+              "ARM_PP063_LC", 
+              "ARM_PP063_PT", 
+              // "ARM_PP063_TT"
+            ], 
             "ПП-0,63"
           )}
           style={{
@@ -797,6 +815,7 @@ export default function Diagram() {
             width: "60px",
             height: "40px",
             cursor: "pointer",
+            zIndex: 1500,
             // backgroundColor: "rgba(0, 0, 255, 0.1)", // Optional: visible area for testing
             // border: "1px solid rgba(0, 0, 255, 0.3)"
           }}
@@ -1177,58 +1196,120 @@ export default function Diagram() {
         />
 
       ),
-    }
+    },
+    // Tooltip area 1
+    {
+      top: "30.8%",
+      left: "91.8%",
+      content: (
+        <div 
+          title={`Расходомер 1\nМгновенный расход: ${(Math.random() * 50 + 10).toFixed(1)} м³/ч\nНакопленный расход: ${(Math.random() * 1000 + 500).toFixed(0)} м³`}
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "30px",
+            height: "30px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(255, 255, 0, 0.1)", // Optional: visible area for testing
+            // border: "1px solid rgba(255, 255, 0, 0.3)"
+          }}
+        />
+      ),
+    },
+
+    // Tooltip area 2  
+    {
+      top: "30.8%",
+      left: "94.8%",
+      content: (
+        <div 
+          title={`Расходомер 2\nМгновенный расход: ${(Math.random() * 50 + 10).toFixed(1)} м³/ч\nНакопленный расход: ${(Math.random() * 1000 + 500).toFixed(0)} м³`}
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "30px",
+            height: "30px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(255, 0, 255, 0.1)", // Optional: visible area for testing
+            // border: "1px solid rgba(255, 0, 255, 0.3)"
+          }}
+        />
+      ),
+    },
+
+    // Tooltip area 3
+    {
+      top: "30.8%",
+      left: "97.8%", 
+      content: (
+        <div 
+          title={`Расходомер 3\nМгновенный расход: ${(Math.random() * 50 + 10).toFixed(1)} м³/ч\nНакопленный расход: ${(Math.random() * 1000 + 500).toFixed(0)} м³`}
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "30px",
+            height: "30px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(0, 255, 255, 0.1)", // Optional: visible area for testing
+            // border: "1px solid rgba(0, 255, 255, 0.3)"
+          }}
+        />
+      ),
+    },
   ];
 
   // Array for ProgressBars with percentage positions
   const progressBarData = [
     {
-      top: "52.7%",
-      left: "54.7%",
+      top: "53%",
+      left: "54.75%",
       key: "rvs-1",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS1_LT")?.value || 0),
       maxValue: 1020,
       color: "#8d730e",
-      width: 11,
+      width: 12,
       height: 90,
       label: "RVS-1",
       labelTop: "12%",
       labelLeft: "60.3%",
     },
     {
-      top: "73%",
-      left: "54.7%",
+      top: "73.4%",
+      left: "54.75%",
       key: "rvs-2",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS2_LT")?.value || 0),
       maxValue: 1020,
       color: "#8d730e",
-      width: 11,
+      width: 12,
       height: 90,
       label: "RVS-2",
       labelTop: "7%",
       labelLeft: "89%",
     },
     {
-      top: "52.7%",
+      top: "53%",
       left: "67.3%",
       key: "rvs-3",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS7_LT")?.value || 0),
       maxValue: 1020,
       color: "#8d730e",
-      width: 11,
+      width: 12,
       height: 90,
       label: "RVS-3",
       labelTop: "17%",
       labelLeft: "107%",
     },
     {
-      top: "73%",
+      top: "73.4%",
       left: "67.3%",
       key: "rvs-4",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS8_LT")?.value || 0),
       maxValue: 1020,
       color: "#8d730e",
-      width: 11,
+      width: 12,
       height: 90,
       label: "RVS-4",
       labelTop: "7%",
