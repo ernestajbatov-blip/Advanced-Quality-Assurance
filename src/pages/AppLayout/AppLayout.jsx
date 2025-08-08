@@ -55,14 +55,27 @@ export default function AppLayout() {
   };
 
   const isWellStopped = (well) => {
-    if (fond === 0 && well.c_current !== undefined && well.c_current !== null) {
-      const current = parseFloat(well.c_current);
-      // Only consider stopped if it's actually a number and less than 1
-      if (!isNaN(current)) {
-        return current < 1;
-      }
+    // Only check production wells (fond === 0)
+    if (fond !== 0) {
+      return false;
     }
-    return false;
+    
+    // Check if c_current exists and has a valid value
+    if (well.c_current === null || 
+        well.c_current === undefined || 
+        well.c_current === '' || 
+        well.c_current === 'NULL') {
+      return false; // No data available, don't consider it stopped
+    }
+    
+    const current = parseFloat(well.c_current);
+    
+    // Only consider stopped if it's a valid number and less than 1
+    if (!isNaN(current) && isFinite(current)) {
+      return current < 1;
+    }
+    
+    return false; // Invalid data, don't consider it stopped
   };
 
   const filteredWells = useMemo(() => {

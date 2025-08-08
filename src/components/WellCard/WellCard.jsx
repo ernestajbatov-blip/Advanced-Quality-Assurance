@@ -90,29 +90,26 @@ export default function WellCard({
 
   let cardColorClass = styles.grayCard;
 
-  // For injection wells (fond = 1), completely different color logic
   if (fond === 1) {
-    // For injection wells, NEVER use red color - only green, orange, or gray
+    // For injection wells, completely different color logic
     if (middle > maxThreshold) {
       cardColorClass = styles[colorMax]; // Green
     } else if (middle !== 0 && middle > inBetweenThresholdMin && middle <= inBetweenThresholdMax) {
       cardColorClass = styles[inBetweenColor]; // Orange
     } else {
-      cardColorClass = styles.grayCard; // Gray (never red, even for low values)
+      cardColorClass = styles.grayCard; // Gray
     }
   } else if (fond === 0) {
-    // For production wells, check stopped status first
+    // For production wells
     if (wellStopped) {
       cardColorClass = `${styles[colorMin]} ${styles.blinking}`;
     } else if (middle > maxThreshold) {
-      cardColorClass = styles[colorMax];
-    } else if (middle <= minThreshold) {
-      cardColorClass = styles[colorMin];
+      cardColorClass = styles[colorMax]; // Green for good performance
     } else if (middle !== 0) {
       const percentageDifference = middle;
       if (percentageDifference > inBetweenThresholdMin &&
           percentageDifference <= inBetweenThresholdMax) {
-        cardColorClass = styles[inBetweenColor];
+        cardColorClass = styles[inBetweenColor]; // Orange
       }
     }
   }

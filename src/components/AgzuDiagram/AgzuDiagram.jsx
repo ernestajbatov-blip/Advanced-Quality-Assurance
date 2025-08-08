@@ -13,7 +13,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
   // Random data for center circle based on category
   const [centerData, setCenterData] = useState({
     pressure: 0,
-    time: "00:00",
+    time: "0:00",
     temperature: 0
   });
 
@@ -42,12 +42,14 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
       const pressureBase = (seed % 5) + 3; // 3-8 base pressure
       const tempBase = (seed % 20) + 20; // 20-40 base temperature
       
+      // Generate random working time between 0-10 hours
+      const randomHours = Math.floor((seed % 100) / 10); // 0-9 hours
+      const randomMinutes = Math.floor((seed % 60)); // 0-59 minutes
+      const workingTime = `${randomHours}:${randomMinutes.toString().padStart(2, '0')}`;
+      
       const newData = {
         pressure: (pressureBase + (seed % 100) / 100 * 3).toFixed(1), // Category-specific pressure
-        time: new Date().toLocaleTimeString('ru-RU', {
-          hour: '2-digit',
-          minute: '2-digit'
-        }),
+        time: workingTime, // Working time instead of current time
         temperature: Math.floor(tempBase + (seed % 20)) // Category-specific temperature
       };
 
@@ -60,15 +62,28 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
     const data = generateCategorySpecificData(category);
     setCenterData(data);
 
-    // Update only the time every 20 seconds, keep pressure and temperature the same
+    // Update working time every 20 seconds (increment by random amount)
     const interval = setInterval(() => {
-      setCenterData(prev => ({
-        ...prev,
-        time: new Date().toLocaleTimeString('ru-RU', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      }));
+      setCenterData(prev => {
+        const [hours, minutes] = prev.time.split(':').map(Number);
+        let totalMinutes = hours * 60 + minutes;
+        
+        // Add 1-5 minutes randomly
+        totalMinutes += Math.floor(Math.random() * 5) + 1;
+        
+        // Keep within 0-10 hours range (0-600 minutes)
+        if (totalMinutes >= 600) {
+          totalMinutes = totalMinutes % 600;
+        }
+        
+        const newHours = Math.floor(totalMinutes / 60);
+        const newMinutes = totalMinutes % 60;
+        
+        return {
+          ...prev,
+          time: `${newHours}:${newMinutes.toString().padStart(2, '0')}`
+        };
+      });
     }, 20000);
 
     return () => clearInterval(interval);
@@ -188,7 +203,6 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
           />
         ))}
 
-        {/* Center Circle with category-specific persistent random data */}
         <div className={styles.circle} style={{ 
           position: 'absolute',
           top: '62.5%', 
@@ -236,7 +250,6 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
         <div className={styles.line} style={{ top: "62%", left: "86.3%" }}></div>
       </div>
 
-        {/* Fixed NavLink button with proper positioning and z-index */}
         <div style={{
           position: 'absolute',
           top: '48%',
@@ -267,7 +280,6 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
           </NavLink>
         </div>
 
-      {/* Well Data Modal - USES REAL DATABASE DATA */}
       {showWellModal && (
         <Modal onClose={handleCloseWellModal}>
           <div style={{ padding: "20px" }}>

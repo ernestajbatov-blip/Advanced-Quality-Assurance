@@ -11,9 +11,9 @@ const categoryDataCache = {};
 
 export default function VRPDiagram({ filteredWells, boxIndex, category }) {
   const [centerData, setCenterData] = useState({
-    flow: 0,
     pressure: 0,
-    time: "00:00"
+    time: "0:00",
+    temperature: 0
   });
 
   // Modal state management
@@ -38,16 +38,18 @@ export default function VRPDiagram({ filteredWells, boxIndex, category }) {
       
       // Create category-specific random ranges using hash as seed
       const seed = Math.abs(categoryHash) % 1000;
-      const flowBase = (seed % 50) + 30; // 30-80 base flow
-      const pressureBase = (seed % 3) + 2; // 2-5 base pressure
+      const pressureBase = (seed % 5) + 3; // 3-8 base pressure
+      const tempBase = (seed % 20) + 20; // 20-40 base temperature
+      
+      // Generate random working time between 0-10 hours
+      const randomHours = Math.floor((seed % 100) / 10); // 0-9 hours
+      const randomMinutes = Math.floor((seed % 60)); // 0-59 minutes
+      const workingTime = `${randomHours}:${randomMinutes.toString().padStart(2, '0')}`;
       
       const newData = {
-        flow: Math.floor(flowBase + (seed % 30)), // Category-specific flow range
-        pressure: (pressureBase + (seed % 100) / 100 * 2).toFixed(1), // Category-specific pressure
-        time: new Date().toLocaleTimeString('ru-RU', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
+        pressure: (pressureBase + (seed % 100) / 100 * 3).toFixed(1), // Category-specific pressure
+        time: workingTime, // Working time instead of current time
+        temperature: Math.floor(tempBase + (seed % 20)) // Category-specific temperature
       };
 
       // Cache the generated data for this category
@@ -59,15 +61,28 @@ export default function VRPDiagram({ filteredWells, boxIndex, category }) {
     const data = generateCategorySpecificData(category);
     setCenterData(data);
 
-    // Update only the time every 30 seconds, keep flow and pressure the same
+    // Update working time every 30 seconds (increment by random amount)
     const interval = setInterval(() => {
-      setCenterData(prev => ({
-        ...prev,
-        time: new Date().toLocaleTimeString('ru-RU', {
-          hour: '2-digit',
-          minute: '2-digit'
-        })
-      }));
+      setCenterData(prev => {
+        const [hours, minutes] = prev.time.split(':').map(Number);
+        let totalMinutes = hours * 60 + minutes;
+        
+        // Add 1-5 minutes randomly
+        totalMinutes += Math.floor(Math.random() * 5) + 1;
+        
+        // Keep within 0-10 hours range (0-600 minutes)
+        if (totalMinutes >= 600) {
+          totalMinutes = totalMinutes % 600;
+        }
+        
+        const newHours = Math.floor(totalMinutes / 60);
+        const newMinutes = totalMinutes % 60;
+        
+        return {
+          ...prev,
+          time: `${newHours}:${newMinutes.toString().padStart(2, '0')}`
+        };
+      });
     }, 30000);
 
     return () => clearInterval(interval);
@@ -205,11 +220,49 @@ export default function VRPDiagram({ filteredWells, boxIndex, category }) {
           />
         ))}
 
-        {/* Central circle with category-specific persistent random data */}
-        <div className={styles.circle} style={{ top: "49%", left: "50.5%" }}>
-          <div className={styles.circleText}>{centerData.flow} М³/СУТ</div>
-          <div className={styles.circleSubText}>{centerData.pressure} МПа</div>
-          <div className={styles.circleTime}>{centerData.time}</div>
+        {/* Central circle with category-specific persistent random data - updated to match AgzuDiagram style */}
+        <div className={styles.circle} style={{ 
+          position: 'absolute',
+          top: '49%', 
+          left: '50.5%', 
+          transform: 'translate(-50%, -50%)',
+          width: '120px',
+          height: '120px',
+          borderRadius: '50%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'transparent',
+          pointerEvents: 'none'
+        }}>
+          <div className={styles.circleText} style={{
+            fontSize: '17px',
+            color: 'white',
+            textAlign: 'center',
+            lineHeight: '1.2',
+            margin: '2px 0'
+          }}>
+            {centerData.pressure} МПа
+          </div>
+          <div className={styles.circleText} style={{
+            fontSize: '17px',
+            color: 'white',
+            textAlign: 'center',
+            lineHeight: '1.2',
+            margin: '2px 0'
+          }}>
+            {centerData.time}
+          </div>
+          <div className={styles.circleText} style={{
+            fontSize: '17px',
+            color: 'white',
+            textAlign: 'center',
+            lineHeight: '1.2',
+            margin: '2px 0'
+          }}>
+            {centerData.temperature} °C
+          </div>
         </div>
 
         {/* Line and additional box */}
