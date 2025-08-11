@@ -172,6 +172,7 @@ app.get("/api/well/data", (req, res) => {
       c_freq AS 'Частота',
       c_current AS 'Ток',
       c_speed AS 'Скорость двигателя',
+      c_temp AS 'Температура',
       working AS 'Работа',
       type AS 'Тип',
       c_last_update AS 'Последнее обновление'
@@ -186,6 +187,7 @@ app.get("/api/well/data", (req, res) => {
     res.json(results || []);
   });
 });
+
 app.get("/api/wells/last-update", (req, res) => {
   const connection = getConnection();
   const query = `

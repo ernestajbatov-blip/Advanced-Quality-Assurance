@@ -90,26 +90,42 @@ export default function WellCard({
 
   let cardColorClass = styles.grayCard;
 
-  if (fond === 1) {
-    // For injection wells, completely different color logic
-    if (middle > maxThreshold) {
-      cardColorClass = styles[colorMax]; // Green
-    } else if (middle !== 0 && middle > inBetweenThresholdMin && middle <= inBetweenThresholdMax) {
-      cardColorClass = styles[inBetweenColor]; // Orange
-    } else {
-      cardColorClass = styles.grayCard; // Gray
+  // Check if we're on the ABC page for different coloring logic
+  if (location.pathname === "/abc") {
+    // ABC-specific coloring logic
+    if (middle < 0) {
+      cardColorClass = styles.greenCard; // Green for values less than 0
+    } else if (middle > 20) {
+      cardColorClass = styles.redCard; // Red for values greater than 20
+    } else if (middle > 10 && middle <= 20) {
+      cardColorClass = styles.orangeCard; // Orange for values between 10 and 20
+    } else if (middle >= 0 && middle <= 10) {
+      cardColorClass = styles.grayCard; // Gray for values between 0 and 10
     }
-  } else if (fond === 0) {
-    // For production wells
-    if (wellStopped) {
-      cardColorClass = `${styles[colorMin]} ${styles.blinking}`;
-    } else if (middle > maxThreshold) {
-      cardColorClass = styles[colorMax]; // Green for good performance
-    } else if (middle !== 0) {
-      const percentageDifference = middle;
-      if (percentageDifference > inBetweenThresholdMin &&
-          percentageDifference <= inBetweenThresholdMax) {
+  } else {
+    // Original logic for other pages (AppLayout)
+    if (fond === 1) {
+      // For injection wells, completely different color logic
+      if (middle > maxThreshold) {
+        cardColorClass = styles[colorMax]; // Green
+      } else if (middle !== 0 && middle > inBetweenThresholdMin && middle <= inBetweenThresholdMax) {
         cardColorClass = styles[inBetweenColor]; // Orange
+      } else {
+        cardColorClass = styles.grayCard; // Gray
+      }
+    } else if (fond === 0) {
+      // For production wells
+      // Only apply blinking red if well is actually stopped AND not just offline
+      if (wellStopped && working !== 3) {
+        cardColorClass = `${styles[colorMin]} ${styles.blinking}`;
+      } else if (middle > maxThreshold) {
+        cardColorClass = styles[colorMax]; // Green for good performance
+      } else if (middle !== 0) {
+        const percentageDifference = middle;
+        if (percentageDifference > inBetweenThresholdMin &&
+            percentageDifference <= inBetweenThresholdMax) {
+          cardColorClass = styles[inBetweenColor]; // Orange
+        }
       }
     }
   }
@@ -129,7 +145,7 @@ export default function WellCard({
             title={
               working === 1 ? "Работает" :
               working === 2 ? "Предупреждение" :
-              "Авария"
+              "Не в сети"
             }
           />
         )}

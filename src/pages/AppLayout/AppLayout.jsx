@@ -153,7 +153,7 @@ export default function AppLayout() {
         { "Параметр": "Частота", "Значение": formatModalValue(wellData["Частота"]) },
         { "Параметр": "Ток", "Значение": formatModalValue(wellData["Ток"]) },
         { "Параметр": "Скорость двигателя", "Значение": formatModalValue(wellData["Скорость двигателя"]) },
-        { "Параметр": "Тип", "Значение": wellData["Тип"] === 1 ? "ЧРП" : "Обычная" }
+        ...(wellData["Тип"] === 1 ? [{ "Параметр": "Температура", "Значение": formatModalValue(wellData["Температура"]) }] : [])
       ];
       setWellModalData(transformedData);
 

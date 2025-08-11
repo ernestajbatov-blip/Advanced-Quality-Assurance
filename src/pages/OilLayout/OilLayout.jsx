@@ -269,23 +269,40 @@ export default function OilLayout() {
   const calculateIntervalComparison = (initialData, finalData) => {
     if (!initialData || !finalData) return null;
     
-    // Calculate changes between the two intervals
-    const oilChange = finalData.oil - initialData.oil;
-    const fluidChange = finalData.fluid - initialData.fluid;
+    // Oil production values (in tonnes)
+    const initialOil = initialData.oil;
+    const finalOil = finalData.oil;
+    const totalOilChange = finalOil - initialOil;
+    
+    // Calculate the impact of each factor on oil production
+    // These should represent how much oil production changed due to each factor
+    
+    // 1. Work Time Impact
+    // If work time increased/decreased, how much did that contribute to oil change?
     const workTimeChange = finalData.workTime - initialData.workTime;
+    const workTimeImpactOnOil = workTimeChange * (initialData.oil / initialData.workTime); // Proportional impact
+    
+    // 2. Water Cut Impact
+    // Higher water cut typically means less oil (negative impact)
     const waterCutChange = finalData.waterCut - initialData.waterCut;
+    const waterCutImpactOnOil = -waterCutChange * (initialData.fluid * 0.01); // Convert % to impact
+    
+    // 3. Fluid Rate Impact
+    // Higher fluid rate with same water cut should mean more oil (positive impact)
+    const fluidChange = finalData.fluid - initialData.fluid;
+    const currentOilFraction = 1 - (initialData.waterCut / 100); // Oil fraction of fluid
+    const fluidImpactOnOil = fluidChange * currentOilFraction;
     
     return {
-      initial: initialData.oil, // m³
-      final: finalData.oil, // m³
-      fluidChange: fluidChange, // m³
-      workTimeChange: workTimeChange, // hours
-      waterCutChange: waterCutChange, // %
-      initialRange: `${formatDateForAPI(initialRange[0].startDate)} - ${formatDateForAPI(initialRange[0].endDate)}`,
-      finalRange: `${formatDateForAPI(finalRange[0].startDate)} - ${formatDateForAPI(finalRange[0].endDate)}`
+      initial: initialOil,
+      final: finalOil,
+      workTimeOilImpact: workTimeImpactOnOil,
+      waterCutOilImpact: waterCutImpactOnOil,
+      fluidOilImpact: fluidImpactOnOil,
+      totalChange: totalOilChange
     };
   };
-
+  
   // Process data for chart
   const processedData = useMemo(() => {
     if (!oilLossData || oilLossData.length === 0) {
@@ -313,14 +330,13 @@ export default function OilLayout() {
       const changes = calculateIntervalComparison(initialData, finalData);
       
       if (changes) {
-        const units = selectedWell === "all" ? "" : " (м³)";
         return {
           chartData: [
-            { name: `Нач. добыча${units}`, value: changes.initial, type: "initial" },
-            { name: "Изм. врем. работы (ч)", value: changes.workTimeChange, type: "workTime" },
-            { name: "Изм. обвод. (%)", value: changes.waterCutChange, type: "waterCut" },
-            { name: `Изм. дебита жидк.${units}`, value: changes.fluidChange, type: "fluid" },
-            { name: `Конеч. добыча${units}`, value: changes.final, type: "final" }
+            { name: "Начальная добыча", value: changes.initial, type: "initial" },
+            { name: "Влияние времени работы", value: changes.workTimeOilImpact, type: "workTime" },
+            { name: "Влияние обводненности", value: changes.waterCutOilImpact, type: "waterCut" },
+            { name: "Влияние дебита жидкости", value: changes.fluidOilImpact, type: "fluid" },
+            { name: "Конечная добыча", value: changes.final, type: "final" }
           ]
         };
       }
@@ -368,9 +384,9 @@ export default function OilLayout() {
         
         if (changes) {
           wellsDataMap[wellName] = {
-            workTimeChange: Math.abs(changes.workTimeChange),
-            waterCutChange: Math.abs(changes.waterCutChange),
-            fluidChange: Math.abs(changes.fluidChange),
+            workTimeChange: Math.abs(changes.workTimeOilImpact),
+            waterCutChange: Math.abs(changes.waterCutOilImpact),
+            fluidChange: Math.abs(changes.fluidOilImpact),
             totalChange: Math.abs(changes.final - changes.initial)
           };
         }

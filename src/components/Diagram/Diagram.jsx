@@ -58,7 +58,7 @@ export default function Diagram() {
 
   useEffect(() => {
     axios.get("http://localhost:3000/api/progress-oil")
-    // axios.get("http://192.168.1.42:3000/api/progress-oil")
+    // axios.get("http://192.168.1.42:3001/api/progress-oil")
       .then(res => {
         setOilProgressData(res.data);
       })
