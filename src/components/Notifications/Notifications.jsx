@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Modal from "../Modal/Modal";
 import { fetchNotifications } from "../../axios/wellService";
 import styles from "./Notifications.module.css";
 
-const Notifications = ({ isOpen, onClose }) => {
+const Notifications = ({ isOpen, onClose, onNewNotification }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -12,11 +12,26 @@ const Notifications = ({ isOpen, onClose }) => {
     oil_field: 'BSK',
     limit: 50
   });
+  const [lastNotificationId, setLastNotificationId] = useState(null);
+  const intervalRef = useRef(null);
 
   useEffect(() => {
     if (isOpen) {
       loadNotifications();
+      // Auto-refresh every 15 seconds when modal is open
+      intervalRef.current = setInterval(loadNotifications, 15000);
+    } else {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
     }
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
   }, [isOpen, filter]);
 
   const loadNotifications = async () => {
@@ -24,7 +39,29 @@ const Notifications = ({ isOpen, onClose }) => {
     setError(null);
     try {
       const response = await fetchNotifications(filter);
-      setNotifications(response.data);
+      const newNotifications = response.data;
+      
+      // Check for new notifications (compare with last known notification ID)
+      if (newNotifications.length > 0) {
+        const latestId = newNotifications[0].id;
+        
+        if (lastNotificationId && latestId > lastNotificationId) {
+          // New notifications detected
+          const newOnes = newNotifications.filter(n => n.id > lastNotificationId);
+          console.log('New notifications detected:', newOnes.length);
+          
+          // Notify parent component about new notifications
+          if (onNewNotification) {
+            newOnes.forEach(notification => {
+              onNewNotification(notification);
+            });
+          }
+        }
+        
+        setLastNotificationId(latestId);
+      }
+      
+      setNotifications(newNotifications);
     } catch (err) {
       console.error("Failed to fetch notifications:", err);
       setError("Ошибка загрузки уведомлений");
@@ -34,26 +71,26 @@ const Notifications = ({ isOpen, onClose }) => {
   };
 
   const getCriticalityColor = (criticality) => {
-    switch (criticality) {
+    switch (parseInt(criticality)) {
       case 1:
-        return "#dc3545"; // Red - Critical
+        return "#198754"; // Green - Info
       case 2:
-        return "#fd7e14"; // Orange - Warning
+        return "#ffc107"; // Yellow - Warning
       case 3:
-        return "#ffc107"; // Yellow - Info
+        return "#dc3545"; // Red - Critical
       default:
         return "#6c757d"; // Gray - Default
     }
   };
 
   const getCriticalityText = (criticality) => {
-    switch (criticality) {
+    switch (parseInt(criticality)) {
       case 1:
-        return "Критический";
+        return "Информация";
       case 2:
         return "Предупреждение";
       case 3:
-        return "Информация";
+        return "Критический";
       default:
         return "Неизвестно";
     }

@@ -8,6 +8,7 @@ import styles from "./Chart.module.css";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { parseISO, isSameDay, format } from "date-fns";
+import * as XLSX from "xlsx";
 
 // Custom Tooltip Component
 const CustomTooltip = ({ active, payload, label, chartDate }) => {
@@ -496,11 +497,103 @@ export default function Chart({ type, setType }) {
   const [availableDates, setAvailableDates] = useState([]);
   const [loading, setLoading] = useState(false);
   const [chartDate, setChartDate] = useState(null);
+  const [exporting, setExporting] = useState(false);
 
   const handleReset = () => {
     setIsArchiveMode(false);
     setSelectedDate(null);
     loadCurrentData();
+  };
+
+  // Excel Export Function
+  const handleExportToExcel = () => {
+    setExporting(true);
+    
+    try {
+      // Determine the current data being displayed
+      const currentData = selectedData;
+      
+      if (!currentData || currentData.length === 0) {
+        alert("Нет данных для экспорта");
+        setExporting(false);
+        return;
+      }
+
+      // Get the appropriate data keys based on type and accumulation mode
+      const getDataKey = (baseKey) => {
+        if (isNak) {
+          return `${baseKey}_nak`;
+        }
+        return baseKey;
+      };
+
+      const techRezhKey = getDataKey("tech_rezh");
+      const debitLastDayKey = getDataKey("debit_last_day");
+      const currDebitKey = getDataKey("curr_debit");
+
+      // Prepare data for Excel
+      const excelData = currentData.map(item => ({
+        'Время': item.name,
+        'Дебит за предыдущие сутки': item[debitLastDayKey] || 0,
+        'Дебит по тех.режиму': item[techRezhKey] || 0,
+        'Прогнозируемый дебит на конец суток': item[currDebitKey] || 0,
+        // 'Статус ТИН': item.tin === 1 ? 'Активен' : 'Неактивен'
+      }));
+
+      // Create workbook and worksheet
+      const wb = XLSX.utils.book_new();
+      const ws = XLSX.utils.json_to_sheet(excelData);
+
+      // Set column widths for better readability
+      const colWidths = [
+        { wch: 10 }, // Время
+        { wch: 25 }, // Дебит за предыдущие сутки
+        { wch: 25 }, // Дебит по тех.режиму
+        { wch: 30 }, // Прогнозируемый дебит на конец суток
+        // { wch: 15 }  // Статус ТИН
+      ];
+      ws['!cols'] = colWidths;
+
+      // Add metadata sheet
+      const metaData = [
+        ['Параметр', 'Значение'],
+        ['Дата экспорта', new Date().toLocaleString('ru-RU')],
+        ['Тип данных', type === 'liquid' ? 'Жидкость' : 'Нефть'],
+        ['Режим накопления', isNak ? 'Да' : 'Нет'],
+        ['Дата данных', chartDate ? format(parseISO(chartDate), "dd.MM.yyyy") : 'Текущая'],
+        ['Режим архива', isArchiveMode ? 'Да' : 'Нет'],
+        ['Количество записей', currentData.length.toString()]
+      ];
+      
+      const metaWs = XLSX.utils.aoa_to_sheet(metaData);
+      metaWs['!cols'] = [{ wch: 20 }, { wch: 25 }];
+
+      // Add worksheets to workbook
+      XLSX.utils.book_append_sheet(wb, ws, 'Данные графика');
+      XLSX.utils.book_append_sheet(wb, metaWs, 'Информация');
+
+      // Generate filename with current parameters
+      const dateStr = chartDate ? format(parseISO(chartDate), "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd");
+      const typeStr = type === 'liquid' ? 'Жидкость' : 'Нефть';
+      const nakStr = isNak ? '_накопление' : '';
+      const archiveStr = isArchiveMode ? '_архив' : '';
+      
+      const filename = `График_${typeStr}_${dateStr}${nakStr}${archiveStr}.xlsx`;
+
+      // Save the file
+      XLSX.writeFile(wb, filename);
+
+      // Show success message
+      setTimeout(() => {
+        alert(`Данные успешно экспортированы в файл: ${filename}`);
+      }, 100);
+
+    } catch (error) {
+      console.error('Ошибка при экспорте в Excel:', error);
+      alert('Произошла ошибка при экспорте данных');
+    } finally {
+      setExporting(false);
+    }
   };
 
   useEffect(() => {
@@ -718,6 +811,15 @@ export default function Chart({ type, setType }) {
               🔄 Текущие данные
             </button>
           )}
+
+          <button 
+            onClick={handleExportToExcel}
+            disabled={exporting || loading || !selectedData.length}
+            className={styles.exportButton}
+            title="Экспортировать данные в Excel"
+          >
+            {exporting ? '⏳ Экспорт...' : '📊 Excel'}
+          </button>
 
           {loading && <span className={styles.loadingText}>⏳ Загрузка...</span>}
         </div>

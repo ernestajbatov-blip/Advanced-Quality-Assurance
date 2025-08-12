@@ -762,7 +762,6 @@ app.get("/api/well-number/:category", (req, res) => {
   });
 });
 
-// Keep the old endpoint for backward compatibility, but make it more generic
 app.get("/api/well-number", (req, res) => {
   const connection = getConnection();
   const query = `
@@ -858,6 +857,219 @@ app.get("/api/notifications/count", (req, res) => {
     
     const count = results && results[0] ? results[0].count : 0;
     res.json({ count });
+  });
+});
+
+// Check for wells with low current (stopped wells)
+app.get("/api/wells/check-status", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT 
+      well,
+      c_current,
+      c_last_update,
+      working
+    FROM well_data 
+    WHERE well LIKE 'BSK%' 
+    AND (c_current < 1 OR c_current IS NULL)
+    AND working = 1
+    ORDER BY c_last_update DESC;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    const stoppedWells = results || [];
+    
+    // For each stopped well, check if we already have a recent notification
+    if (stoppedWells.length > 0) {
+      const wellNames = stoppedWells.map(w => w.well);
+      const checkExistingQuery = `
+        SELECT well, MAX(opened) as last_notification
+        FROM n_lenta 
+        WHERE well IN (${wellNames.map(() => '?').join(',')})
+        AND event LIKE '%останов%'
+        AND opened > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+        GROUP BY well;
+      `;
+      
+      connection.query(checkExistingQuery, wellNames, (error2, existingResults) => {
+        if (error2) {
+          console.error("Database error checking existing notifications:", error2);
+          return res.status(500).json({ error: "Database query failed" });
+        }
+        
+        const existingNotifications = new Set(
+          (existingResults || []).map(r => r.well)
+        );
+        
+        // Filter out wells that already have recent notifications
+        const newStoppedWells = stoppedWells.filter(
+          well => !existingNotifications.has(well.well)
+        );
+        
+        // Create notifications for newly stopped wells
+        if (newStoppedWells.length > 0) {
+          createWellStopNotifications(newStoppedWells, connection);
+        }
+        
+        res.json({ 
+          stoppedWells: newStoppedWells,
+          total: stoppedWells.length,
+          new: newStoppedWells.length
+        });
+      });
+    } else {
+      res.json({ stoppedWells: [], total: 0, new: 0 });
+    }
+  });
+});
+
+function createWellStopNotifications(stoppedWells, connection) {
+  const insertQuery = `
+    INSERT INTO n_lenta 
+    (criticality, extraction, event, status, oil_field, agzu, well, opened, user_name, delta, comment)
+    VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)
+  `;
+  
+  stoppedWells.forEach(well => {
+    // Try to get AGZU from well matrix
+    const agzuQuery = `SELECT agzu FROM n_well_matrix WHERE well = ? LIMIT 1`;
+    
+    connection.query(agzuQuery, [well.well], (error, agzuResults) => {
+      const agzu = (agzuResults && agzuResults[0]) ? agzuResults[0].agzu : null;
+      
+      // Ensure delta is never null - convert to number and default to 0
+      const currentValue = parseFloat(well.c_current) || 0;
+      
+      const values = [
+        3, // criticality - Red (Critical)
+        'fluid', // extraction - must be 'oil' or 'fluid', using default 'fluid'
+        `Останов ${well.well} - ток (${currentValue.toFixed(2)} А)`,
+        'open', // status
+        'BSK', // oil_field
+        agzu, // agzu
+        well.well, // well
+        'СИСТЕМА', // user_name
+        currentValue, // delta (current value) - ensure it's never null
+        `Автоматическое уведомление: ток ${currentValue.toFixed(2)} А < 1 А`
+      ];
+      
+      console.log(`📝 Creating notification for well: ${well.well}`);
+      
+      connection.query(insertQuery, values, (error, results) => {
+        if (error) {
+          console.error(`❌ Database error creating notification for well ${well.well}:`, error);
+        } else {
+          console.log(`✅ Successfully created stop notification for well ${well.well} with ID: ${results.insertId}`);
+        }
+      });
+    });
+  });
+}
+
+app.post("/api/notifications/create", (req, res) => {
+  const connection = getConnection();
+  const {
+    criticality,
+    extraction, // Should be 'oil' or 'fluid'
+    event,
+    status = 'open',
+    oil_field = 'BSK',
+    agzu,
+    well,
+    otvod,
+    user_name = 'СИСТЕМА',
+    user_email,
+    delta,
+    comment
+  } = req.body;
+
+  if (!event || !well) {
+    return res.status(400).json({ error: "Event and well are required" });
+  }
+
+  console.log(`📝 Creating notification for well: ${well}`);
+
+  // First check if a similar notification already exists in the last 2 hours
+  const checkExistingQuery = `
+    SELECT id, opened FROM n_lenta 
+    WHERE well = ? 
+    AND event LIKE '%останов%' 
+    AND status = 'open'
+    AND opened > DATE_SUB(NOW(), INTERVAL 2 HOUR)
+    ORDER BY opened DESC 
+    LIMIT 1
+  `;
+
+  connection.query(checkExistingQuery, [well], (checkError, existingResults) => {
+    if (checkError) {
+      console.error("Error checking existing notifications:", checkError);
+      return res.status(500).json({ error: "Database error checking existing notifications" });
+    }
+
+    if (existingResults && existingResults.length > 0) {
+      console.log(`⚠️ Duplicate notification prevented for well ${well} - recent notification exists`);
+      return res.status(409).json({ 
+        error: "Recent notification already exists",
+        existing_id: existingResults[0].id,
+        existing_time: existingResults[0].opened
+      });
+    }
+
+    // Get AGZU from well matrix if not provided
+    const getAgzuQuery = `SELECT agzu FROM n_well_matrix WHERE well = ? LIMIT 1`;
+    
+    connection.query(getAgzuQuery, [well], (agzuError, agzuResults) => {
+      if (agzuError) {
+        console.error("Error getting AGZU:", agzuError);
+      }
+      
+      const finalAgzu = agzu || (agzuResults && agzuResults[0] ? agzuResults[0].agzu : null);
+      
+      // Ensure delta is never null - convert to string and default to '0'
+      const finalDelta = delta !== null && delta !== undefined ? String(delta) : '0';
+      
+      const insertQuery = `
+        INSERT INTO n_lenta 
+        (criticality, extraction, event, status, oil_field, agzu, well, otvod, opened, user_name, user_email, delta, comment)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?)
+      `;
+      
+      const values = [
+        criticality || 1,
+        extraction || 'fluid', // Must be 'oil' or 'fluid', default to 'fluid'
+        event,
+        status,
+        oil_field,
+        finalAgzu,
+        well,
+        otvod || null,
+        user_name,
+        user_email || null,
+        finalDelta, // Ensure it's never null
+        comment || null
+      ];
+      
+      connection.query(insertQuery, values, (error, results) => {
+        if (error) {
+          console.error("❌ Database error creating notification:", error);
+          return res.status(500).json({ error: "Failed to create notification" });
+        }
+        
+        console.log(`✅ Successfully created notification with ID: ${results.insertId} for well: ${well}`);
+        
+        res.json({ 
+          id: results.insertId,
+          message: "Notification created successfully",
+          well: well,
+          criticality: criticality
+        });
+      });
+    });
   });
 });
 
