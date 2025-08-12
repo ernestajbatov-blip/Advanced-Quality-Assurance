@@ -115,3 +115,22 @@ export const fetchAGZUWellData = (wellName) => {
     },
   });
 };
+
+export const fetchNotifications = (params = {}) => {
+  return api.get("/notifications", {
+    params: {
+      status: params.status || 'open',
+      oil_field: params.oil_field,
+      limit: params.limit || 50
+    }
+  });
+};
+
+export const fetchNotificationCount = (params = {}) => {
+  return api.get("/notifications/count", {
+    params: {
+      status: params.status || 'open',
+      oil_field: params.oil_field
+    }
+  });
+};

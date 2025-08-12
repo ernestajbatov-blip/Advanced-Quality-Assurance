@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "./AppNav.module.css";
 import DataDisplay from "../DataDisplay/DataDisplay";
+import NotificationBell from "../NotificationBell/NotificationBell";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useUser } from "../../states/UserContext";
 
@@ -134,6 +135,9 @@ export default function AppNav() {
           marginRight: "20px"
         }}>
           <span>{user?.name}</span>
+          
+          {/* Notification Bell */}
+          <NotificationBell />
           
           <div style={{ position: "relative" }}>
             <button

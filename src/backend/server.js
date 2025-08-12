@@ -783,6 +783,84 @@ app.get("/api/well-number", (req, res) => {
   });
 });
 
+// Notifications API endpoint
+app.get("/api/notifications", (req, res) => {
+  const connection = getConnection();
+  const { status, oil_field = 'BSK', limit } = req.query;
+  
+  let query = `
+    SELECT 
+      id,
+      criticality,
+      extraction,
+      event,
+      status,
+      oil_field,
+      agzu,
+      well,
+      otvod,
+      opened,
+      closed,
+      user_name,
+      user_email,
+      delta,
+      comment
+    FROM n_lenta
+    WHERE oil_field = ?
+  `;
+  
+  const params = [oil_field];
+  
+  if (status) {
+    query += ` AND status = ?`;
+    params.push(status);
+  }
+  
+  query += ` ORDER BY opened DESC`;
+  
+  if (limit) {
+    query += ` LIMIT ?`;
+    params.push(parseInt(limit));
+  }
+  
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
+// Get notification count
+app.get("/api/notifications/count", (req, res) => {
+  const connection = getConnection();
+  const { status, oil_field = 'BSK' } = req.query;
+  
+  let query = `
+    SELECT COUNT(*) as count
+    FROM n_lenta
+    WHERE oil_field = ?
+  `;
+  
+  const params = [oil_field];
+  
+  if (status) {
+    query += ` AND status = ?`;
+    params.push(status);
+  }
+  
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    
+    const count = results && results[0] ? results[0].count : 0;
+    res.json({ count });
+  });
+});
+
 // ---- Static Frontend ----
 
 const distPath = path.join(__dirname, "../../dist");
