@@ -177,6 +177,18 @@ export default function Diagram() {
     "ARM_MFN2_CURRENT": "А", 
     "ARM_MFN2_POWER": "кВт",
     "ARM_MFN2_FREQ": "Гц",
+
+    // Насосная перекачка нефти
+    "Rabota_nasos__1-NPS": "",
+    "Rabota_nasos_2_NPS": "",
+    "Zadanie_Hz_nasos_NPS_1": "Гц",
+    "Zadanie_Hz_nasos_NPS_2": "Гц",
+    "ARM_NPS_1PT1_IN_R": "атм",
+    "ARM_NPS_2PT1_IN_L": "атм",
+    "Pusk_nasos_1_NPS": "",
+    "Pusk_nasos_2_NPS": "",
+    "Stop_nasos_1_NPS": "",
+    "Stop_nasos_2_NPS": "",
   };
 
   // New mapping for tag descriptions
@@ -260,6 +272,18 @@ export default function Diagram() {
     "ARM_MFN2_POWER": "Мощность",
     "ARM_MFN2_FREQ": "Частота",
 
+    // Насосная перекачка нефти
+    "Rabota_nasos__1-NPS": "Статус работы",
+    "Rabota_nasos_2_NPS": "Статус работы", 
+    "Zadanie_Hz_nasos_NPS_1": "Частота",
+    "Zadanie_Hz_nasos_NPS_2": "Частота",
+    "ARM_NPS_1PT1_IN_R": "Давление на входе",
+    "ARM_NPS_2PT1_IN_L": "Давление на входе",
+    "Pusk_nasos_1_NPS": "Команда пуск",
+    "Pusk_nasos_2_NPS": "Команда пуск",
+    "Stop_nasos_1_NPS": "Команда стоп",
+    "Stop_nasos_2_NPS": "Команда стоп",
+
     // Uzel ucheta descriptions
     "overpressure": "Избыточное давление",
     "temperature": "Температура",
@@ -310,10 +334,25 @@ export default function Diagram() {
         filteredData.find(item => item.tag_key === tag)
       ).filter(Boolean);
 
-      transformedData = sorted.map(item => ({
-        "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
-        "Показание": `${Math.round(item.value * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim()
-      }));
+      transformedData = sorted.map(item => {
+        let value = item.value || item.tag_value;
+        
+        // Handle boolean values specifically
+        if (value === "True" || value === true) {
+          value = "Включен";
+        } else if (value === "False" || value === false) {
+          value = "Выключен";
+        } else if (typeof value === 'number') {
+          value = `${Math.round(value * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+        } else {
+          value = `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+        }
+
+        return {
+          "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+          "Показание": value
+        };
+      });
     } else {
       transformedData = oilProgressData.map(item => ({
         "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
@@ -548,29 +587,11 @@ export default function Diagram() {
     ];
   };
 
-  // Generate random data for Насосная перекачка нефти
-  const generateNasosPerekachkaData = () => {
-    return [
-      {
-        "Параметр": "Давление на выходе",
-        "Значение": `${(Math.random() * 5 + 2).toFixed(2)} атм`
-      }
-    ];
-  };
-
   // Handle БКНС click
   const handleBKNSClick = () => {
     const bknsData = generateBKNSData();
     setTableData(bknsData);
     setTableTitle("БКНС");
-    setShowTable(true);
-  };
-
-  // Handle Насосная перекачка нефти click
-  const handleNasosPerekachkaClick = () => {
-    const nasosData = generateNasosPerekachkaData();
-    setTableData(nasosData);
-    setTableTitle("Насосная перекачка нефти");
     setShowTable(true);
   };
 
@@ -898,21 +919,67 @@ export default function Diagram() {
       left: "32%",
       content: (
         <>
-          <div 
-            onClick={handleNasosPerekachkaClick}
-            style={{
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center"
-            }}
-          >
-            <Pumps numberOfSquares={2} activeIndex={0} width={80} height={50} />
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            {(() => {
+              const pump1Status = oilProgressData.find(d => d.tag_key === "Rabota_nasos__1-NPS");
+              const pump2Status = oilProgressData.find(d => d.tag_key === "Rabota_nasos_2_NPS");
+              
+              let activeIndex = -1;
+              // Changed from tag_value to value
+              if (pump1Status && (pump1Status.value === "True" || pump1Status.value === true)) {
+                activeIndex = 0;
+              } else if (pump2Status && (pump2Status.value === "True" || pump2Status.value === true)) {
+                activeIndex = 1;
+              }
+              
+              return (
+                <Pumps 
+                  numberOfSquares={2} 
+                  activeIndex={activeIndex}
+                  width={80} 
+                  height={50} 
+                />
+              );
+            })()}
+            
             <LabelBox
               label={"Насосная перекачка нефти"}
               width={140}
               height={10}
               fontSize={10}
+            />
+            {/* Насос 1 clickable area */}
+            <div 
+              onClick={() => handleTableClick(
+                ["Rabota_nasos__1-NPS", "Pusk_nasos_1_NPS", "Stop_nasos_1_NPS", "Zadanie_Hz_nasos_NPS_1", "ARM_NPS_1PT1_IN_R"], 
+                "Насос перекачки нефти №1"
+              )}
+              style={{
+                position: "absolute",
+                top: "7%",
+                left: "4%",
+                width: "80px",
+                height: "50px",
+                cursor: "pointer",
+                // backgroundColor: "red"
+              }}
+            />
+            {/* Насос 2 clickable area */}
+            <div 
+              onClick={() => handleTableClick(
+                ["Rabota_nasos_2_NPS", "Pusk_nasos_2_NPS", "Stop_nasos_2_NPS", "Zadanie_Hz_nasos_NPS_2", "ARM_NPS_2PT1_IN_L"], 
+                "Насос перекачки нефти №2"
+              )}
+              style={{
+                position: "absolute",
+                top: "7%",
+                left: "50%",
+                width: "80px", 
+                height: "50px",
+                cursor: "pointer",
+                // backgroundColor: "green"
+
+              }}
             />
           </div>
         </>

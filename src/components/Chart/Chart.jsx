@@ -711,7 +711,7 @@ export default function Chart({ type, setType }) {
 
     const liquidData = formattedData.map((item) => ({
       name: item.name,
-      tin: item.tin, // ✅ CRITICAL: Include tin field
+      tin: item.tin,
       debit_last_day: item.debit_last_day,
       tech_rezh: item.tech_rezh,
       curr_debit: item.curr_debit,
@@ -722,7 +722,7 @@ export default function Chart({ type, setType }) {
 
     const oilData = formattedData.map((item) => ({
       name: item.name,
-      tin: item.tin, // ✅ CRITICAL: Include tin field - this was missing before!
+      tin: item.tin,
       debit_last_day: item.n_debit_last_day,
       tech_rezh: item.n_tech_rezh,
       curr_debit: item.n_curr_debit,
