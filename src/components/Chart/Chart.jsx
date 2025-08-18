@@ -414,7 +414,7 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
         </g>
       </svg>
 
-      {/* Enhanced Custom Tooltip - KEEP IMPROVED STYLING */}
+      {/* Enhanced Custom Tooltip*/}
       {tooltip.visible && tooltip.data && (
         <div
           style={{
@@ -812,14 +812,14 @@ export default function Chart({ type, setType }) {
             </button>
           )}
 
-          <button 
+          {/* <button 
             onClick={handleExportToExcel}
             disabled={exporting || loading || !selectedData.length}
             className={styles.exportButton}
             title="Экспортировать данные в Excel"
           >
             {exporting ? '⏳ Экспорт...' : '📊 Excel'}
-          </button>
+          </button> */}
 
           {loading && <span className={styles.loadingText}>⏳ Загрузка...</span>}
         </div>

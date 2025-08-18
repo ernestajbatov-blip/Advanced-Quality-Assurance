@@ -56,9 +56,12 @@ export default function Diagram() {
   const [isVlagomerArchiveMode, setIsVlagomerArchiveMode] = useState(false);
   const [vlagomerAverage, setVlagomerAverage] = useState(0);
 
+  const apiBaseURL = process.env.NODE_ENV === "production" 
+    ? "http://192.168.1.42:3000/api" 
+    : "http://localhost:3000/api";
+
   useEffect(() => {
-    axios.get("http://localhost:3000/api/progress-oil")
-    // axios.get("http://192.168.1.42:3000/api/progress-oil")
+    axios.get(`${apiBaseURL}/progress-oil`)
       .then(res => {
         setOilProgressData(res.data);
       })
