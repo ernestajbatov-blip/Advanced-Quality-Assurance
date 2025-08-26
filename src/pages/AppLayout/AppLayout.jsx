@@ -152,7 +152,8 @@ export default function AppLayout() {
         { "Параметр": "Мощность", "Значение": formatModalValue(wellData["Мощность"]) },
         { "Параметр": "Частота", "Значение": formatModalValue(wellData["Частота"]) },
         { "Параметр": "Ток", "Значение": formatModalValue(wellData["Ток"]) },
-        { "Параметр": "Скорость двигателя", "Значение": formatModalValue(wellData["Скорость двигателя"]) },
+        { "Параметр": "Обороты", "Значение": formatModalValue(wellData["Скорость двигателя"]) },
+        { "Параметр": "Тип ЧРП", "Значение": formatModalValue(wellData["Тип ЧРП"]) },
         ...(wellData["Тип"] === 1 ? [{ "Параметр": "Температура", "Значение": formatModalValue(wellData["Температура"]) }] : [])
       ];
       setWellModalData(transformedData);
@@ -260,6 +261,7 @@ export default function AppLayout() {
               hideWorkingStatus={fond === 1} // Hide working status for injection wells (VRP)
               isWellStopped={isWellStopped} // Pass the function to check if well is stopped
               fond={fond} // Pass fond to Grid
+              chrpFilter={chrpFilter}
             />
           </div>
           <div className={styles.container}>

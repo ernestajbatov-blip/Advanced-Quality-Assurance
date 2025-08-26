@@ -1,7 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import styles from "./AGZU.module.css";
 import AgzuDiagram from "../AgzuDiagram/AgzuDiagram";
-import { fetchAGZUCategories, fetchCategoryWellNumber } from "../../axios/wellService";
+import { fetchAGZUCategories } from "../../axios/wellService";
 
 function Button({ label, active, onClick }) {
   return (
@@ -50,7 +50,6 @@ function Dropdown({ options, active, onSelect }) {
 export default function AGZU({ wells, index }) {
   const [categories, setCategories] = useState([]);
   const [activeButton, setActiveButton] = useState("");
-  const [wellNumber, setWellNumber] = useState(5); // Default fallback
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -106,29 +105,7 @@ export default function AGZU({ wells, index }) {
     },
   ];
 
-  // Function to fetch well number for a specific category
-  const fetchWellNumberForCategory = async (category) => {
-    try {
-      console.log("Fetching well number for category:", category);
-      const response = await fetchCategoryWellNumber(category);
-      const fetchedWellNumber = response.data?.wellNumber;
-      
-      console.log("API Response for category:", category, response.data);
-      
-      if (fetchedWellNumber !== null && fetchedWellNumber !== undefined) {
-        setWellNumber(fetchedWellNumber);
-        console.log("Updated wellNumber to:", fetchedWellNumber);
-      } else {
-        // If no specific well number found for this category, use default
-        console.log("No well number found for category:", category, "using default: 5");
-        setWellNumber(5);
-      }
-    } catch (err) {
-      console.error("Error fetching well number for category:", category, err);
-      // Fallback to default on error
-      setWellNumber(5);
-    }
-  };
+
 
   useEffect(() => {
     const loadData = async () => {
@@ -148,11 +125,6 @@ export default function AGZU({ wells, index }) {
         if (filteredCategories.length > 0) {
           const firstCategory = filteredCategories[0];
           setActiveButton(firstCategory);
-          // Fetch well number for the first category
-          await fetchWellNumberForCategory(firstCategory);
-        } else {
-          // No categories found, use default
-          setWellNumber(5);
         }
 
         setLoading(false);
@@ -169,9 +141,6 @@ export default function AGZU({ wells, index }) {
   const handleButtonClick = async (label) => {
     console.log("Button clicked:", label);
     setActiveButton(label);
-    
-    // Fetch well number for the selected category
-    await fetchWellNumberForCategory(label);
   };
 
   // Combine real wells with manual entries
@@ -183,7 +152,6 @@ export default function AGZU({ wells, index }) {
   console.log("Combined Wells:", combinedWells);
   console.log("Active Button:", activeButton);
   console.log("Categories:", categories);
-  console.log("Well Number:", wellNumber);
 
   if (loading) {
     return (
@@ -228,8 +196,7 @@ export default function AGZU({ wells, index }) {
         )}
       </div>
       <AgzuDiagram 
-        filteredWells={combinedWells} 
-        boxIndex={wellNumber-1} 
+        filteredWells={combinedWells}
         category={activeButton}
       />
     </div>

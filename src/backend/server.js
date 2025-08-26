@@ -175,7 +175,8 @@ app.get("/api/well/data", (req, res) => {
       c_temp AS 'Температура',
       working AS 'Работа',
       type AS 'Тип',
-      c_last_update AS 'Последнее обновление'
+      c_last_update AS 'Последнее обновление',
+      c_type AS 'Тип ЧРП',
     FROM well_data
     WHERE well = ?;
   `;
@@ -678,7 +679,8 @@ app.get("/api/well/agzu-data", (req, res) => {
       well AS 'Скважина',
       zamer_oil AS 'Нефть',
       gas AS 'Газ', 
-      tr_water AS 'Обводненность'
+      tr_water AS 'Обводненность',
+      zamer AS 'Жидкость'
     FROM n_well_matrix
     WHERE well = ?;
   `;
@@ -692,35 +694,18 @@ app.get("/api/well/agzu-data", (req, res) => {
   });
 });
 
-// Function to convert Russian category names to English tag keys
-function convertCategoryToTagKey(category) {
+function convertCategoryToTagPrefix(category) {
   if (!category) return null;
   
-  // console.log("Converting category to tag key:", category);
-  
-  // Convert to lowercase and replace common Russian terms with English equivalents
   let converted = category.toLowerCase()
-    .replace(/агзу/g, 'agzu')          // АГЗУ -> agzu
-    .replace(/мф/g, 'mf')              // МФ -> mf  
-    .replace(/врп/g, 'vrp')            // ВРП -> vrp
-    .replace(/№/g, '')                 // Remove №
-    .replace(/\s+/g, '-')              // Replace spaces with hyphens
-    .replace(/-+/g, '-')               // Replace multiple hyphens with single
-    .replace(/^-|-$/g, '');            // Remove leading/trailing hyphens
+    .replace(/агзу-(\d+)/g, 'agzu_$1')        // АГЗУ-2 -> agzu_2
+    .replace(/мф\s*№?(\d+)/g, 'mf_$1')       // МФ №3 -> mf_3
+    .replace(/врп-(\d+)/g, 'vrp_$1');        // ВРП-1 -> vrp_1
   
-  const tagKey = `${converted}-num`;
-  
-  // console.log("Converted tag key:", tagKey);
-  
-  return tagKey;
+  return converted;
 }
 
-// Test the function with your categories
-// console.log("АГЗУ-1 ->", convertCategoryToTagKey("АГЗУ-1"));     // Should be: agzu-1-num
-// console.log("АГЗУ-2 ->", convertCategoryToTagKey("АГЗУ-2"));     // Should be: agzu-2-num  
-// console.log("МФ №3 ->", convertCategoryToTagKey("МФ №3"));       // Should be: mf-3-num
-
-app.get("/api/well-number/:category", (req, res) => {
+app.get("/api/agzu/tags/:category", (req, res) => {
   const connection = getConnection();
   const category = req.params.category;
   
@@ -728,57 +713,45 @@ app.get("/api/well-number/:category", (req, res) => {
     return res.status(400).json({ error: "Category is required" });
   }
   
-  // Convert Russian category name to English tag key
-  // For example: "АГЗУ-1" -> "agzu-1-num", "МФ №3" -> "mf-3-num"
-  const tagKey = convertCategoryToTagKey(category);
+  // Convert category to tag prefix (e.g., "АГЗУ-2" -> "agzu_2", "МФ №3" -> "mf_3")
+  const tagPrefix = convertCategoryToTagPrefix(category);
   
-  if (!tagKey) {
+  if (!tagPrefix) {
     return res.status(400).json({ error: "Invalid category format" });
   }
   
   const query = `
-    SELECT tag_value 
+    SELECT tag_key, tag_value 
     FROM n_wincctags 
-    WHERE tag_key = ?
-    LIMIT 1;
+    WHERE oil_field = 'BSK' 
+    AND (tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ?)
+    ORDER BY tag_key;
   `;
   
-  connection.query(query, [tagKey], (error, results) => {
+  const params = [
+    `${tagPrefix}_time%`,
+    `${tagPrefix}_otvod%`, 
+    `${tagPrefix}_density%`,
+    `${tagPrefix}_temperature%`
+  ];
+  
+  connection.query(query, params, (error, results) => {
     if (error) {
       console.error("Database error:", error);
       return res.status(500).json({ error: "Database query failed" });
     }
     
-    // If no specific tag found for this category, return null
-    const wellNumber = results && results[0] && results[0].tag_value 
-      ? parseInt(results[0].tag_value) 
-      : null;
-      
-    res.json({ 
-      wellNumber: wellNumber,
-      originalCategory: category,
-      tagKey: tagKey 
+    // Convert results to object for easier access
+    const tags = {};
+    results.forEach(row => {
+      tags[row.tag_key] = parseFloat(row.tag_value) || 0;
     });
-  });
-});
-
-app.get("/api/well-number", (req, res) => {
-  const connection = getConnection();
-  const query = `
-    SELECT tag_value 
-    FROM n_wincctags 
-    WHERE tag_key = 'well_num'
-    LIMIT 1;
-  `;
-  
-  connection.query(query, (error, results) => {
-    if (error) {
-      console.error("Database error:", error);
-      return res.status(500).json({ error: "Database query failed" });
-    }
     
-    const wellNumber = results && results[0] ? results[0].tag_value : null;
-    res.json({ wellNumber: wellNumber ? parseInt(wellNumber) : null });
+    res.json({ 
+      tags,
+      category,
+      tagPrefix
+    });
   });
 });
 

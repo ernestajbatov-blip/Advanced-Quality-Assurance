@@ -23,9 +23,12 @@ export default function SelectFond({
   // Count wells by working status using filtered wells
   const statusCounts = filteredWells.reduce(
     (acc, well) => {
-      if (well.working === 1) acc.working++;
-      else if (well.working === 2) acc.noData++;
-      else if (well.working === 3) acc.notWorking++;
+      // Only count ЧРП wells for status counters
+      if (well.type === 1) {
+        if (well.working === 1) acc.working++;
+        else if (well.working === 2) acc.noData++;
+        else if (well.working === 3) acc.notWorking++;
+      }
       return acc;
     },
     { working: 0, noData: 0, notWorking: 0 }

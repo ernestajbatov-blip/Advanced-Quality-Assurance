@@ -100,12 +100,8 @@ export const fetchAGZUCategories = () => {
   return api.get("/agzu/categories");
 };
 
-export const fetchWellNumber = () => {
-  return api.get("/well-number");
-};
-
-export const fetchCategoryWellNumber = (category) => {
-  return api.get(`/well-number/${encodeURIComponent(category)}`);
+export const fetchAGZUTags = (category) => {
+  return api.get(`/agzu/tags/${encodeURIComponent(category)}`);
 };
 
 export const fetchAGZUWellData = (wellName) => {

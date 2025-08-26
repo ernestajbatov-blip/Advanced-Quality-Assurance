@@ -4,12 +4,9 @@ import Box from "../Box/Box";
 import Modal from "../Modal/Modal";
 import ResponsiveTable from "../ResponsiveTable/ResponsiveTable";
 import { NavLink } from "react-router-dom";
-import { fetchAGZUWellData } from "../../axios/wellService";
+import { fetchAGZUWellData, fetchAGZUTags } from "../../axios/wellService";
 
-// Store generated data outside component to persist across re-renders and category changes
-const categoryDataCache = {};
-
-export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
+export default function AgzuDiagram({ filteredWells, category }) {
   // Random data for center circle based on category
   const [centerData, setCenterData] = useState({
     pressure: 0,
@@ -22,72 +19,64 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
   const [wellModalData, setWellModalData] = useState([]);
   const [wellModalTitle, setWellModalTitle] = useState("Данные скважины");
   const [wellModalLoading, setWellModalLoading] = useState(false);
+  const [boxIndex, setBoxIndex] = useState(0);
 
-  // Generate category-specific random data that persists
   useEffect(() => {
-    const generateCategorySpecificData = (categoryName) => {
-      // If we already have data for this category, use it
-      if (categoryDataCache[categoryName]) {
-        return categoryDataCache[categoryName];
-      }
-
-      // Generate new data for this category
-      const categoryHash = categoryName ? categoryName.split('').reduce((a, b) => {
-        a = ((a << 5) - a) + b.charCodeAt(0);
-        return a & a;
-      }, 0) : 0;
-      
-      // Create category-specific random ranges using hash as seed
-      const seed = Math.abs(categoryHash) % 1000;
-      const pressureBase = (seed % 5) + 3; // 3-8 base pressure
-      const tempBase = (seed % 20) + 20; // 20-40 base temperature
-      
-      // Generate random working time between 0-10 hours
-      const randomHours = Math.floor((seed % 100) / 10); // 0-9 hours
-      const randomMinutes = Math.floor((seed % 60)); // 0-59 minutes
-      const workingTime = `${randomHours}:${randomMinutes.toString().padStart(2, '0')}`;
-      
-      const newData = {
-        pressure: (pressureBase + (seed % 100) / 100 * 3).toFixed(1), // Category-specific pressure
-        time: workingTime, // Working time instead of current time
-        temperature: Math.floor(tempBase + (seed % 20)) // Category-specific temperature
-      };
-
-      // Cache the generated data for this category
-      categoryDataCache[categoryName] = newData;
-      return newData;
-    };
-
-    // Generate and set data for current category
-    const data = generateCategorySpecificData(category);
-    setCenterData(data);
-
-    // Update working time every 20 seconds (increment by random amount)
-    const interval = setInterval(() => {
-      setCenterData(prev => {
-        const [hours, minutes] = prev.time.split(':').map(Number);
-        let totalMinutes = hours * 60 + minutes;
+    const fetchCategoryData = async () => {
+      try {
+        if (!category) return;
         
-        // Add 1-5 minutes randomly
-        totalMinutes += Math.floor(Math.random() * 5) + 1;
+        // Fetch real tags from database
+        const response = await fetchAGZUTags(category);
+        const { tags } = response.data;
         
-        // Keep within 0-10 hours range (0-600 minutes)
-        if (totalMinutes >= 600) {
-          totalMinutes = totalMinutes % 600;
+        // Extract values from tags
+        const timeTag = Object.keys(tags).find(key => key.includes('_time'));
+        const pressureTag = Object.keys(tags).find(key => key.includes('_pressure'));
+        const temperatureTag = Object.keys(tags).find(key => key.includes('_temperature'));
+        const otvodTag = Object.keys(tags).find(key => key.includes('_otvod'));
+        
+        // Helper function to format time
+        const formatTime = (timeValue) => {
+          if (timeValue === 0) return "0:00";
+          const hours = Math.floor(timeValue / 60);
+          const minutes = timeValue % 60;
+          return `${hours}:${minutes.toString().padStart(2, '0')}`;
+        };
+        
+        const newData = {
+          pressure: (tags[pressureTag] || 0).toFixed(1),
+          time: formatTime(tags[timeTag] || 0),
+          temperature: Math.floor(tags[temperatureTag] || 0)
+        };
+        
+        setCenterData(newData);
+        
+        // Update boxIndex based on otvod tag (convert to 0-based index)
+        if (tags[otvodTag] !== undefined) {
+          const otvodValue = parseInt(tags[otvodTag]) || 0;
+          setBoxIndex(otvodValue > 0 ? otvodValue - 1 : 0);
         }
         
-        const newHours = Math.floor(totalMinutes / 60);
-        const newMinutes = totalMinutes % 60;
-        
-        return {
-          ...prev,
-          time: `${newHours}:${newMinutes.toString().padStart(2, '0')}`
-        };
-      });
-    }, 20000);
+      } catch (error) {
+        console.error("Error fetching AGZU tags:", error);
+        // Fallback to default values
+        setCenterData({
+          pressure: "0.0",
+          time: "0:00", 
+          temperature: 0
+        });
+        setBoxIndex(0);
+      }
+    };
 
+    fetchCategoryData();
+    
+    // Set up interval to refresh data every 30 seconds
+    const interval = setInterval(fetchCategoryData, 30000);
+    
     return () => clearInterval(interval);
-  }, [category]); // Only re-run when category changes
+  }, [category]);
 
   const boxes = Array(14).fill(null);
   filteredWells.forEach((well) => {
@@ -139,7 +128,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
 
       const transformedData = [
         { "Параметр": "Скважина", "Значение": wellData["Скважина"] || wellNumber },
-        { "Параметр": "Жидкость", "Значение": "N/A" }, // No field available yet
+        { "Параметр": "Жидкость", "Значение": formatValue(wellData["Жидкость"], "м³") },
         { "Параметр": "Нефть", "Значение": formatValue(wellData["Нефть"], "т/сут") },
         { "Параметр": "Газ", "Значение": formatValue(wellData["Газ"], "м³/сут") },
         { "Параметр": "Обводненность", "Значение": formatValue(wellData["Обводненность"], "%") }
@@ -193,7 +182,7 @@ export default function AgzuDiagram({ filteredWells, boxIndex, category }) {
           <Box
             key={index}
             boxText1={well?.well || ""}
-            boxText2={well?.tr_fluid != null ? well.tr_fluid.toFixed(2) : ""}
+            boxText2={well?.zamer != null ? well.zamer.toFixed(2) : ""}
             top={index < 7 ? "5%" : "100%"}
             left={`${10 + (index % 7) * 135}px`}
             number={index + 1}

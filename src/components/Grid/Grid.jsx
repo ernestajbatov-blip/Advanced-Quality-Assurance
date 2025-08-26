@@ -18,7 +18,8 @@ export default function Grid({
   setSelectedWell,
   hideWorkingStatus = false,
   isWellStopped,
-  fond
+  fond,
+  chrpFilter // Add this parameter
 }) {
   return (
     <div className={styles.gridContainer}>
@@ -42,12 +43,8 @@ export default function Grid({
           wellStopped = isWellStopped(well);
         }
 
-        console.log(`Grid - Well ${wellValues.leftTop}:`, {
-          fond: fond,
-          nagn: well.nagn,
-          wellStopped: wellStopped,
-          c_current: well.c_current
-        });
+        // Only show working status for ЧРП wells (type === 1)
+        const shouldShowWorkingStatus = !hideWorkingStatus && well.type === 1;
 
         return (
           <WellCard
@@ -69,7 +66,7 @@ export default function Grid({
             realMiddle={middleValue}
             onWellClick={onWellClick}
             working={well.working}
-            hideWorkingStatus={hideWorkingStatus}
+            hideWorkingStatus={!shouldShowWorkingStatus} // Pass modified value
             wellStopped={wellStopped}
             fond={fond}
           />
