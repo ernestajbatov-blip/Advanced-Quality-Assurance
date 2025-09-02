@@ -15,7 +15,7 @@ app.use(express.json());
 app.get("/api/wells", (req, res) => {
   const connection = getConnection();
   const query = `
-    SELECT m.*, d.working, d.type, d.c_current
+    SELECT m.*, d.working, d.type, d.c_current, d.c_current_min, d.c_current_max
     FROM n_well_matrix m
     LEFT JOIN well_data d ON m.well = d.well
     WHERE m.well LIKE 'BSK%';
@@ -176,7 +176,7 @@ app.get("/api/well/data", (req, res) => {
       working AS 'Работа',
       type AS 'Тип',
       c_last_update AS 'Последнее обновление',
-      c_type AS 'Тип ЧРП',
+      c_type AS 'Тип ЧРП'
     FROM well_data
     WHERE well = ?;
   `;
@@ -724,7 +724,7 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     SELECT tag_key, tag_value 
     FROM n_wincctags 
     WHERE oil_field = 'BSK' 
-    AND (tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ?)
+    AND (tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ?)
     ORDER BY tag_key;
   `;
   
@@ -732,7 +732,8 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     `${tagPrefix}_time%`,
     `${tagPrefix}_otvod%`, 
     `${tagPrefix}_density%`,
-    `${tagPrefix}_temperature%`
+    `${tagPrefix}_temperature%`,
+    `${tagPrefix}_current_skv%`  // ADD THIS LINE
   ];
   
   connection.query(query, params, (error, results) => {
@@ -744,7 +745,7 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     // Convert results to object for easier access
     const tags = {};
     results.forEach(row => {
-      tags[row.tag_key] = parseFloat(row.tag_value) || 0;
+      tags[row.tag_key] = parseFloat(row.tag_value) || row.tag_value; // Keep as string if not a number
     });
     
     res.json({ 

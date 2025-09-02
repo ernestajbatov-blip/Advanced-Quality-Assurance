@@ -19,7 +19,7 @@ export default function Grid({
   hideWorkingStatus = false,
   isWellStopped,
   fond,
-  chrpFilter // Add this parameter
+  chrpFilter
 }) {
   return (
     <div className={styles.gridContainer}>
@@ -55,6 +55,7 @@ export default function Grid({
             leftBottom={wellValues.leftBottom}
             rightBottom={wellValues.rightBottom}
             wells={wells}
+            well={well}
             setSelectedWell={setSelectedWell}
             maxThreshold={maxThreshold}
             colorMax={colorMax}
@@ -66,7 +67,7 @@ export default function Grid({
             realMiddle={middleValue}
             onWellClick={onWellClick}
             working={well.working}
-            hideWorkingStatus={!shouldShowWorkingStatus} // Pass modified value
+            hideWorkingStatus={!shouldShowWorkingStatus}
             wellStopped={wellStopped}
             fond={fond}
           />

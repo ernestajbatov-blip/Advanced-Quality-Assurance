@@ -25,12 +25,13 @@ export default function WellCard({
   working,
   hideWorkingStatus = false,
   wellStopped = false,
-  fond
+  fond,
+  well
 }) {
   const location = useLocation();
   const context = location.pathname === "/abc" ? useContext(WellsABCContext) : null;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [well, setWell] = useState(null);
+  const [wellData, setWellData] = useState(null); // Changed from 'well' to 'wellData'
 
   const handleClick = async () => {
     if (onWellClick) {
@@ -46,7 +47,7 @@ export default function WellCard({
         const selected = wells.filter((well) => well.well === leftTop);
         console.log(selected);
         setWellsChart(selected);
-        setWell(data);
+        setWellData(data); // Changed from setWell to setWellData
         setSelectedWell(selected);
         setIsModalOpen(true);
       } catch (err) {
@@ -115,9 +116,19 @@ export default function WellCard({
       }
     } else if (fond === 0) {
       // For production wells
-      // Only apply blinking red if well is actually stopped AND not just offline
-      if (wellStopped && working !== 3) {
-        cardColorClass = `${styles[colorMin]} ${styles.blinking}`;
+      const current = parseFloat(well?.c_current) || 0;
+      const currentMin = parseFloat(well?.c_current_min) || 0;
+      const currentMax = parseFloat(well?.c_current_max) || Infinity;
+      
+      if (current < 1) {
+        // Static red for current < 1
+        cardColorClass = styles.redCardStatic; // Use the new static class
+      } else if (current < currentMin || current > currentMax) {
+        // Blinking red for outside min/max range (but >= 1)
+        cardColorClass = styles.redCard; // Use the animated class
+      } else if (wellStopped && working !== 3) {
+        // Blinking red for other stopped conditions
+        cardColorClass = styles.redCard; // Use the animated class
       } else if (middle > maxThreshold) {
         cardColorClass = styles[colorMax]; // Green for good performance
       } else if (middle !== 0) {

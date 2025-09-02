@@ -145,11 +145,11 @@ export default function KPI({ chartType = "liquid" }) {
 
   return (
     <div className={styles.container}>
-      {loading && (
+      {/* {loading && (
         <div className={styles.loadingOverlay}>
           <span>Загрузка...</span>
         </div>
-      )}
+      )} */}
       
       {fond === 1 ? renderInjectionKPI() : renderProductionKPI()}
     </div>
