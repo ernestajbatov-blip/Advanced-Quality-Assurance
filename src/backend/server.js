@@ -733,7 +733,7 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     `${tagPrefix}_otvod%`, 
     `${tagPrefix}_density%`,
     `${tagPrefix}_temperature%`,
-    `${tagPrefix}_current_skv%`  // ADD THIS LINE
+    `${tagPrefix}_current_skv%`
   ];
   
   connection.query(query, params, (error, results) => {

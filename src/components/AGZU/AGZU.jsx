@@ -56,38 +56,6 @@ export default function AGZU({ wells, index }) {
   // Define manual entries for specific otvod positions
   const manualEntries = [
     {
-      otvod: 13,
-      well: "МФ-4",
-      agzu: "АГЗУ-1", // Match this to your category filter
-      nagn: 0,
-      tr_fluid: null, // No second line text
-      isManual: true // Flag to identify manual entries
-    },
-    {
-      otvod: 14,
-      well: "МФ-1",
-      agzu: "АГЗУ-1", // Match this to your category filter
-      nagn: 0,
-      tr_fluid: null, // No second line text
-      isManual: true // Flag to identify manual entries
-    },
-    {
-      otvod: 8,
-      well: "МФ-2",
-      agzu: "АГЗУ-2", // Match this to your category filter
-      nagn: 0,
-      tr_fluid: null, // No second line text
-      isManual: true // Flag to identify manual entries
-    },
-    {
-      otvod: 14,
-      well: "МФ-1",
-      agzu: "АГЗУ-1", // Match this to your category filter
-      nagn: 0,
-      tr_fluid: null, // No second line text
-      isManual: true // Flag to identify manual entries
-    },
-    {
       otvod: 2,
       well: "МФ-4",
       agzu: "МФ №3", // Match this to your category filter
@@ -96,9 +64,9 @@ export default function AGZU({ wells, index }) {
       isManual: true // Flag to identify manual entries
     },
     {
-      otvod: 14,
-      well: "МФ-1",
-      agzu: "АГЗУ-1", // Match this to your category filter
+      otvod: 8,
+      well: "МФ-2",
+      agzu: "АГЗУ-2", // Match this to your category filter
       nagn: 0,
       tr_fluid: null, // No second line text
       isManual: true // Flag to identify manual entries

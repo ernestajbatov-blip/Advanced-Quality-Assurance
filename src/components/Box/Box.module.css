@@ -8,7 +8,8 @@
 .box {
   background-color: #50505a;
   width: 60px;
-  height: 40px;
+  min-height: 40px;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -16,12 +17,14 @@
   color: white;
   border-width: 1px;
   border-style: solid;
+  padding: 2px;
 }
-
 
 .boxText {
   font-size: 10px;
   margin: 2px 0;
+  white-space: pre-line;
+  text-align: center;
 }
 
 .boxNumber {

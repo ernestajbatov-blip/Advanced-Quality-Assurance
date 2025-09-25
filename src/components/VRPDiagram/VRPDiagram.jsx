@@ -9,7 +9,7 @@ import { fetchAGZUWellData, fetchAGZUTags } from "../../axios/wellService";
 
 export default function VRPDiagram({ filteredWells, category }) {
   const [centerData, setCenterData] = useState({
-    pressure: 0,
+    density: 0,
     time: "0:00",
     temperature: 0
   });
@@ -45,7 +45,7 @@ export default function VRPDiagram({ filteredWells, category }) {
         };
         
         const newData = {
-          pressure: (tags[densityTag] || 0).toFixed(1),
+          density: (tags[densityTag] || 0).toFixed(1),
           time: formatTime(tags[timeTag] || 0),
           temperature: Math.floor(tags[temperatureTag] || 0)
         };
@@ -62,7 +62,7 @@ export default function VRPDiagram({ filteredWells, category }) {
         console.error("Error fetching VRP tags:", error);
         // Fallback to default values
         setCenterData({
-          pressure: "0.0",
+          density: "0.0",
           time: "0:00", 
           temperature: 0
         });
@@ -128,7 +128,7 @@ export default function VRPDiagram({ filteredWells, category }) {
         { "Параметр": "Скважина", "Значение": wellData["Скважина"] || wellNumber },
         { "Параметр": "Категория", "Значение": category || "N/A" },
         { "Параметр": "Закачка", "Значение": formatValue(well.tr_fluid, "м³/сут") },
-        { "Параметр": "Давление", "Значение": formatValue(well.pressure || Math.random() * 10, "МПа", 1) },
+        { "Параметр": "Давление", "Значение": formatValue(well.density || Math.random() * 10, "МПа", 1) },
         { "Параметр": "Расход", "Значение": formatValue(well.flow || Math.random() * 50, "м³/сут") }
       ];
 
@@ -233,7 +233,7 @@ export default function VRPDiagram({ filteredWells, category }) {
             lineHeight: '1.2',
             margin: '2px 0'
           }}>
-            {centerData.pressure} МПа
+            {centerData.density} МПа
           </div>
           <div className={styles.circleText} style={{
             fontSize: '17px',

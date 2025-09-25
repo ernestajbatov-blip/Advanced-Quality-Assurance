@@ -320,10 +320,9 @@ export default function Diagram() {
 
   const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
     let transformedData;
-
+    
     if (filterTags && filterTags.length > 0) {
       let filteredData;
-      
       // Check if we're requesting PNK, PP, or MFN data (which are random)
       if (filterTags.some(tag => tag.includes('PNK') || tag.includes('PP063') || tag.includes('MFN'))) {
         filteredData = generateRandomSensorData(filterTags);
@@ -331,12 +330,12 @@ export default function Diagram() {
         // First filter from real data
         filteredData = oilProgressData.filter(item => filterTags.includes(item.tag_key));
       }
-
+      
       // Sort by the order of filterTags array
       const sorted = filterTags.map(tag =>
         filteredData.find(item => item.tag_key === tag)
       ).filter(Boolean);
-
+      
       transformedData = sorted.map(item => {
         let value = item.value || item.tag_value;
         
@@ -346,23 +345,34 @@ export default function Diagram() {
         } else if (value === "False" || value === false) {
           value = "Выключен";
         } else if (typeof value === 'number') {
-          value = `${Math.round(value * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+          value = `${value.toFixed(2)} ${TAG_UNITS[item.tag_key] || ''}`.trim();
         } else {
-          value = `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+          // Try to parse as number for non-boolean string values
+          const numValue = parseFloat(value);
+          if (!isNaN(numValue)) {
+            value = `${numValue.toFixed(2)} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+          } else {
+            value = `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+          }
         }
-
+        
         return {
           "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
           "Показание": value
         };
       });
     } else {
-      transformedData = oilProgressData.map(item => ({
-        "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
-        "Показание": `${Math.round((item.tag_value || item.value) * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim()
-      }));
+      transformedData = oilProgressData.map(item => {
+        const numValue = item.tag_value || item.value;
+        const roundedValue = typeof numValue === 'number' ? numValue.toFixed(2) : parseFloat(numValue).toFixed(2);
+        
+        return {
+          "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+          "Показание": `${roundedValue} ${TAG_UNITS[item.tag_key] || ''}`.trim()
+        };
+      });
     }
-
+    
     setTableData(transformedData);
     setTableTitle(buttonTitle);
     setShowTable(true);
@@ -677,7 +687,7 @@ export default function Diagram() {
       content: (
         <>
           <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
-          <LabelBox label={"Счетчик ОГН"} width={65} height={5} fontSize={10} />
+          <LabelBox label={"Счетчик ГНК"} width={65} height={5} fontSize={10} />
         </>
       ),
     },
