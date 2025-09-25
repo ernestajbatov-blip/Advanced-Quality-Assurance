@@ -1047,6 +1047,39 @@ app.post("/api/notifications/create", (req, res) => {
   });
 });
 
+// ---- Activity Logger ----
+
+app.post('/api/write-log', (req, res) => {
+  try {
+    const logEntry = {
+      ...req.body,
+      ip: req.ip,
+      receivedAt: new Date().toISOString()
+    };
+    
+    // Create logs directory if it doesn't exist
+    const logsDir = path.join(__dirname, 'logs');
+    if (!fs.existsSync(logsDir)) {
+      fs.mkdirSync(logsDir, { recursive: true });
+    }
+    
+    // Create daily log files
+    const today = new Date().toISOString().split('T')[0];
+    const logFile = path.join(logsDir, `activity-${today}.txt`);
+    
+    // Format log entry for readability
+    const logLine = `[${logEntry.receivedAt}] ${logEntry.username} - ${logEntry.action} - ${logEntry.details.url} - Session: ${Math.round((logEntry.details.sessionDuration || 0) / 1000)}s - Active: ${Math.round((logEntry.details.activeTime || 0) / 1000)}s\n`;
+    
+    // Append to file
+    fs.appendFileSync(logFile, logLine);
+    
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('Log writing error:', error);
+    res.status(200).json({ success: false });
+  }
+});
+
 // ---- Static Frontend ----
 
 const distPath = path.join(__dirname, "../../dist");

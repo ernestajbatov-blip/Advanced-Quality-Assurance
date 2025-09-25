@@ -8,16 +8,15 @@ import Login from "./components/Login/Login";
 import AdminUsers from "./components/AdminUsers/AdminUser";
 import { WellsContextProvider } from "./states/WellsContext";
 import { WellsABCContextProvider } from "./states/WellsABCContext";
-import { UserContext, useUser } from "./states/UserContext";
+import { UserContext } from "./states/UserContext";
+import { UniversalActivityTracker } from "./states/UniversalActivityTracker";
 import { useNavigate } from "react-router-dom";
-
 
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is already logged in
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       try {
@@ -59,14 +58,15 @@ function App() {
     );
   }
 
-  // Show login page if user is not authenticated
   if (!user) {
     return <Login onLogin={handleLogin} />;
   }
 
   return (
     <BrowserRouter>
-        <UserContext.Provider value={{ user, onLogout: handleLogout }}>
+      <UserContext.Provider value={{ user, onLogout: handleLogout }}>
+        {/* Just wrap once with UniversalActivityTracker */}
+        <UniversalActivityTracker>
           <Routes>
             <Route
               index
@@ -84,23 +84,23 @@ function App() {
                 </WellsABCContextProvider>
               }
             />
-            <Route 
-              path="scheme" 
-              element={<Diagram />} 
+            <Route
+              path="scheme"
+              element={<Diagram />}
             />
-            <Route 
-              path="oil" 
-              element={<OilLayout />} 
+            <Route
+              path="oil"
+              element={<OilLayout />}
             />
-            {/* Admin-only route */}
             {user.is_admin && (
-              <Route 
-                path="admin/users" 
-                element={<AdminUsersWrapper />} 
+              <Route
+                path="admin/users"
+                element={<AdminUsersWrapper />}
               />
             )}
           </Routes>
-        </UserContext.Provider>
+        </UniversalActivityTracker>
+      </UserContext.Provider>
     </BrowserRouter>
   );
 }

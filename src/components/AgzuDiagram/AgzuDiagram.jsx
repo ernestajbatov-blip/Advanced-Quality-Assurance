@@ -185,9 +185,45 @@ export default function AgzuDiagram({ filteredWells, category }) {
         }
         setCategoryWellTags(newCategoryWellTags);
 
-        // Fetch tags for the center circle
-        const centerResponse = await fetchAGZUTags(dataSourceCategory);
+        // Fetch tags for the center circle - if this is an MF and it's connected to an AGZU, use AGZU data
+        let centerDataSource = category;
+
+        // Check if this is an MF category and find which AGZU it might be connected to
+        const isMF = category.toLowerCase().includes("мф");
+        if (isMF) {
+          // Check all AGZUs to see if any of them have this MF as their active otvod
+          for (let i = 1; i <= 4; i++) {
+            try {
+              const agzuName = `АГЗУ-${i}`;
+              const agzuResponse = await fetchAGZUTags(agzuName);
+              const { tags: agzuTags } = agzuResponse.data;
+
+              const agzuOtvodTag = Object.keys(agzuTags).find((key) =>
+                key.includes("_otvod") && !key.includes("_last_otvod")
+              );
+              const agzuOtvodValue = parseInt(agzuTags[agzuOtvodTag]) || 0;
+
+              // Check if this AGZU's otvod points to an MF that matches our category
+              if (agzuOtvodValue === 8) { // Assuming otvod 8 means MF connection
+                if ((agzuName === "АГЗУ-1" && category === "МФ №1") ||
+                    (agzuName === "АГЗУ-2" && category === "МФ №2")) {
+                  centerDataSource = agzuName;
+                  break;
+                }
+              }
+            } catch (error) {
+              // Continue checking other AGZUs if one fails
+              continue;
+            }
+          }
+        }
+
+        const centerResponse = await fetchAGZUTags(centerDataSource);
         const { tags: centerTags } = centerResponse.data;
+
+        // Fetch tags for the center circle
+        // const centerResponse = await fetchAGZUTags(category);
+        // const { tags: centerTags } = centerResponse.data;
 
         const timeTag = Object.keys(centerTags).find((key) => key.includes("_time"));
         const densityTag = Object.keys(centerTags).find((key) =>
