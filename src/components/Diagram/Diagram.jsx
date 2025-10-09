@@ -687,7 +687,7 @@ export default function Diagram() {
       content: (
         <>
           <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
-          <LabelBox label={"Счетчик ГНК"} width={65} height={5} fontSize={10} />
+          <LabelBox label={"Счетчик ПНК"} width={65} height={5} fontSize={10} />
         </>
       ),
     },
