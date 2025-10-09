@@ -8,7 +8,7 @@ function handleDisconnect() {
     host: "localhost",
     user: "root",
     password: "1234",
-    database: "ada_oil",
+    database: "ada",
     port: 3306,
     charset: "utf8mb4"
   });

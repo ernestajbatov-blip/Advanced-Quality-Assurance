@@ -192,6 +192,34 @@ export default function Diagram() {
     "Pusk_nasos_2_NPS": "",
     "Stop_nasos_1_NPS": "",
     "Stop_nasos_2_NPS": "",
+
+    // Счетчики
+    "PNK1_MGN_RASHOD": "м3",
+    "PNK1_NAKOP_RASHOD": "м3",
+    "PNK1_MGN_DAVLENIE": "атм",
+    "PNK1_TEMPERATURA": "°C",
+    "GS1_MGN_RASHOD": "м3",
+    "GS1_NAKOP_RASHOD": "м3",
+    "GS1_MGN_DAVLENIE": "атм",
+    "GS1_TEMPERATURA": "°C",
+    "GPS_MGN_RASHOD": "м3",
+    "GPS_NAKOP_RASHOD": "м3",
+    "GPS_MGN_DAVLENIE": "атм",
+    "GPS_TEMPERATURA": "°C",
+
+    // BKNS
+    "BKNS_1_TEMP": "°C",
+    "BKNS_1_CURRENT": "А",
+    "BKNS_1_POWER": "кВт",
+    "BKNS_1_FLOW": "м3",
+    "BKNS_2_TEMP": "°C",
+    "BKNS_2_CURRENT": "А",
+    "BKNS_2_POWER": "кВт",
+    "BKNS_2_FLOW": "м3",
+    "BKNS_3_TEMP": "°C",
+    "BKNS_3_CURRENT": "А",
+    "BKNS_3_POWER": "кВт",
+    "BKNS_3_FLOW": "м3",
   };
 
   // New mapping for tag descriptions
@@ -287,6 +315,36 @@ export default function Diagram() {
     "Stop_nasos_1_NPS": "Команда стоп",
     "Stop_nasos_2_NPS": "Команда стоп",
 
+    // Счетчик ПНК
+    "PNK1_MGN_RASHOD": "Мгновенный расход",
+    "PNK1_NAKOP_RASHOD": "Накопленный расход",
+    "PNK1_MGN_DAVLENIE": "Давление",
+    "PNK1_TEMPERATURA": "Температура",
+
+    "GS1_MGN_RASHOD": "Мгновенный расход",
+    "GS1_NAKOP_RASHOD": "Накопленный расход",
+    "GS1_MGN_DAVLENIE": "Давление",
+    "GS1_TEMPERATURA": "Температура",
+
+    "GPS_MGN_RASHOD": "Мгновенный расход",
+    "GPS_NAKOP_RASHOD": "Накопленный расход",
+    "GPS_MGN_DAVLENIE": "Давление",
+    "GPS_TEMPERATURA": "Температура",
+
+    // BKNS
+    "BKNS_1_TEMP": "Температура",
+    "BKNS_1_CURRENT": "Ток",
+    "BKNS_1_POWER": "Мощность",
+    "BKNS_1_FLOW": "Накопленный расход",
+    "BKNS_2_TEMP": "Температура",
+    "BKNS_2_CURRENT": "Ток",
+    "BKNS_2_POWER": "Мощность",
+    "BKNS_2_FLOW": "Накопленный расход",
+    "BKNS_3_TEMP": "Температура",
+    "BKNS_3_CURRENT": "Ток",
+    "BKNS_3_POWER": "Мощность",
+    "BKNS_3_FLOW": "Накопленный расход",
+
     // Uzel ucheta descriptions
     "overpressure": "Избыточное давление",
     "temperature": "Температура",
@@ -324,8 +382,7 @@ export default function Diagram() {
     if (filterTags && filterTags.length > 0) {
       let filteredData;
       // Check if we're requesting PNK, PP, or MFN data (which are random)
-      if (filterTags.some(tag => tag.includes('PNK') || tag.includes('PP063') || tag.includes('MFN'))) {
-        filteredData = generateRandomSensorData(filterTags);
+    if (filterTags.some(tag => tag.includes('PNK') || tag.includes('PP063') || tag.includes('MFN') || tag.includes('GS') || tag.includes('GPS') || tag.includes('BKNS'))) {        filteredData = generateRandomSensorData(filterTags);
       } else {
         // First filter from real data
         filteredData = oilProgressData.filter(item => filterTags.includes(item.tag_key));
@@ -527,7 +584,15 @@ export default function Diagram() {
   const generateRandomSensorData = (tags) => {
     return tags.map(tag => {
       let value;
-      if (tag.includes('TEMP')) { // Temperature sensors for MFN
+      if (tag.includes('BKNS') && tag.includes('TEMP')) { // BKNS Temperature
+        value = (Math.random() * 30 + 50).toFixed(2); // 50-80°C
+      } else if (tag.includes('BKNS') && tag.includes('CURRENT')) { // BKNS Current
+        value = (Math.random() * 30 + 15).toFixed(2); // 15-45 A
+      } else if (tag.includes('BKNS') && tag.includes('POWER')) { // BKNS Power
+        value = (Math.random() * 40 + 30).toFixed(2); // 30-70 kW
+      } else if (tag.includes('BKNS') && tag.includes('FLOW')) { // BKNS Accumulated Flow
+        value = (Math.random() * 5000 + 10000).toFixed(2); // 10000-15000 m³
+      } else if (tag.includes('MFN') && tag.includes('TEMP')) { // Temperature sensors for MFN
         value = (Math.random() * 60 + 40).toFixed(2); // 40-100°C
       } else if (tag.includes('P_IN')) { // Input pressure for MFN
         value = (Math.random() * 3 + 2).toFixed(2); // 2-5 atm
@@ -580,32 +645,6 @@ export default function Diagram() {
 
   const handleCloseVlagomerChart = () => {
     setShowVlagomerChart(false);
-  };
-
-  // Generate random data for БКНС
-  const generateBKNSData = () => {
-    return [
-      {
-        "Параметр": "Частота",
-        "Значение": `${(Math.random() * 10 + 45).toFixed(2)} Гц`
-      },
-      {
-        "Параметр": "Ток", 
-        "Значение": `${(Math.random() * 20 + 10).toFixed(2)} А`
-      },
-      {
-        "Параметр": "Мощность",
-        "Значение": `${(Math.random() * 50 + 25).toFixed(2)} кВт`
-      }
-    ];
-  };
-
-  // Handle БКНС click
-  const handleBKNSClick = () => {
-    const bknsData = generateBKNSData();
-    setTableData(bknsData);
-    setTableTitle("БКНС");
-    setShowTable(true);
   };
 
   const realUzelUchetaData = getRealUzelUchetaData();
@@ -661,36 +700,36 @@ export default function Diagram() {
     //     </>
     //   ),
     // },
-    {
-      top: "20%",
-      left: "33%",
-      content: (
-        <>
-          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
-          <LabelBox label={"Счетчик ГС"} width={65} height={5} fontSize={10} />
-        </>
-      ),
-    },
-    {
-      top: "65%",
-      left: "25.25%",
-      content: (
-        <>
-          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
-          <LabelBox label={"Счетчик ГПС"} width={65} height={5} fontSize={10} />
-        </>
-      ),
-    },
-    {
-      top: "11.5%",
-      left: "33%",
-      content: (
-        <>
-          <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
-          <LabelBox label={"Счетчик ПНК"} width={65} height={5} fontSize={10} />
-        </>
-      ),
-    },
+    // {
+    //   top: "20%",
+    //   left: "33%",
+    //   content: (
+    //     <>
+    //       <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
+    //       <LabelBox label={"Счетчик ГС"} width={65} height={5} fontSize={10} />
+    //     </>
+    //   ),
+    // },
+    // {
+    //   top: "65%",
+    //   left: "25.25%",
+    //   content: (
+    //     <>
+    //       <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"} />
+    //       <LabelBox label={"Счетчик ГПС"} width={65} height={5} fontSize={10} />
+    //     </>
+    //   ),
+    // },
+    // {
+    //   top: "11.5%",
+    //   left: "33%",
+    //   content: (
+    //     <>
+    //       <Indicator indicatorNumber={0.0} indicatorUnits={"м3/ч"}/>
+    //       <LabelBox label={"Счетчик ПНК"} width={65} height={5} fontSize={10} />
+    //     </>
+    //   ),
+    // },
     { top: "45%", left: "22.5%", content: "ГПС-1" },
     { top: "53%", left: "22.5%", content: "ГПС-2" },
     { top: "60.5%", left: "22.5%", content: "ГПС-3" },
@@ -768,6 +807,78 @@ export default function Diagram() {
             </div>
           </div>                    
         </>
+      ),
+    },
+    // Счетчик ПНК clickable area
+    {
+      top: "12.6%",
+      left: "41.65%", 
+      content: (
+        <div 
+          onClick={() => handleTableClick(
+            ["PNK1_MGN_RASHOD", "PNK1_NAKOP_RASHOD", "PNK1_MGN_DAVLENIE", "PNK1_TEMPERATURA"], 
+            "Счетчик ПНК"
+          )}
+          title="Счетчик ПНК"
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "30px",
+            height: "30px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(255, 255, 0, 0.1)", 
+            // border: "1px solid rgba(255, 255, 0, 0.3)"
+          }}
+        />
+      ),
+    },
+    // Счетчик ГС clickable area
+    {
+      top: "26.5%",
+      left: "28%",
+      content: (
+        <div
+          onClick={() => handleTableClick(
+            ["GS1_MGN_RASHOD", "GS1_NAKOP_RASHOD", "GS1_MGN_DAVLENIE", "GS1_TEMPERATURA"], 
+            "Счетчик ГС"
+          )}
+          title="Счетчик ГС"
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "30px",
+            height: "30px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(212, 0, 255, 0.1)",
+            // border: "1px solid rgba(0, 255, 255, 0.3)"
+          }}
+        />
+      ),
+    },
+    // Счетчик ГПС clickable area
+    {
+      top: "53%",
+      left: "26.75%",
+      content: (
+        <div
+          onClick={() => handleTableClick(
+            ["GPS_MGN_RASHOD", "GPS_NAKOP_RASHOD", "GPS_MGN_DAVLENIE", "GPS_TEMPERATURA"], 
+            "Счетчик ГПС"
+          )}
+          title="Счетчик ГПС"
+          style={{
+            position: "absolute",
+            top: "0%",
+            left: "0%",
+            width: "30px",
+            height: "30px",
+            cursor: "pointer",
+            // backgroundColor: "rgba(255, 0, 21, 0.1)",
+            // border: "1px solid rgba(0, 255, 255, 0.3)"
+          }}
+        />
       ),
     },
     // ПНК-1 clickable area
@@ -891,49 +1002,97 @@ export default function Diagram() {
       top: "85%",
       left: "79.4%",
       content: (
-        <>
-          <Pumps numberOfSquares={2} activeIndex={0} width={80} height={52} />
-          <LabelBox
-            label={"Насосная пожаротушения"}
-            width={140}
-            height={10}
-            fontSize={10}
-          />
-        </>
+      <>
+        <Pumps numberOfSquares={2} activeIndex={0} width={80} height={52} />
+        <LabelBox
+        label={"Насосная пожаротушения"}
+        width={140}
+        height={10}
+        fontSize={10}
+        />
+      </>
       ),
     },
     {
       top: "34.5%",
       left: "91.2%",
       content: (
-        <>
-          <div 
-            onClick={handleBKNSClick}
-            style={{
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center"
-            }}
-          >
-            <Pumps numberOfSquares={3} activeIndex={2} width={55} height={52} />
-            <LabelBox
-              label={"БКНС"}
-              width={150}
-              height={10}
-              fontSize={10}
-            />
-          </div>
-        </>
+      <>
+        <div 
+        style={{
+          cursor: "pointer",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          position: "relative"
+        }}
+        >
+        <Pumps numberOfSquares={3} activeIndex={2} width={55} height={52} />
+        <LabelBox
+          label={"БКНС"}
+          width={150}
+          height={10}
+          fontSize={10}
+        />
+        {/* БКНС Pump 1 clickable area */}
+        <div 
+          onClick={() => handleTableClick(
+          ["BKNS_1_TEMP", "BKNS_1_CURRENT", "BKNS_1_POWER", "BKNS_1_FLOW"], 
+          "ГНУ-1"
+          )}
+          style={{
+          position: "absolute",
+          top: "0%",
+          left: "0%",
+          width: "55px",
+          height: "52px",
+          cursor: "pointer",
+          // backgroundColor: "red"
+          }}
+        />
+        {/* БКНС Pump 2 clickable area */}
+        <div 
+          onClick={() => handleTableClick(
+          ["BKNS_2_TEMP", "BKNS_2_CURRENT", "BKNS_2_POWER", "BKNS_2_FLOW"],
+          "ГНУ-2"
+          )}
+          style={{
+          position: "absolute",
+          top: "0%",
+          left: "33%",
+          width: "55px",
+          height: "52px",
+          cursor: "pointer",
+          // backgroundColor: "green"
+          }}
+        />
+        {/* БКНС Pump 3 clickable area */}
+        <div 
+          onClick={() => handleTableClick(
+          ["BKNS_3_TEMP", "BKNS_3_CURRENT", "BKNS_3_POWER", "BKNS_3_FLOW"],
+          "ГНУ-3"
+          )}
+          style={{
+          position: "absolute",
+          top: "0%",
+          left: "67%",
+          width: "55px", 
+          height: "52px",
+          cursor: "pointer",
+          // backgroundColor: "blue"
+          }}
+        />
+        </div>
+      </>
       ),
     },
     {
       top: "27.2%",
       left: "32%",
       content: (
-        <>
-          <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            {(() => {
+      <>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        {(() => {
               const pump1Status = oilProgressData.find(d => d.tag_key === "Rabota_nasos__1-NPS");
               const pump2Status = oilProgressData.find(d => d.tag_key === "Rabota_nasos_2_NPS");
               
