@@ -460,7 +460,7 @@ export default function AgzuDiagram({ filteredWells, category }) {
               margin: "2px 0",
             }}
           >
-            {centerData.density} МПа
+            {centerData.density} кг/м³
           </div>
           <div
             className={styles.circleText}
