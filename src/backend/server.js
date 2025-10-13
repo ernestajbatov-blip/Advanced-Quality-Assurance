@@ -731,7 +731,7 @@ app.get("/api/agzu/tags/:category", (req, res) => {
   const params = [
     `${tagPrefix}_time%`,
     `${tagPrefix}_otvod%`, 
-    `${tagPrefix}_density%`,
+    `${tagPrefix}_collector_pressure%`,
     `${tagPrefix}_temperature%`,
     `${tagPrefix}_current_skv%`
   ];

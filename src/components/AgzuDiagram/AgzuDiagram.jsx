@@ -227,7 +227,7 @@ export default function AgzuDiagram({ filteredWells, category }) {
 
         const timeTag = Object.keys(centerTags).find((key) => key.includes("_time"));
         const densityTag = Object.keys(centerTags).find((key) =>
-          key.includes("_density")
+          key.includes("_collector_pressure")
         );
         const temperatureTag = Object.keys(centerTags).find((key) =>
           key.includes("_temperature")
@@ -241,7 +241,7 @@ export default function AgzuDiagram({ filteredWells, category }) {
         };
 
         setCenterData({
-          density: (centerTags[densityTag] || 0).toFixed(1),
+          density: (centerTags[densityTag] || 0).toFixed(2),
           time: formatTime(centerTags[timeTag] || 0),
           temperature: Math.floor(centerTags[temperatureTag] || 0),
         });
@@ -460,7 +460,8 @@ export default function AgzuDiagram({ filteredWells, category }) {
               margin: "2px 0",
             }}
           >
-            {centerData.density} кг/м³
+            {centerData.density} МПа
+            {/* {centerData.density} кг/м³ */}
           </div>
           <div
             className={styles.circleText}
