@@ -310,9 +310,32 @@ app.get("/api/oil-loss/wells", (req, res) => {
   });
 });
 
+app.get("/api/vlagomer-history/dates", (req, res) => {
+  const connection = getConnection();
+  const query = `
+    SELECT DISTINCT DATE(vlog_arch) as date 
+    FROM vlagomer 
+    WHERE oil_field = 'BSK' AND tag_key = 'VlagomerTFS_1'
+    ORDER BY date DESC
+    LIMIT 100;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
 app.get("/api/vlagomer-history/:date?", (req, res) => {
   const connection = getConnection();
   const date = req.params.date;
+
+  if (date === 'dates') {
+    return res.status(404).json({ error: "Invalid date parameter" });
+  }
   
   let query = `
     SELECT tag_key, tag_value, vlog_arch as timestamp
@@ -323,6 +346,12 @@ app.get("/api/vlagomer-history/:date?", (req, res) => {
   const params = [];
   
   if (date) {
+    // ADD DATE VALIDATION
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD format
+    if (!dateRegex.test(date)) {
+      return res.status(400).json({ error: "Invalid date format. Use YYYY-MM-DD" });
+    }
+    
     query += ` AND DATE(vlog_arch) = ?`;
     params.push(date);
   }
@@ -344,25 +373,6 @@ app.get("/api/vlagomer-history/:date?", (req, res) => {
     }));
     
     res.json(transformedResults || []);
-  });
-});
-
-app.get("/api/vlagomer-history/dates", (req, res) => {
-  const connection = getConnection();
-  const query = `
-    SELECT DISTINCT DATE(vlog_arch) as date 
-    FROM vlagomer 
-    WHERE oil_field = 'BSK' AND tag_key = 'VlagomerTFS_1'
-    ORDER BY date DESC
-    LIMIT 100;
-  `;
-  
-  connection.query(query, (error, results) => {
-    if (error) {
-      console.error("Database error:", error);
-      return res.status(500).json({ error: "Database query failed" });
-    }
-    res.json(results || []);
   });
 });
 

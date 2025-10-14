@@ -11,15 +11,18 @@
   z-index: 2000;
 }
 
+/* Modal.module.css */
 .modalContent {
   background-color: #242424;
-  padding: 0;
+  padding: 20px; /* Add padding all around */
   border-radius: 10px;
   max-width: 95vw;
   max-height: 90vh;
-  overflow: hidden;
+  overflow: hidden; /* This might clip content if padding is too small */
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
   position: relative;
+  /* Ensure padding accounts for the close button */
+  /* The button is positioned relative to this element */
 }
 
 .closeButton {
@@ -27,11 +30,11 @@
   border: none;
   font-size: 1.5rem;
   position: absolute;
-  top: 10px;
-  right: 15px;
+  top: 10px; /* Distance from the top of .modalContent */
+  right: 10px; /* Distance from the right of .modalContent */
   cursor: pointer;
   color: #fff;
-  z-index: 10;
+  /* z-index: 10; */ /* You can remove this, or keep it if needed for other layers */
   width: 30px;
   height: 30px;
   display: flex;
@@ -39,6 +42,7 @@
   justify-content: center;
   border-radius: 50%;
   transition: background-color 0.2s;
+  /* Ensure the padding on .modalContent is sufficient */
 }
 
 .closeButton:hover {

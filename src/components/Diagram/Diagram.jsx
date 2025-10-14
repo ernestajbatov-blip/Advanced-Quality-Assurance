@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import axios from "axios";
 import SchemeMain from "../../data/Diagrams/SchemeMain.svg";
 import styles from "./Diagram.module.css";
@@ -60,7 +60,7 @@ export default function Diagram() {
     ? "http://192.168.1.42:3000/api" 
     : "http://localhost:3000/api";
 
-  useEffect(() => {
+  const fetchOilProgressData = useCallback(() => {
     axios.get(`${apiBaseURL}/progress-oil`)
       .then(res => {
         setOilProgressData(res.data);
@@ -68,7 +68,22 @@ export default function Diagram() {
       .catch(err => {
         console.error("Failed to fetch oil progress data", err);
       });
-  }, []);
+  }, [apiBaseURL]);
+
+  useEffect(() => {
+    // Fetch immediately on mount
+    fetchOilProgressData();
+
+    // Set up polling interval (e.g., every 5 seconds)
+    const intervalId = setInterval(() => {
+      fetchOilProgressData();
+    }, 5000); // 5000ms = 5 seconds
+
+    // Cleanup: clear interval when component unmounts
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [fetchOilProgressData]);
 
   useEffect(() => {
     loadAvailableVlagomerDates();

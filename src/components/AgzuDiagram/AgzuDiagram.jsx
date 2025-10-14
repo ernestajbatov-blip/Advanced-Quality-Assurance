@@ -359,7 +359,7 @@ export default function AgzuDiagram({ filteredWells, category }) {
 
   return (
     <div className={styles.container}>
-      <svg className="svgImage" viewBox="60 -30 1700 900" xmlns="http://www.w3.org/2000/svg">
+      <svg className="svgImage" viewBox="65 -40 1700 900" xmlns="http://www.w3.org/2000/svg">
         {pipes.map((pipe, index) => (
           <line
             key={`v${index}`}
@@ -489,7 +489,7 @@ export default function AgzuDiagram({ filteredWells, category }) {
           </div>
         </div>
 
-        <div className={styles.line} style={{ top: "62%", left: "86.3%" }}></div>
+        <div className={styles.line} style={{ top: "62%", left: "85.7%" }}></div>
       </div>
 
       <div
