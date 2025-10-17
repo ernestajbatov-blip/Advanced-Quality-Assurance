@@ -18,61 +18,37 @@ export default function OilLayout() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  // Date range states for two intervals
   const [initialRange, setInitialRange] = useState([{
-    startDate: new Date(2025, 5, 1), // June 1, 2025
-    endDate: new Date(2025, 5, 15),  // June 15, 2025
+    startDate: new Date('2025-06-01'),
+    endDate: new Date('2025-06-14'),
     key: 'initialSelection'
   }]);
   
   const [finalRange, setFinalRange] = useState([{
-    startDate: new Date(2025, 6, 1), // July 1, 2025
-    endDate: new Date(2025, 6, 31),  // July 31, 2025
+    startDate: new Date('2025-07-01'),
+    endDate: new Date('2025-07-14'),
     key: 'finalSelection'
   }]);
   
   const [showInitialPicker, setShowInitialPicker] = useState(false);
   const [showFinalPicker, setShowFinalPicker] = useState(false);
   
-  // Map status filter
   const [statusFilter, setStatusFilter] = useState("All");
   
   const dropdownRef = useRef(null);
   const initialPickerRef = useRef(null);
   const finalPickerRef = useRef(null);
 
-  // Helper function to safely parse JSON response
-  const safeJsonParse = async (response) => {
-    const text = await response.text();
-    if (!text || text.trim() === '') {
-      throw new Error('Empty response from server');
-    }
-    try {
-      return JSON.parse(text);
-    } catch (error) {
-      console.error('Invalid JSON response:', text);
-      throw new Error(`Invalid JSON response: ${error.message}`);
-    }
-  };
-
-  // Helper function to format date for API
   const formatDateForAPI = (date) => {
     return date.toISOString().split('T')[0];
   };
 
-  // Get dates that have data for highlighting
-  const datesWithData = useMemo(() => {
-    if (!oilLossData || oilLossData.length === 0) return [];
-    return [...new Set(oilLossData.map(item => item.date))];
-  }, [oilLossData]);
-
-  // Check if a date has data
   const isDateWithData = (date) => {
+    if (!oilLossData || oilLossData.length === 0) return false;
     const dateStr = formatDateForAPI(date);
-    return datesWithData.includes(dateStr);
+    return oilLossData.some(item => item.date === dateStr);
   };
 
-  // Custom day content renderer for highlighting dates with data
   const dayContentRenderer = (date) => {
     const hasData = isDateWithData(date);
     return (
@@ -94,82 +70,6 @@ export default function OilLayout() {
     );
   };
 
-  // Helper function to find average data within a date range
-  const getAverageDataForRange = (dataArray, startDate, endDate, wellFilter = null) => {
-    if (!dataArray || dataArray.length === 0) return null;
-    
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    
-    // Filter data by date range and well if specified
-    const filteredData = dataArray.filter(item => {
-      const itemDate = new Date(item.date);
-      const inDateRange = itemDate >= start && itemDate <= end;
-      const matchesWell = wellFilter ? item.well === wellFilter : true;
-      return inDateRange && matchesWell;
-    });
-    
-    if (filteredData.length === 0) return null;
-    
-    if (wellFilter) {
-      // For individual well, calculate averages
-      const totals = filteredData.reduce((acc, item) => ({
-        oil: acc.oil + (parseFloat(item.tm_oil) || 0),
-        fluid: acc.fluid + (parseFloat(item.tm_fluid) || 0),
-        workTime: acc.workTime + (parseFloat(item.well_work_time) || 0),
-        waterCut: acc.waterCut + (parseFloat(item.water_lab) || 0)
-      }), { oil: 0, fluid: 0, workTime: 0, waterCut: 0 });
-      
-      const count = filteredData.length;
-      return {
-        oil: totals.oil / count,
-        fluid: totals.fluid / count,
-        workTime: totals.workTime / count,
-        waterCut: totals.waterCut / count
-      };
-    } else {
-      // For all wells, group by date first, then aggregate
-      const groupedByDate = filteredData.reduce((acc, item) => {
-        const date = item.date;
-        if (!acc[date]) {
-          acc[date] = {
-            oil: 0, fluid: 0, workTime: 0, waterCut: 0, count: 0
-          };
-        }
-        acc[date].oil += parseFloat(item.tm_oil) || 0;
-        acc[date].fluid += parseFloat(item.tm_fluid) || 0;
-        acc[date].workTime += parseFloat(item.well_work_time) || 0;
-        acc[date].waterCut += parseFloat(item.water_lab) || 0;
-        acc[date].count++;
-        return acc;
-      }, {});
-      
-      // Calculate daily averages, then overall average
-      const dailyAverages = Object.values(groupedByDate).map(day => ({
-        oil: day.oil,
-        fluid: day.fluid,
-        workTime: day.workTime,
-        waterCut: day.waterCut / day.count // Water cut is averaged per day
-      }));
-      
-      const totals = dailyAverages.reduce((acc, day) => ({
-        oil: acc.oil + day.oil,
-        fluid: acc.fluid + day.fluid,
-        workTime: acc.workTime + day.workTime,
-        waterCut: acc.waterCut + day.waterCut
-      }), { oil: 0, fluid: 0, workTime: 0, waterCut: 0 });
-      
-      const days = dailyAverages.length;
-      return {
-        oil: totals.oil / days,
-        fluid: totals.fluid / days,
-        workTime: totals.workTime / days,
-        waterCut: totals.waterCut / days
-      };
-    }
-  };
-
-  // Fetch available wells from oil_loss table
   useEffect(() => {
     const fetchWells = async () => {
       try {
@@ -183,7 +83,7 @@ export default function OilLayout() {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        const data = await safeJsonParse(response);
+        const data = await response.json();
         console.log('Wells data:', data);
         
         if (Array.isArray(data)) {
@@ -201,14 +101,12 @@ export default function OilLayout() {
     fetchWells();
   }, []);
 
-  // Fetch oil loss data when date ranges change
   useEffect(() => {
     const fetchOilLossData = async () => {
       setLoading(true);
       setError(null);
       
       try {
-        // Get the full date range that encompasses both intervals
         const allDates = [
           initialRange[0].startDate,
           initialRange[0].endDate,
@@ -218,12 +116,6 @@ export default function OilLayout() {
         
         const minDate = new Date(Math.min(...allDates));
         const maxDate = new Date(Math.max(...allDates));
-        
-        console.log('Fetching oil loss data with params:', { 
-          selectedWell, 
-          startDate: formatDateForAPI(minDate), 
-          endDate: formatDateForAPI(maxDate) 
-        });
         
         const params = new URLSearchParams({
           startDate: formatDateForAPI(minDate),
@@ -235,19 +127,27 @@ export default function OilLayout() {
         }
         
         const url = `/api/oil-loss?${params}`;
-        console.log('Request URL:', url);
-        
         const response = await fetch(url);
-        console.log('Oil loss response status:', response.status);
         
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        const data = await safeJsonParse(response);
-        console.log('Oil loss data:', data);
+        const data = await response.json();
         
         if (Array.isArray(data)) {
+          console.log('📊 Raw API Response for', selectedWell, ':', data.length, 'records');
+          
+          // Check for July 14
+          const july14Records = data.filter(item => {
+            const dateStr = item.date instanceof Date ? 
+              item.date.toISOString().split('T')[0] : 
+              item.date.split('T')[0];
+            return dateStr === '2025-07-14' && item.well === selectedWell;
+          });
+          
+          console.log('July 14 records in API response:', july14Records);
+          
           setOilLossData(data);
         } else {
           console.error('Oil loss data is not an array:', data);
@@ -265,138 +165,337 @@ export default function OilLayout() {
     fetchOilLossData();
   }, [selectedWell, initialRange, finalRange]);
 
-  // Calculate production changes for chart (comparing two intervals)
-  const calculateIntervalComparison = (initialData, finalData) => {
-    if (!initialData || !finalData) return null;
-    
-    // Oil production values (in tonnes)
-    const initialOil = initialData.oil;
-    const finalOil = finalData.oil;
-    const totalOilChange = finalOil - initialOil;
-    
-    // Calculate the impact of each factor on oil production
-    // These should represent how much oil production changed due to each factor
-    
-    // 1. Work Time Impact
-    // If work time increased/decreased, how much did that contribute to oil change?
-    const workTimeChange = finalData.workTime - initialData.workTime;
-    const workTimeImpactOnOil = workTimeChange * (initialData.oil / initialData.workTime); // Proportional impact
-    
-    // 2. Water Cut Impact
-    // Higher water cut typically means less oil (negative impact)
-    const waterCutChange = finalData.waterCut - initialData.waterCut;
-    const waterCutImpactOnOil = -waterCutChange * (initialData.fluid * 0.01); // Convert % to impact
-    
-    // 3. Fluid Rate Impact
-    // Higher fluid rate with same water cut should mean more oil (positive impact)
-    const fluidChange = finalData.fluid - initialData.fluid;
-    const currentOilFraction = 1 - (initialData.waterCut / 100); // Oil fraction of fluid
-    const fluidImpactOnOil = fluidChange * currentOilFraction;
-    
-    return {
-      initial: initialOil,
-      final: finalOil,
-      workTimeOilImpact: workTimeImpactOnOil,
-      waterCutOilImpact: waterCutImpactOnOil,
-      fluidOilImpact: fluidImpactOnOil,
-      totalChange: totalOilChange
-    };
+  // Helper to extract date string from ISO format or Date object
+  const getDateOnly = (dateString) => {
+    // If it's already a Date object, convert to ISO string first
+    if (dateString instanceof Date) {
+      return dateString.toISOString().split('T')[0];
+    }
+    // If it's a string in ISO format
+    return dateString.split('T')[0];
   };
+
+  const prepareAnalysisInput = (wellFilter) => {
+    if (!oilLossData || oilLossData.length === 0) return null;
+
+    const aggregateForRange = (startDate, endDate, wellName) => {
+      const startStr = formatDateForAPI(startDate);
+      const endStr = formatDateForAPI(endDate);
+      
+      console.log(`Filtering for ${wellName}: ${startStr} to ${endStr}`);
+      console.log(`Total oilLossData records: ${oilLossData.length}`);
+      
+      const filtered = oilLossData.filter(item => {
+        const itemDateStr = getDateOnly(item.date);
+        const inRange = itemDateStr >= startStr && itemDateStr <= endStr;
+        const matchesWell = wellName ? item.well === wellName : true;
+        
+        if (inRange && matchesWell) {
+          console.log(`  ✓ Included: ${itemDateStr} (well: ${item.well})`);
+        }
+        
+        return inRange && matchesWell;
+      });
+
+      if (filtered.length === 0) {
+        console.log(`No records found for well ${wellName} in range ${startStr} to ${endStr}`);
+        return null;
+      }
+
+      console.log(`\n=== WELL ${wellName} (${startStr} to ${endStr}) ===`);
+      console.log(`Found ${filtered.length} records`);
+      
+      const totals = filtered.reduce((acc, item) => ({
+        oil: acc.oil + (parseFloat(item.tm_oil) || 0),
+        fluid: acc.fluid + (parseFloat(item.tm_fluid) || 0),
+        workTime: acc.workTime + (parseFloat(item.well_work_time) || 0)
+      }), { oil: 0, fluid: 0, workTime: 0 });
+
+      console.log(`Totals: oil=${totals.oil.toFixed(2)}, fluid=${totals.fluid.toFixed(2)}, workTime=${totals.workTime.toFixed(2)}h`);
+      console.log(`Days: ${(totals.workTime / 24).toFixed(2)}`);
+
+      return {
+        oil: totals.oil,
+        fluid: totals.fluid,
+        workDays: totals.workTime / 24
+      };
+    };
+
+    const wells = wellFilter ? [wellFilter] : [...new Set(oilLossData.map(item => item.well))];
+    const records = [];
+
+    wells.forEach(well => {
+      // Use the actual selected ranges, not the API range
+      const initial = aggregateForRange(initialRange[0].startDate, initialRange[0].endDate, well);
+      const final = aggregateForRange(finalRange[0].startDate, finalRange[0].endDate, well);
+
+      if (initial && final) {
+        records.push({
+          clm_1: well,
+          clm_2: initial.oil,
+          clm_3: final.oil,
+          clm_4: initial.fluid,
+          clm_5: final.fluid,
+          clm_6: initial.workDays,
+          clm_7: final.workDays
+        });
+      }
+    });
+
+    return records.length > 0 ? { records, cfg: {} } : null;
+  };
+
+  const [analysisData, setAnalysisData] = useState(null);
+  const [analysisLoading, setAnalysisLoading] = useState(false);
   
-  // Process data for chart
+  useEffect(() => {
+    const fetchAnalysis = async () => {
+      if (!oilLossData || oilLossData.length === 0) {
+        setAnalysisData(null);
+        return;
+      }
+
+      setAnalysisLoading(true);
+      setError(null);
+
+      try {
+        const wellFilter = selectedWell === "all" ? null : selectedWell;
+        
+        // Logging happens HERE, not inside prepareAnalysisInput
+        console.log('\n========== ANALYSIS INPUT PREPARATION ==========');
+        console.log('Selected well:', selectedWell);
+        console.log('Initial range:', formatDateForAPI(initialRange[0].startDate), 'to', formatDateForAPI(initialRange[0].endDate));
+        console.log('Final range:', formatDateForAPI(finalRange[0].startDate), 'to', formatDateForAPI(finalRange[0].endDate));
+
+        const inputData = prepareAnalysisInput(wellFilter);
+        
+        console.log('Final input data:', JSON.stringify(inputData, null, 2));
+        console.log('============================================\n');
+
+        if (!inputData) {
+          setAnalysisData(null);
+          setAnalysisLoading(false);
+          return;
+        }
+
+        console.log('Sending analysis request:', inputData);
+
+        const response = await fetch('/api/oil-loss/analysis', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(inputData)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `Analysis failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Analysis response:', data);
+
+        if (data.result && data.result.resOilProd) {
+          setAnalysisData(data.result);
+        } else if (data.resOilProd) {
+          setAnalysisData(data);
+        } else {
+          setAnalysisData(null);
+        }
+      } catch (error) {
+        console.error('Error fetching analysis:', error);
+        setError(`Analysis error: ${error.message}`);
+        setAnalysisData(null);
+      } finally {
+        setAnalysisLoading(false);
+      }
+    };
+
+    const timeoutId = setTimeout(fetchAnalysis, 500);
+    return () => clearTimeout(timeoutId);
+  }, [oilLossData, selectedWell, initialRange, finalRange]);
+
   const processedData = useMemo(() => {
-    if (!oilLossData || oilLossData.length === 0) {
+    if (!analysisData || !analysisData.resOilProd) {
       return { chartData: [] };
     }
 
-    const wellFilter = selectedWell === "all" ? null : selectedWell;
-    
-    // Get average data for both intervals
-    const initialData = getAverageDataForRange(
-      oilLossData, 
-      initialRange[0].startDate, 
-      initialRange[0].endDate,
-      wellFilter
-    );
-    
-    const finalData = getAverageDataForRange(
-      oilLossData, 
-      finalRange[0].startDate, 
-      finalRange[0].endDate,
-      wellFilter
-    );
-    
-    if (initialData && finalData) {
-      const changes = calculateIntervalComparison(initialData, finalData);
-      
-      if (changes) {
-        return {
-          chartData: [
-            { name: "Начальная добыча", value: changes.initial, type: "initial" },
-            { name: "Влияние времени работы", value: changes.workTimeOilImpact, type: "workTime" },
-            { name: "Влияние обводненности", value: changes.waterCutOilImpact, type: "waterCut" },
-            { name: "Влияние дебита жидкости", value: changes.fluidOilImpact, type: "fluid" },
-            { name: "Конечная добыча", value: changes.final, type: "final" }
-          ]
-        };
-      }
-    }
-    
-    return { chartData: [] };
-  }, [oilLossData, selectedWell, initialRange, finalRange]);
+    if (selectedWell !== "all") {
+      const wellAnalysis = analysisData.resOilProd.find(
+        item => String(item.wi) === String(selectedWell)
+      );
 
-  // Process data specifically for individual wells in the map
+      if (!wellAnalysis) return { chartData: [] };
+
+      const wellDetailData = analysisData.data?.find(
+        item => String(item.Well) === String(selectedWell)
+      );
+
+      if (!wellDetailData) return { chartData: [] };
+
+      const initialOil = wellDetailData.OilProd0;
+      const finalOil = wellDetailData.OilProd1;
+      
+      const waterfallData = [];
+      let runningTotal = initialOil;
+      
+      waterfallData.push({
+        name: "Начальная добыча",
+        value: initialOil,
+        cumulative: initialOil,
+        base: 0,
+        type: "initial",
+        displayValue: initialOil,
+        isTotal: true
+      });
+
+      const workTimeContribution = wellAnalysis.by_t;
+      waterfallData.push({
+        name: "Время работы",
+        fullName: "Влияние времени работы",
+        value: Math.abs(workTimeContribution),
+        cumulative: runningTotal + workTimeContribution,
+        base: workTimeContribution >= 0 ? runningTotal : runningTotal + workTimeContribution,
+        type: "change",
+        displayValue: workTimeContribution,
+        isTotal: false
+      });
+      runningTotal += workTimeContribution;
+
+      const waterCutContribution = wellAnalysis["by_N%"];
+      waterfallData.push({
+        name: "Обводненность",
+        fullName: "Влияние обводненности",
+        value: Math.abs(waterCutContribution),
+        cumulative: runningTotal + waterCutContribution,
+        base: waterCutContribution >= 0 ? runningTotal : runningTotal + waterCutContribution,
+        type: "change",
+        displayValue: waterCutContribution,
+        isTotal: false
+      });
+      runningTotal += waterCutContribution;
+
+      const fluidContribution = wellAnalysis.by_LiqRate;
+      waterfallData.push({
+        name: "Дебит жидкости",
+        fullName: "Влияние дебита жидкости",
+        value: Math.abs(fluidContribution),
+        cumulative: runningTotal + fluidContribution,
+        base: fluidContribution >= 0 ? runningTotal : runningTotal + fluidContribution,
+        type: "change",
+        displayValue: fluidContribution,
+        isTotal: false
+      });
+      runningTotal += fluidContribution;
+
+      waterfallData.push({
+        name: "Конечная добыча",
+        value: finalOil,
+        cumulative: finalOil,
+        base: 0,
+        type: "final",
+        displayValue: finalOil,
+        isTotal: true
+      });
+
+      return { chartData: waterfallData };
+    }
+
+    const totalImpacts = analysisData.resOilProd.reduce((acc, item) => ({
+      by_t: acc.by_t + item.by_t,
+      by_N: acc.by_N + item["by_N%"],
+      by_LiqRate: acc.by_LiqRate + item.by_LiqRate,
+      deltaOilProd: acc.deltaOilProd + item.deltaOilProd
+    }), { by_t: 0, by_N: 0, by_LiqRate: 0, deltaOilProd: 0 });
+
+    const totalInitial = analysisData.data.reduce((sum, item) => sum + item.OilProd0, 0);
+    const totalFinal = analysisData.data.reduce((sum, item) => sum + item.OilProd1, 0);
+
+    const waterfallData = [];
+    let runningTotal = totalInitial;
+    
+    waterfallData.push({
+      name: "Начальная добыча",
+      value: totalInitial,
+      cumulative: totalInitial,
+      base: 0,
+      type: "initial",
+      displayValue: totalInitial,
+      isTotal: true
+    });
+
+    const workTimeContribution = totalImpacts.by_t;
+    waterfallData.push({
+      name: "Время работы",
+      fullName: "Влияние времени работы",
+      value: Math.abs(workTimeContribution),
+      cumulative: runningTotal + workTimeContribution,
+      base: workTimeContribution >= 0 ? runningTotal : runningTotal + workTimeContribution,
+      type: "change",
+      displayValue: workTimeContribution,
+      isTotal: false
+    });
+    runningTotal += workTimeContribution;
+
+    const waterCutContribution = totalImpacts.by_N;
+    waterfallData.push({
+      name: "Обводненность",
+      fullName: "Влияние обводненности",
+      value: Math.abs(waterCutContribution),
+      cumulative: runningTotal + waterCutContribution,
+      base: waterCutContribution >= 0 ? runningTotal : runningTotal + waterCutContribution,
+      type: "change",
+      displayValue: waterCutContribution,
+      isTotal: false
+    });
+    runningTotal += waterCutContribution;
+
+    const fluidContribution = totalImpacts.by_LiqRate;
+    waterfallData.push({
+      name: "Дебит жидкости",
+      fullName: "Влияние дебита жидкости",
+      value: Math.abs(fluidContribution),
+      cumulative: runningTotal + fluidContribution,
+      base: fluidContribution >= 0 ? runningTotal : runningTotal + fluidContribution,
+      type: "change",
+      displayValue: fluidContribution,
+      isTotal: false
+    });
+    runningTotal += fluidContribution;
+
+    waterfallData.push({
+      name: "Конечная добыча",
+      value: totalFinal,
+      cumulative: totalFinal,
+      base: 0,
+      type: "final",
+      displayValue: totalFinal,
+      isTotal: true
+    });
+
+    return { chartData: waterfallData };
+  }, [analysisData, selectedWell]);
+
   const processedWellsData = useMemo(() => {
-    if (!oilLossData || oilLossData.length === 0) {
+    if (!analysisData || !analysisData.resOilProd) {
       return {};
     }
 
     const wellsDataMap = {};
-    
-    // Group data by well
-    const groupedByWell = oilLossData.reduce((acc, item) => {
-      const wellName = item.well;
-      if (!acc[wellName]) {
-        acc[wellName] = [];
-      }
-      acc[wellName].push(item);
-      return acc;
-    }, {});
 
-    // Process each well's data
-    Object.keys(groupedByWell).forEach(wellName => {
-      const initialData = getAverageDataForRange(
-        oilLossData, 
-        initialRange[0].startDate, 
-        initialRange[0].endDate,
-        wellName
-      );
-      
-      const finalData = getAverageDataForRange(
-        oilLossData, 
-        finalRange[0].startDate, 
-        finalRange[0].endDate,
-        wellName
-      );
-      
-      if (initialData && finalData) {
-        const changes = calculateIntervalComparison(initialData, finalData);
-        
-        if (changes) {
-          wellsDataMap[wellName] = {
-            workTimeChange: Math.abs(changes.workTimeOilImpact),
-            waterCutChange: Math.abs(changes.waterCutOilImpact),
-            fluidChange: Math.abs(changes.fluidOilImpact),
-            totalChange: Math.abs(changes.final - changes.initial)
-          };
-        }
-      }
+    analysisData.resOilProd.forEach(item => {
+      wellsDataMap[item.wi] = {
+        workTimeChange: Math.abs(item.by_t),
+        waterCutChange: Math.abs(item["by_N%"]),
+        fluidChange: Math.abs(item.by_LiqRate),
+        totalChange: Math.abs(item.deltaOilProd)
+      };
     });
 
     return wellsDataMap;
-  }, [oilLossData, initialRange, finalRange]);
+  }, [analysisData]);
 
-  // Filter wells based on search term
   const filteredWells = useMemo(() => {
     if (!searchTerm) return availableWells;
     return availableWells.filter(well => 
@@ -404,7 +503,6 @@ export default function OilLayout() {
     );
   }, [availableWells, searchTerm]);
 
-  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -424,39 +522,34 @@ export default function OilLayout() {
     };
   }, []);
 
-  // Handle well selection
   const handleWellSelect = (well) => {
     setSelectedWell(well);
     setSearchTerm("");
     setIsDropdownOpen(false);
   };
 
-  // Get display text for selected well
   const getDisplayText = () => {
     if (selectedWell === "all") return "Все";
     return selectedWell;
   };
 
-  // Handle clear all filters
   const handleClearAllFilters = () => {
     setSelectedWell("all");
     setStatusFilter("All");
     setSearchTerm("");
     setIsDropdownOpen(false);
-    // Reset to default date ranges
     setInitialRange([{
-      startDate: new Date(2025, 5, 1),
-      endDate: new Date(2025, 5, 15),
+      startDate: new Date('2025-06-01'),
+      endDate: new Date('2025-06-14'),
       key: 'initialSelection'
     }]);
     setFinalRange([{
-      startDate: new Date(2025, 6, 1),
-      endDate: new Date(2025, 6, 31),
+      startDate: new Date('2025-07-01'),
+      endDate: new Date('2025-07-14'),
       key: 'finalSelection'
     }]);
   };
 
-  // Format date range for display
   const formatDateRange = (range) => {
     const start = formatDateForAPI(range[0].startDate);
     const end = formatDateForAPI(range[0].endDate);
@@ -467,14 +560,12 @@ export default function OilLayout() {
     <div className={styles.layoutContainer}>
       <AppNav />
       
-      {/* Error Display */}
       {error && (
         <div className={styles.errorAlert}>
           {error}
         </div>
       )}
       
-      {/* Universal Filters Section */}
       <div className={styles.centralFiltersSection}>
         <div className={styles.filtersContainer}>
           <div className={styles.filterGroup} ref={dropdownRef}>
@@ -546,7 +637,6 @@ export default function OilLayout() {
             </select>
           </div>
 
-          {/* Initial Date Range Picker */}
           <div className={styles.filterGroup} ref={initialPickerRef}>
             <label className={styles.filterLabel}>
               Начальный период:
@@ -582,7 +672,6 @@ export default function OilLayout() {
             </div>
           </div>
 
-          {/* Final Date Range Picker */}
           <div className={styles.filterGroup} ref={finalPickerRef}>
             <label className={styles.filterLabel}>
               Конечный период:
@@ -629,26 +718,14 @@ export default function OilLayout() {
         </div>
       </div>
       
-      {/* Main Content */}
       <div className={styles.mainContent}>
-        {/* Chart Section */}
         <div className={styles.chartSection}>
-          {/* Chart Header */}
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>Анализ потерь нефти</h2>
-            {/* {selectedWell !== "all" && (
-              <span className={styles.sectionSubtitle}>
-                Скважина: {selectedWell}
-              </span>
-            )} */}
-            {/* <div className={styles.sectionPeriod}>
-              <div>Начальный: {formatDateRange(initialRange)}</div>
-              <div>Конечный: {formatDateRange(finalRange)}</div>
-            </div> */}
           </div>
           
           <div className={styles.chartContainer}>
-            {loading ? (
+            {loading || analysisLoading ? (
               <div className={styles.loadingState}>
                 <div className={styles.spinner}></div>
                 <span>Загрузка данных...</span>
@@ -664,7 +741,6 @@ export default function OilLayout() {
           </div>
         </div>
         
-        {/* Map Section */}
         <div className={styles.mapSection}>          
           <div className={styles.mapContainer}>
             <OilMap 

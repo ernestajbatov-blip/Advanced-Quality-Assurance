@@ -6,6 +6,7 @@ const getConnection = require("./db");
 const port = 3000;
 const app = express();
 const crypto = require("crypto");
+const axios = require('axios');
 
 app.use(cors());
 app.use(express.json());
@@ -248,12 +249,12 @@ app.get("/api/progress-oil", (req, res) => {
 // Oil Loss API endpoint
 app.get("/api/oil-loss", (req, res) => {
   const connection = getConnection();
-  const { well, startDate, endDate } = req.query;
+  let { well, startDate, endDate } = req.query;
   
   let query = `
     SELECT 
       well,
-      date,
+      DATE_FORMAT(date, '%Y-%m-%d') as date,
       tm_oil,
       well_work_time,
       tm_obv,
@@ -280,14 +281,80 @@ app.get("/api/oil-loss", (req, res) => {
     params.push(endDate);
   }
   
-  query += ` ORDER BY well, date DESC`;
+  query += ` ORDER BY well, date ASC`;
+  
+  console.log('Oil Loss API Query:', query);
+  console.log('Oil Loss API Params:', params);
   
   connection.query(query, params, (error, results) => {
     if (error) {
       console.error("Database error:", error);
       return res.status(500).json({ error: "Database query failed" });
     }
+    
+    console.log(`✅ Oil Loss API returned ${results.length} records`);
+    if (well && well !== 'all') {
+      console.log(`   Well: ${well}, Date range: ${startDate} to ${endDate}`);
+      if (results.length > 0) {
+        console.log(`   First: ${results[0].date}, Last: ${results[results.length - 1].date}`);
+      }
+    }
+    
     res.json(results || []);
+  });
+});
+
+// Add this temporary diagnostic endpoint to your server.js
+app.get("/api/oil-loss/debug", (req, res) => {
+  const connection = getConnection();
+  
+  // Query 1: Count all BSK_0004 records in the entire date range
+  const query1 = `
+    SELECT COUNT(*) as total_count FROM oil_loss 
+    WHERE well = 'BSK_0004' 
+    AND date >= '2025-06-01' 
+    AND date <= '2025-07-14';
+  `;
+  
+  // Query 2: Get all distinct dates for BSK_0004
+  const query2 = `
+    SELECT DISTINCT date FROM oil_loss 
+    WHERE well = 'BSK_0004' 
+    AND date >= '2025-06-01' 
+    AND date <= '2025-07-14'
+    ORDER BY date;
+  `;
+  
+  // Query 3: Check if July 14 exists
+  const query3 = `
+    SELECT * FROM oil_loss 
+    WHERE well = 'BSK_0004' 
+    AND date = '2025-07-14';
+  `;
+  
+  // Query 4: Count records per date
+  const query4 = `
+    SELECT date, COUNT(*) as cnt FROM oil_loss 
+    WHERE well = 'BSK_0004' 
+    AND date >= '2025-06-01' 
+    AND date <= '2025-07-14'
+    GROUP BY date
+    ORDER BY date;
+  `;
+  
+  connection.query(query1, (err1, res1) => {
+    connection.query(query2, (err2, res2) => {
+      connection.query(query3, (err3, res3) => {
+        connection.query(query4, (err4, res4) => {
+          res.json({
+            total_count: res1 && res1[0] ? res1[0].total_count : 'ERROR',
+            distinct_dates: res2 ? res2.map(r => r.date) : [],
+            july_14_record: res3 && res3[0] ? res3[0] : 'NOT FOUND',
+            counts_by_date: res4 || []
+          });
+        });
+      });
+    });
   });
 });
 
@@ -327,6 +394,53 @@ app.get("/api/vlagomer-history/dates", (req, res) => {
     }
     res.json(results || []);
   });
+});
+
+app.post("/api/oil-loss/analysis", async (req, res) => {
+  try {
+    const { records, cfg } = req.body;
+    
+    if (!records || !Array.isArray(records) || records.length === 0) {
+      return res.status(400).json({ error: "Invalid input: records array is required" });
+    }
+
+    console.log('Received analysis request for', records.length, 'wells');
+    
+    // Replace with your actual Gunicorn service URL
+    const gunicornUrl = process.env.GUNICORN_SERVICE_URL || 'http://localhost:8888/losses_calculation';
+    
+    const response = await axios.post(gunicornUrl, {
+      records,
+      cfg: cfg || {}
+    }, {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      timeout: 30000 // 30 second timeout
+    });
+
+    res.json(response.data);
+    
+  } catch (error) {
+    console.error("Error calling analysis service:", error.message);
+    
+    if (error.response) {
+      return res.status(error.response.status).json({
+        error: "Analysis service error",
+        details: error.response.data
+      });
+    } else if (error.request) {
+      return res.status(503).json({
+        error: "Analysis service unavailable",
+        details: "Could not connect to analysis service"
+      });
+    } else {
+      return res.status(500).json({
+        error: "Internal server error",
+        details: error.message
+      });
+    }
+  }
 });
 
 app.get("/api/vlagomer-history/:date?", (req, res) => {

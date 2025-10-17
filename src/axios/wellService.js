@@ -76,6 +76,24 @@ export const fetchKPIInjection = () => {
   return api.get("/kpi/injection");
 };
 
+export const fetchOilLossData = (params = {}) => {
+  return api.get("/oil-loss", {
+    params: {
+      well: params.well,
+      startDate: params.startDate,
+      endDate: params.endDate
+    }
+  });
+};
+
+export const fetchOilLossWells = () => {
+  return api.get("/oil-loss/wells");
+};
+
+export const analyzeOilLoss = (data) => {
+  return api.post("/oil-loss/analysis", data);
+};
+
 export const login = (credentials) => {
   return api.post("/auth/login", credentials);
 };
