@@ -209,15 +209,15 @@ export default function Diagram() {
     "Stop_nasos_2_NPS": "",
 
     // Счетчики
-    "PNK1_MGN_RASHOD": "м3",
+    "gas_1_consumption": "м3",
     "PNK1_NAKOP_RASHOD": "м3",
     "PNK1_MGN_DAVLENIE": "атм",
     "PNK1_TEMPERATURA": "°C",
-    "GS1_MGN_RASHOD": "м3",
+    "gas_2_consumption": "м3",
     "GS1_NAKOP_RASHOD": "м3",
     "GS1_MGN_DAVLENIE": "атм",
     "GS1_TEMPERATURA": "°C",
-    "GPS_MGN_RASHOD": "м3",
+    "gas_3_consumption": "м3",
     "GPS_NAKOP_RASHOD": "м3",
     "GPS_MGN_DAVLENIE": "атм",
     "GPS_TEMPERATURA": "°C",
@@ -331,17 +331,17 @@ export default function Diagram() {
     "Stop_nasos_2_NPS": "Команда стоп",
 
     // Счетчик ПНК
-    "PNK1_MGN_RASHOD": "Мгновенный расход",
+    "gas_1_consumption": "Мгновенный расход",
     "PNK1_NAKOP_RASHOD": "Накопленный расход",
     "PNK1_MGN_DAVLENIE": "Давление",
     "PNK1_TEMPERATURA": "Температура",
 
-    "GS1_MGN_RASHOD": "Мгновенный расход",
+    "gas_2_consumption": "Мгновенный расход",
     "GS1_NAKOP_RASHOD": "Накопленный расход",
     "GS1_MGN_DAVLENIE": "Давление",
     "GS1_TEMPERATURA": "Температура",
 
-    "GPS_MGN_RASHOD": "Мгновенный расход",
+    "gas_3_consumption": "Мгновенный расход",
     "GPS_NAKOP_RASHOD": "Накопленный расход",
     "GPS_MGN_DAVLENIE": "Давление",
     "GPS_TEMPERATURA": "Температура",
@@ -395,15 +395,25 @@ export default function Diagram() {
     let transformedData;
     
     if (filterTags && filterTags.length > 0) {
-      let filteredData;
-      // Check if we're requesting PNK, PP, or MFN data (which are random)
-    if (filterTags.some(tag => tag.includes('PNK') || tag.includes('PP063') || tag.includes('MFN') || tag.includes('GS') || tag.includes('GPS') || tag.includes('BKNS'))) {        filteredData = generateRandomSensorData(filterTags);
+      // Separate tags that should use random generation from those that shouldn't
+      const gasConsumptionTags = filterTags.filter(tag => tag.includes('gas_') && tag.includes('_consumption'));
+      const tagsForRandomGeneration = filterTags.filter(tag => !(tag.includes('gas_') && tag.includes('_consumption')));
+      
+      let filteredData = [];
+      
+      // Check if tags (excluding gas consumption) need random generation
+      if (tagsForRandomGeneration.some(tag => tag.includes('PNK') || tag.includes('PP063') || tag.includes('MFN') || tag.includes('GS') || tag.includes('GPS') || tag.includes('BKNS'))) {
+        filteredData = generateRandomSensorData(tagsForRandomGeneration);
       } else {
-        // First filter from real data
-        filteredData = oilProgressData.filter(item => filterTags.includes(item.tag_key));
+        // Get real data for tags that don't need random generation
+        filteredData = oilProgressData.filter(item => tagsForRandomGeneration.includes(item.tag_key));
       }
       
-      // Sort by the order of filterTags array
+      // Get real data for gas consumption tags
+      const gasConsumptionData = oilProgressData.filter(item => gasConsumptionTags.includes(item.tag_key));
+      filteredData = [...filteredData, ...gasConsumptionData];
+      
+      // Sort by the order of original filterTags array
       const sorted = filterTags.map(tag =>
         filteredData.find(item => item.tag_key === tag)
       ).filter(Boolean);
@@ -597,7 +607,10 @@ export default function Diagram() {
   // };
 
   const generateRandomSensorData = (tags) => {
-    return tags.map(tag => {
+    // Filter out gas_*_consumption tags
+    const filteredTags = tags.filter(tag => !(tag.includes('gas_') && tag.includes('_consumption')));
+    
+    return filteredTags.map(tag => {
       let value;
       if (tag.includes('BKNS') && tag.includes('TEMP')) { // BKNS Temperature
         value = (Math.random() * 30 + 50).toFixed(2); // 50-80°C
@@ -831,7 +844,7 @@ export default function Diagram() {
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["PNK1_MGN_RASHOD", "PNK1_NAKOP_RASHOD", "PNK1_MGN_DAVLENIE", "PNK1_TEMPERATURA"], 
+            ["gas_1_consumption", "PNK1_NAKOP_RASHOD", "PNK1_MGN_DAVLENIE", "PNK1_TEMPERATURA"], 
             "Счетчик ПНК"
           )}
           title="Счетчик ПНК"
@@ -855,7 +868,7 @@ export default function Diagram() {
       content: (
         <div
           onClick={() => handleTableClick(
-            ["GS1_MGN_RASHOD", "GS1_NAKOP_RASHOD", "GS1_MGN_DAVLENIE", "GS1_TEMPERATURA"], 
+            ["gas_2_consumption", "GS1_NAKOP_RASHOD", "GS1_MGN_DAVLENIE", "GS1_TEMPERATURA"], 
             "Счетчик ГС"
           )}
           title="Счетчик ГС"
@@ -879,7 +892,7 @@ export default function Diagram() {
       content: (
         <div
           onClick={() => handleTableClick(
-            ["GPS_MGN_RASHOD", "GPS_NAKOP_RASHOD", "GPS_MGN_DAVLENIE", "GPS_TEMPERATURA"], 
+            ["gas_3_consumption", "GPS_NAKOP_RASHOD", "GPS_MGN_DAVLENIE", "GPS_TEMPERATURA"], 
             "Счетчик ГПС"
           )}
           title="Счетчик ГПС"
