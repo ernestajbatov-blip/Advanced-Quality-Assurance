@@ -210,31 +210,34 @@ export default function Diagram() {
 
     // Счетчики
     "gas_1_consumption": "м3",
-    "PNK1_NAKOP_RASHOD": "м3",
-    "PNK1_MGN_DAVLENIE": "атм",
+    "gas_1_acc_cons": "м3",
+    "gas_1_abs_pressure": "атм",
     "PNK1_TEMPERATURA": "°C",
     "gas_2_consumption": "м3",
-    "GS1_NAKOP_RASHOD": "м3",
-    "GS1_MGN_DAVLENIE": "атм",
-    "GS1_TEMPERATURA": "°C",
+    "gas_2_acc_cons": "м3",
+    "gas_2_abs_pressure": "атм",
+    "gas_2_temp": "°C",
     "gas_3_consumption": "м3",
-    "GPS_NAKOP_RASHOD": "м3",
-    "GPS_MGN_DAVLENIE": "атм",
-    "GPS_TEMPERATURA": "°C",
+    "gas_3_acc_cons": "м3",
+    "gas_3_abs_pressure": "атм",
+    "gas_3_temp": "°C",
 
     // BKNS
-    "BKNS_1_TEMP": "°C",
-    "BKNS_1_CURRENT": "А",
-    "BKNS_1_POWER": "кВт",
-    "BKNS_1_FLOW": "м3",
-    "BKNS_2_TEMP": "°C",
-    "BKNS_2_CURRENT": "А",
-    "BKNS_2_POWER": "кВт",
-    "BKNS_2_FLOW": "м3",
-    "BKNS_3_TEMP": "°C",
-    "BKNS_3_CURRENT": "А",
-    "BKNS_3_POWER": "кВт",
-    "BKNS_3_FLOW": "м3",
+    "gnu_1_freq": "Гц",
+    "gnu_1_voltage": "В",
+    "gnu_1_current": "А",
+    "gnu_1_power": "кВт",
+    "gnu_1_speed": "об/мин",
+    "gnu_2_freq": "Гц",
+    "gnu_2_voltage": "В",
+    "gnu_2_current": "А",
+    "gnu_2_power": "кВт",
+    "gnu_2_speed": "об/мин",
+    "gnu_3_freq": "Гц",
+    "gnu_3_voltage": "В",
+    "gnu_3_current": "А",
+    "gnu_3_power": "кВт",
+    "gnu_3_speed": "об/мин",
   };
 
   // New mapping for tag descriptions
@@ -332,33 +335,38 @@ export default function Diagram() {
 
     // Счетчик ПНК
     "gas_1_consumption": "Мгновенный расход",
-    "PNK1_NAKOP_RASHOD": "Накопленный расход",
-    "PNK1_MGN_DAVLENIE": "Давление",
+    "gas_1_acc_cons": "Накопленный расход",
+    "gas_1_abs_pressure": "Давление",
     "PNK1_TEMPERATURA": "Температура",
 
     "gas_2_consumption": "Мгновенный расход",
-    "GS1_NAKOP_RASHOD": "Накопленный расход",
-    "GS1_MGN_DAVLENIE": "Давление",
-    "GS1_TEMPERATURA": "Температура",
+    "gas_2_acc_cons": "Накопленный расход",
+    "gas_2_abs_pressure": "Давление",
+    "gas_2_temp": "Температура",
 
     "gas_3_consumption": "Мгновенный расход",
-    "GPS_NAKOP_RASHOD": "Накопленный расход",
-    "GPS_MGN_DAVLENIE": "Давление",
-    "GPS_TEMPERATURA": "Температура",
+    "gas_3_acc_cons": "Накопленный расход",
+    "gas_3_abs_pressure": "Давление",
+    "gas_3_temp": "Температура",
 
     // BKNS
-    "BKNS_1_TEMP": "Температура",
-    "BKNS_1_CURRENT": "Ток",
-    "BKNS_1_POWER": "Мощность",
-    "BKNS_1_FLOW": "Накопленный расход",
-    "BKNS_2_TEMP": "Температура",
-    "BKNS_2_CURRENT": "Ток",
-    "BKNS_2_POWER": "Мощность",
-    "BKNS_2_FLOW": "Накопленный расход",
-    "BKNS_3_TEMP": "Температура",
-    "BKNS_3_CURRENT": "Ток",
-    "BKNS_3_POWER": "Мощность",
-    "BKNS_3_FLOW": "Накопленный расход",
+    "gnu_1_freq": "Частота",
+    "gnu_1_voltage": "Напряжение",
+    "gnu_1_current": "Ток",
+    "gnu_1_power": "Мощность",
+    "gnu_1_speed": "Скорость",
+
+    "gnu_2_freq": "Частота",
+    "gnu_2_voltage": "Напряжение",
+    "gnu_2_current": "Ток",
+    "gnu_2_power": "Мощность",
+    "gnu_2_speed": "Скорость",
+
+    "gnu_3_freq": "Частота",
+    "gnu_3_voltage": "Напряжение",
+    "gnu_3_current": "Ток",
+    "gnu_3_power": "Мощность",
+    "gnu_3_speed": "Скорость",
 
     // Uzel ucheta descriptions
     "overpressure": "Избыточное давление",
@@ -844,7 +852,7 @@ export default function Diagram() {
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["gas_1_consumption", "PNK1_NAKOP_RASHOD", "PNK1_MGN_DAVLENIE", "PNK1_TEMPERATURA"], 
+            ["gas_1_consumption", "gas_1_acc_cons", "gas_1_abs_pressure", "gas_1_temp"], 
             "Счетчик ПНК"
           )}
           title="Счетчик ПНК"
@@ -868,7 +876,7 @@ export default function Diagram() {
       content: (
         <div
           onClick={() => handleTableClick(
-            ["gas_2_consumption", "GS1_NAKOP_RASHOD", "GS1_MGN_DAVLENIE", "GS1_TEMPERATURA"], 
+            ["gas_2_consumption", "gas_2_acc_cons", "gas_2_abs_pressure", "gas_2_temp"], 
             "Счетчик ГС"
           )}
           title="Счетчик ГС"
@@ -892,7 +900,7 @@ export default function Diagram() {
       content: (
         <div
           onClick={() => handleTableClick(
-            ["gas_3_consumption", "GPS_NAKOP_RASHOD", "GPS_MGN_DAVLENIE", "GPS_TEMPERATURA"], 
+            ["gas_3_consumption", "gas_3_acc_cons", "gas_3_abs_pressure", "gas_3_temp"], 
             "Счетчик ГПС"
           )}
           title="Счетчик ГПС"
@@ -1065,7 +1073,7 @@ export default function Diagram() {
         {/* БКНС Pump 1 clickable area */}
         <div 
           onClick={() => handleTableClick(
-          ["BKNS_1_TEMP", "BKNS_1_CURRENT", "BKNS_1_POWER", "BKNS_1_FLOW"], 
+          ["gnu_1_freq", "gnu_1_voltage", "gnu_1_current", "gnu_1_power", "gnu_1_speed"], 
           "ГНУ-1"
           )}
           style={{
@@ -1081,7 +1089,7 @@ export default function Diagram() {
         {/* БКНС Pump 2 clickable area */}
         <div 
           onClick={() => handleTableClick(
-          ["BKNS_2_TEMP", "BKNS_2_CURRENT", "BKNS_2_POWER", "BKNS_2_FLOW"],
+          ["gnu_2_freq", "gnu_2_voltage", "gnu_2_current", "gnu_2_power", "gnu_2_speed"],
           "ГНУ-2"
           )}
           style={{
@@ -1097,7 +1105,7 @@ export default function Diagram() {
         {/* БКНС Pump 3 clickable area */}
         <div 
           onClick={() => handleTableClick(
-          ["BKNS_3_TEMP", "BKNS_3_CURRENT", "BKNS_3_POWER", "BKNS_3_FLOW"],
+          ["gnu_3_freq", "gnu_3_voltage", "gnu_3_current", "gnu_3_power", "gnu_3_speed"],
           "ГНУ-3"
           )}
           style={{
