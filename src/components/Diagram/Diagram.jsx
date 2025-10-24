@@ -228,16 +228,28 @@ export default function Diagram() {
     "gnu_1_current": "А",
     "gnu_1_power": "кВт",
     "gnu_1_speed": "об/мин",
+    "gnu_1_temp": "°C",
+    "gnu_1_nagn": "м3",
+    "gnu_1_nakop": "м3",
+    "gnu_1_consumption": "м3",
     "gnu_2_freq": "Гц",
     "gnu_2_voltage": "В",
     "gnu_2_current": "А",
     "gnu_2_power": "кВт",
     "gnu_2_speed": "об/мин",
+    "gnu_2_temp": "°C",
+    "gnu_2_nagn": "м3",
+    "gnu_2_nakop": "м3",
+    "gnu_2_consumption": "м3",
     "gnu_3_freq": "Гц",
     "gnu_3_voltage": "В",
     "gnu_3_current": "А",
     "gnu_3_power": "кВт",
     "gnu_3_speed": "об/мин",
+    "gnu_3_temp": "°C",
+    "gnu_3_nagn": "м3",
+    "gnu_3_nakop": "м3",
+    "gnu_3_consumption": "м3",
   };
 
   // New mapping for tag descriptions
@@ -337,7 +349,7 @@ export default function Diagram() {
     "gas_1_consumption": "Мгновенный расход",
     "gas_1_acc_cons": "Накопленный расход",
     "gas_1_abs_pressure": "Давление",
-    "PNK1_TEMPERATURA": "Температура",
+    "gas_1_temp": "Температура",
 
     "gas_2_consumption": "Мгновенный расход",
     "gas_2_acc_cons": "Накопленный расход",
@@ -355,18 +367,30 @@ export default function Diagram() {
     "gnu_1_current": "Ток",
     "gnu_1_power": "Мощность",
     "gnu_1_speed": "Скорость",
+    "gnu_1_temp": "Температура",
+    "gnu_1_nagn": "Мгновенный расход",
+    "gnu_1_nakop": "Накопленный расход",
+    "gnu_1_consumption": "Мгновенный расход",
 
     "gnu_2_freq": "Частота",
     "gnu_2_voltage": "Напряжение",
     "gnu_2_current": "Ток",
     "gnu_2_power": "Мощность",
     "gnu_2_speed": "Скорость",
+    "gnu_2_temp": "Температура",
+    "gnu_2_nagn": "Мгновенный расход",
+    "gnu_2_nakop": "Накопленный расход",
+    "gnu_2_consumption": "Мгновенный расход",
 
     "gnu_3_freq": "Частота",
     "gnu_3_voltage": "Напряжение",
     "gnu_3_current": "Ток",
     "gnu_3_power": "Мощность",
     "gnu_3_speed": "Скорость",
+    "gnu_3_temp": "Температура",
+    "gnu_3_nagn": "Мгновенный расход",
+    "gnu_3_nakop": "Накопленный расход",
+    "gnu_3_consumption": "Мгновенный расход",
 
     // Uzel ucheta descriptions
     "overpressure": "Избыточное давление",
@@ -401,34 +425,35 @@ export default function Diagram() {
 
   const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
     let transformedData;
-    
     if (filterTags && filterTags.length > 0) {
       // Separate tags that should use random generation from those that shouldn't
       const gasConsumptionTags = filterTags.filter(tag => tag.includes('gas_') && tag.includes('_consumption'));
       const tagsForRandomGeneration = filterTags.filter(tag => !(tag.includes('gas_') && tag.includes('_consumption')));
-      
+
       let filteredData = [];
-      
+
       // Check if tags (excluding gas consumption) need random generation
       if (tagsForRandomGeneration.some(tag => tag.includes('PNK') || tag.includes('PP063') || tag.includes('MFN') || tag.includes('GS') || tag.includes('GPS') || tag.includes('BKNS'))) {
+        // Generate random data for non-gas consumption tags if they match specific patterns
         filteredData = generateRandomSensorData(tagsForRandomGeneration);
       } else {
-        // Get real data for tags that don't need random generation
+        // Otherwise, get real data for non-gas consumption tags
         filteredData = oilProgressData.filter(item => tagsForRandomGeneration.includes(item.tag_key));
       }
-      
+
       // Get real data for gas consumption tags
       const gasConsumptionData = oilProgressData.filter(item => gasConsumptionTags.includes(item.tag_key));
+
+      // Combine real gas consumption data with other data (random or real)
       filteredData = [...filteredData, ...gasConsumptionData];
-      
+
       // Sort by the order of original filterTags array
       const sorted = filterTags.map(tag =>
-        filteredData.find(item => item.tag_key === tag)
-      ).filter(Boolean);
-      
+        filteredData.find(item => item.tag_key === tag)).filter(Boolean);
+
       transformedData = sorted.map(item => {
         let value = item.value || item.tag_value;
-        
+
         // Handle boolean values specifically
         if (value === "True" || value === true) {
           value = "Включен";
@@ -445,24 +470,41 @@ export default function Diagram() {
             value = `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim();
           }
         }
-        
+
+        // Map tag keys to descriptive names for the table
         return {
           "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
           "Показание": value
         };
       });
+
+      // --- ADDITION: Hardcode GNU specific entries if clicking on GNU pumps ---
+      if (buttonTitle.includes("ГНУ")) {
+        const expectedEntries = [
+          { "Датчик": "Температура", "Показание": "---" },
+          { "Датчик": "Мгновенный расход", "Показание": "---" },
+          { "Датчик": "Накопленный расход", "Показание": "---" }
+        ];
+
+        expectedEntries.forEach(expectedEntry => {
+          // Check if an entry with the same "Датчик" name already exists in transformedData
+          const exists = transformedData.some(existingItem => existingItem["Датчик"] === expectedEntry["Датчик"]);
+          // If it doesn't exist, add the static entry
+          if (!exists) {
+            transformedData.push(expectedEntry);
+          }
+        });
+      }
+      // --- END OF ADDITION ---
+
     } else {
-      transformedData = oilProgressData.map(item => {
-        const numValue = item.tag_value || item.value;
-        const roundedValue = typeof numValue === 'number' ? numValue.toFixed(2) : parseFloat(numValue).toFixed(2);
-        
-        return {
-          "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
-          "Показание": `${roundedValue} ${TAG_UNITS[item.tag_key] || ''}`.trim()
-        };
-      });
+      // Default transformation if no specific tags are provided
+      transformedData = oilProgressData.map(item => ({
+        "Параметр": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+        "Значение": item.value !== undefined && item.value !== null ? `${item.value} ${TAG_UNITS[item.tag_key] || ''}`.trim() : "N/A"
+      }));
     }
-    
+
     setTableData(transformedData);
     setTableTitle(buttonTitle);
     setShowTable(true);
@@ -615,7 +657,7 @@ export default function Diagram() {
   // };
 
   const generateRandomSensorData = (tags) => {
-    // Filter out gas_*_consumption tags
+    // Filter out gas_*_consumption tags only
     const filteredTags = tags.filter(tag => !(tag.includes('gas_') && tag.includes('_consumption')));
     
     return filteredTags.map(tag => {
@@ -640,6 +682,16 @@ export default function Diagram() {
         value = (Math.random() * 50 + 25).toFixed(2); // 25-75 kW
       } else if (tag.includes('FREQ')) { // Frequency
         value = (Math.random() * 10 + 45).toFixed(2); // 45-55 Hz
+      } else if (tag.includes('gnu_') && tag.includes('_voltage')) { // GNU Voltage
+        value = (Math.random() * 50 + 350).toFixed(2); // 350-400 V
+      } else if (tag.includes('gnu_') && tag.includes('_speed')) { // GNU Speed
+        value = (Math.random() * 200 + 1400).toFixed(2); // 1400-1600 rpm
+      } else if (tag.includes('gnu_') && tag.includes('_temp')) { // GNU Temperature - SET TO 0
+        value = "---";
+      } else if (tag.includes('gnu_') && tag.includes('_nagn')) { // GNU Instant flow - SET TO 0
+        value = "---";
+      } else if (tag.includes('gnu_') && tag.includes('_nakop')) { // GNU Accumulated - SET TO 0
+        value = "---";
       } else if (tag.includes('PNK') && (tag.includes('LC') || tag.includes('PT'))) { 
         // Temperature sensors for PNK
         value = (Math.random() * 80 + 60).toFixed(2); // 60-140°C
@@ -1073,7 +1125,7 @@ export default function Diagram() {
         {/* БКНС Pump 1 clickable area */}
         <div 
           onClick={() => handleTableClick(
-          ["gnu_1_freq", "gnu_1_voltage", "gnu_1_current", "gnu_1_power", "gnu_1_speed"], 
+          ["gnu_1_freq", "gnu_1_voltage", "gnu_1_current", "gnu_1_power", "gnu_1_speed", "gnu_1_temp", "gnu_1_nagn", "gnu_1_nakop", "gnu_1_consumption"], 
           "ГНУ-1"
           )}
           style={{
@@ -1089,7 +1141,7 @@ export default function Diagram() {
         {/* БКНС Pump 2 clickable area */}
         <div 
           onClick={() => handleTableClick(
-          ["gnu_2_freq", "gnu_2_voltage", "gnu_2_current", "gnu_2_power", "gnu_2_speed"],
+          ["gnu_2_freq", "gnu_2_voltage", "gnu_2_current", "gnu_2_power", "gnu_2_speed", "gnu_2_temp", "gnu_2_nagn", "gnu_2_nakop", "gnu_2_consumption"],
           "ГНУ-2"
           )}
           style={{
@@ -1105,7 +1157,7 @@ export default function Diagram() {
         {/* БКНС Pump 3 clickable area */}
         <div 
           onClick={() => handleTableClick(
-          ["gnu_3_freq", "gnu_3_voltage", "gnu_3_current", "gnu_3_power", "gnu_3_speed"],
+          ["gnu_3_freq", "gnu_3_voltage", "gnu_3_current", "gnu_3_power", "gnu_3_speed", "gnu_3_temp", "gnu_3_nagn", "gnu_3_nakop", "gnu_3_consumption"],
           "ГНУ-3"
           )}
           style={{
