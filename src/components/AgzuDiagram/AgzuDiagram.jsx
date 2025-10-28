@@ -1,5 +1,5 @@
 // AgzuDiagram.jsx:
-import React, { useState, useEffect, useCallback } from "react"; // Add useCallback
+import React, { useState, useEffect, useCallback } from "react";
 import styles from "./AgzuDiagram.module.css";
 import Box from "../Box/Box";
 import Modal from "../Modal/Modal";
@@ -7,7 +7,7 @@ import ResponsiveTable from "../ResponsiveTable/ResponsiveTable";
 import { NavLink } from "react-router-dom";
 import { fetchAGZUWellData, fetchAGZUTags } from "../../axios/wellService";
 
-export default function AgzuDiagram({ filteredWells, category }) {
+export default function AgzuDiagram({ filteredWells, category, handleWellClick, setCurrentOtvodWell, setCurrentOtvodData }) {
   const [centerData, setCenterData] = useState({
     density: 0,
     time: "0:00",
@@ -15,13 +15,12 @@ export default function AgzuDiagram({ filteredWells, category }) {
   });
 
   const [boxIndex, setBoxIndex] = useState(0);
-  const [currentOtvodData, setCurrentOtvodData] = useState(null);
+  const [localOtvodData, setLocalOtvodData] = useState(null);
   const [showWellModal, setShowWellModal] = useState(false);
   const [wellModalData, setWellModalData] = useState([]);
   const [wellModalTitle, setWellModalTitle] = useState("Данные скважины");
   const [wellModalLoading, setWellModalLoading] = useState(false);
 
-  // Wrap the main fetching logic in useCallback
   const fetchCategoryData = useCallback(async () => {
     try {
       if (!category) return;
@@ -29,7 +28,6 @@ export default function AgzuDiagram({ filteredWells, category }) {
       const response = await fetchAGZUTags(category);
       const { tags } = response.data;
 
-      // Find current_otvod tag to determine which box should be highlighted
       const currentOtvodTag = Object.keys(tags).find((key) =>
         key.includes("_current_otvod")
       );
@@ -38,7 +36,6 @@ export default function AgzuDiagram({ filteredWells, category }) {
 
       setBoxIndex(currentBoxIndex);
 
-      // Find current well data tags
       const currentLiquidTag = Object.keys(tags).find((key) =>
         key.includes("_current_liquid")
       );
@@ -52,15 +49,22 @@ export default function AgzuDiagram({ filteredWells, category }) {
         key.includes("_current_W")
       );
 
-      // Store current otvod data for the modal
-      setCurrentOtvodData({
+      const otvodData = {
         liquid: tags[currentLiquidTag] ? parseFloat(tags[currentLiquidTag]) : null,
         oil: tags[currentOilTag] ? parseFloat(tags[currentOilTag]) : null,
         gas: tags[currentGasTag] ? parseFloat(tags[currentGasTag]) : null,
         waterCut: tags[currentWTag] ? parseFloat(tags[currentWTag]) : null,
-      });
+      };
+      
+      setLocalOtvodData(otvodData);
+      
+      // Find the well number for the current otvod box and update shared state
+      const currentWell = filteredWells.find(w => w.otvod === currentOtvodValue);
+      if (currentWell && setCurrentOtvodWell && setCurrentOtvodData) {
+        setCurrentOtvodWell(currentWell.well);
+        setCurrentOtvodData(otvodData);
+      }
 
-      // Find center circle tags
       const sepPressureTag = Object.keys(tags).find((key) =>
         key.includes("_sep_pressure")
       );
@@ -70,11 +74,6 @@ export default function AgzuDiagram({ filteredWells, category }) {
       const liqTempTag = Object.keys(tags).find((key) =>
         key.includes("_liq_temp")
       );
-
-      console.log("Available tags:", Object.keys(tags));
-      console.log("Found sepPressureTag:", sepPressureTag, "value:", tags[sepPressureTag]);
-      console.log("Found passTimeTag:", passTimeTag, "value:", tags[passTimeTag]);
-      console.log("Found liqTempTag:", liqTempTag, "value:", tags[liqTempTag]);
 
       const formatTime = (timeValue) => {
         if (!timeValue || timeValue === 0) return "0:00";
@@ -102,28 +101,24 @@ export default function AgzuDiagram({ filteredWells, category }) {
         time: "0:00",
         temperature: 0,
       });
-      setCurrentOtvodData(null);
+      setLocalOtvodData(null);
       setBoxIndex(0);
+      if (setCurrentOtvodWell && setCurrentOtvodData) {
+        setCurrentOtvodWell(null);
+        setCurrentOtvodData(null);
+      }
     }
-  }, [category]); // Add 'category' as dependency for useCallback
+  }, [category, filteredWells, setCurrentOtvodWell, setCurrentOtvodData]);
 
-  // Use useEffect for setting up the polling interval
   useEffect(() => {
-    // Fetch immediately on mount
     fetchCategoryData();
-
-    // Set up polling interval (e.g., every 30 seconds)
     const intervalId = setInterval(() => {
       fetchCategoryData();
-    }, 30000); // 30000ms = 30 seconds
-
-    // Cleanup: clear interval when component unmounts or dependencies change
+    }, 30000);
     return () => {
       clearInterval(intervalId);
     };
-  }, [fetchCategoryData]); // Add 'fetchCategoryData' as dependency for useEffect
-
-  // ... rest of your component logic remains the same ...
+  }, [fetchCategoryData]);
 
   const boxes = Array(14).fill(null);
   filteredWells.forEach((well) => {
@@ -154,7 +149,7 @@ export default function AgzuDiagram({ filteredWells, category }) {
     return value;
   };
 
-  const handleWellClick = async (well, index) => {
+  const handleLocalWellClick = async (well, index) => {
     if (!well || !well.well) return;
 
     if (well.isManual) {
@@ -164,19 +159,31 @@ export default function AgzuDiagram({ filteredWells, category }) {
     const wellNumber = well.well;
     const isActiveBox = index === boxIndex;
 
+    // If handleWellClick prop is provided (from AppLayout), use it
+    if (handleWellClick) {
+      // If this is the active/highlighted well, pass the current otvod data
+      if (isActiveBox && localOtvodData) {
+        handleWellClick(wellNumber, localOtvodData);
+      } else {
+        handleWellClick(wellNumber);
+      }
+      return;
+    }
+
+    // Otherwise, use the local modal logic (original behavior)
     try {
       setWellModalLoading(true);
       setWellModalTitle(`Данные скважины ${wellNumber}`);
       setShowWellModal(true);
 
       // If this is the active/highlighted well, use the current otvod data
-      if (isActiveBox && currentOtvodData) {
+      if (isActiveBox && localOtvodData) {
         const transformedData = [
           { Параметр: "Скважина", Значение: wellNumber },
-          { Параметр: "Жидкость", Значение: formatValue(currentOtvodData.liquid, "м³/ч") },
-          { Параметр: "Нефть", Значение: formatValue(currentOtvodData.oil, "т/сут") },
-          { Параметр: "Газ", Значение: formatValue(currentOtvodData.gas, "м³/сут") },
-          { Параметр: "Обводненность", Значение: formatValue(currentOtvodData.waterCut, "%") },
+          { Параметр: "Жидкость", Значение: formatValue(localOtvodData.liquid, "м³/ч") },
+          { Параметр: "Нефть", Значение: formatValue(localOtvodData.oil, "т/сут") },
+          { Параметр: "Газ", Значение: formatValue(localOtvodData.gas, "м³/сут") },
+          { Параметр: "Обводненность", Значение: formatValue(localOtvodData.waterCut, "%") },
         ];
         setWellModalData(transformedData);
         setWellModalLoading(false);
@@ -255,7 +262,6 @@ export default function AgzuDiagram({ filteredWells, category }) {
         {boxes.map((well, index) => {
           let boxText2 = "";
           
-          // Show the default zamer value in the box
           if (well?.zamer != null) {
             boxText2 = well.zamer.toFixed(2);
           }
@@ -271,7 +277,7 @@ export default function AgzuDiagram({ filteredWells, category }) {
               borderColor={getPipeColor(index, "#FFFFFF")}
               onClick={
                 well?.well && !well?.isManual
-                  ? () => handleWellClick(well, index)
+                  ? () => handleLocalWellClick(well, index)
                   : undefined
               }
               style={{ cursor: well?.well && !well?.isManual ? "pointer" : "default" }}

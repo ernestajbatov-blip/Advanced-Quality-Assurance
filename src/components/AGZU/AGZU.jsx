@@ -47,49 +47,43 @@ function Dropdown({ options, active, onSelect }) {
   );
 }
 
-export default function AGZU({ wells, index }) {
+export default function AGZU({ wells, index, handleWellClick, setCurrentOtvodWell, setCurrentOtvodData }) {
   const [categories, setCategories] = useState([]);
   const [activeButton, setActiveButton] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Define manual entries for specific otvod positions
   const manualEntries = [
     {
       otvod: 2,
       well: "МФ-4",
-      agzu: "МФ №3", // Match this to your category filter
+      agzu: "МФ №3",
       nagn: 0,
-      tr_fluid: null, // No second line text
-      isManual: true // Flag to identify manual entries
+      tr_fluid: null,
+      isManual: true
     },
     {
       otvod: 8,
       well: "МФ-2",
-      agzu: "АГЗУ-2", // Match this to your category filter
+      agzu: "АГЗУ-2",
       nagn: 0,
-      tr_fluid: null, // No second line text
-      isManual: true // Flag to identify manual entries
+      tr_fluid: null,
+      isManual: true
     },
   ];
-
-
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        // Load categories first
         const categoriesResponse = await fetchAGZUCategories();
         const allCategories = categoriesResponse.data || [];
 
-        // Filter categories to only show those starting with "АГЗУ" or "МФ"
         const filteredCategories = allCategories.filter(category => 
           category.startsWith("АГЗУ") || category.startsWith("МФ №")
         );
 
         setCategories(filteredCategories);
 
-        // Set the first category as active by default
         if (filteredCategories.length > 0) {
           const firstCategory = filteredCategories[0];
           setActiveButton(firstCategory);
@@ -111,15 +105,10 @@ export default function AGZU({ wells, index }) {
     setActiveButton(label);
   };
 
-  // Combine real wells with manual entries
   const combinedWells = [
     ...wells.filter((well) => well.agzu === activeButton && well.nagn == 0),
     ...manualEntries.filter((entry) => entry.agzu === activeButton)
   ];
-
-  console.log("Combined Wells:", combinedWells);
-  console.log("Active Button:", activeButton);
-  console.log("Categories:", categories);
 
   if (loading) {
     return (
@@ -166,6 +155,9 @@ export default function AGZU({ wells, index }) {
       <AgzuDiagram 
         filteredWells={combinedWells}
         category={activeButton}
+        handleWellClick={handleWellClick}
+        setCurrentOtvodWell={setCurrentOtvodWell}
+        setCurrentOtvodData={setCurrentOtvodData}
       />
     </div>
   );

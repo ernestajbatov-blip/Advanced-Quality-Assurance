@@ -200,8 +200,11 @@ export default function Diagram() {
     // "mfn_2_set_freq": "Гц",
     "mfn_2_freq": "Гц",
     "mfn_2_work_time": "",
-    "mfn_2_power": "ч",
+    "mfn_2_power": "кВт",
     "mfn_2_speed": "об/мин",
+    "mfn_2_pump_set_pressure": "бар",
+    "mfn_2_current": "А",
+    "mfn_2_rotor_speed": "об/мин",
 
     // Насосная перекачка нефти
     "Rabota_nasos__1-NPS": "",
@@ -332,7 +335,7 @@ export default function Diagram() {
     "mfn_1_freq": "Частота",
     "mfn_1_work_time": "Время работы",
     "mfn_1_power": "Мощность",
-    "mfn_1_speed": "Скорость",
+    "mfn_1_speed": "Обороты двигателя",
     "mfn_1_pump_set_pressure": "Задание давления",
     "mfn_1_current": "Ток",
     "mfn_1_rotor_speed": "Скорость ротора",
@@ -345,7 +348,10 @@ export default function Diagram() {
     "mfn_2_freq": "Частота",
     "mfn_2_work_time": "Время работы",
     "mfn_2_power": "Мощность",
-    "mfn_2_speed": "Скорость",
+    "mfn_2_speed": "Обороты двигателя",
+    "mfn_2_pump_set_pressure": "Задание давления",
+    "mfn_2_current": "Ток",
+    "mfn_2_rotor_speed": "Скорость ротора",
 
     // Насосная перекачка нефти
     "Rabota_nasos__1-NPS": "Статус работы",
@@ -437,15 +443,21 @@ export default function Diagram() {
     "quantity_netto_3": "Количество (нетто) - смена"
   };
 
+
+  
 const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
+  alert(`Clicked: ${buttonTitle}, Tags: ${filterTags?.length}`);
+  
   let transformedData;
   if (filterTags && filterTags.length > 0) {
-    // Get real data for all tags from oilProgressData
     const filteredData = oilProgressData.filter(item => filterTags.includes(item.tag_key));
-
+    alert(`Found ${filteredData.length} items out of ${filterTags.length} requested`);
+    
     // Sort by the order of original filterTags array
     const sorted = filterTags.map(tag =>
       filteredData.find(item => item.tag_key === tag)).filter(Boolean);
+    
+    alert(`After sorting and filtering: ${sorted.length} items`);
 
     transformedData = sorted.map(item => {
       let value = item.value || item.tag_value;
@@ -864,7 +876,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["mfn_2_pump_t", "mfn_2_pump_in_pressure", "mfn_2_pump_out_pressure", "mfn_2_freq", "mfn_2_work_time", "mfn_2_power", "mfn_2_speed"], 
+            ["mfn_2_pump_t", "mfn_2_pump_in_pressure", "mfn_2_pump_out_pressure", "mfn_2_freq", "mfn_2_work_time", "mfn_2_power", "mfn_2_speed", "mfn_2_pump_set_pressure", "mfn_2_current", "mfn_2_rotor_speed"], 
             "МФН-2"
           )}
           style={{

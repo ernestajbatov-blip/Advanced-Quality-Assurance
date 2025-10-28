@@ -17,7 +17,6 @@ import { WellsContext } from "../../states/WellsContext";
 import { useUser } from "../../states/UserContext";
 
 export default function AppLayout() {
-  // Use the original WellsContext
   const { fond, setFond, wells, setWells } = useContext(WellsContext);
   
   // Modal state management
@@ -29,12 +28,15 @@ export default function AppLayout() {
   const [agzuModalLoading, setAgzuModalLoading] = useState(false);
   const [chartType, setChartType] = useState("liquid");
   
+  // Shared state for current otvod well - updated by AGZU component
+  const [currentOtvodWell, setCurrentOtvodWell] = useState(null);
+  const [currentOtvodData, setCurrentOtvodData] = useState(null);
+  
   // ЧРП filter state
   const [chrpFilter, setChrpFilter] = useState(false);
   
   const { user, onLogout } = useUser();
 
-  // Reset ЧРП filter when switching to нагнетательный фонд
   useEffect(() => {
     if (fond === 1) {
       setChrpFilter(false);
@@ -136,13 +138,13 @@ export default function AppLayout() {
     return value;
   };
 
-  const handleWellClick = async (wellNumber) => {
+  const handleWellClick = async (wellNumber, providedOtvodData = null) => {
     try {
       setWellModalLoading(true);
       setAgzuModalLoading(true);
       setWellModalTitle(`Данные ЧРП на ${wellNumber}`);
       setShowWellModal(true);
-      setAgzuModalData([]); // Reset AGZU data
+      setAgzuModalData([]);
 
       // Fetch specific well data using fetchWellData
       const response = await fetchWellData(wellNumber);
@@ -164,26 +166,47 @@ export default function AppLayout() {
       setWellModalData(transformedData);
       setWellModalLoading(false);
 
-      // Try to fetch AGZU data for this well
-      try {
-        const agzuResponse = await fetchAGZUWellData(wellNumber);
-        const agzuWellData = agzuResponse.data;
-        const agzuData = Array.isArray(agzuWellData) ? agzuWellData[0] : agzuWellData;
+      // Determine which otvod data to use
+      let otvodDataToUse = providedOtvodData;
+      
+      // If not provided directly, check if this well is the current otvod well
+      if (!otvodDataToUse && currentOtvodWell === wellNumber && currentOtvodData) {
+        otvodDataToUse = currentOtvodData;
+      }
 
+      // If we have otvod data, use it
+      if (otvodDataToUse) {
         const transformedAgzuData = [
-          // { Параметр: "Скважина", Значение: agzuData["Скважина"] || wellNumber },
-          { Параметр: "Жидкость", Значение: formatValue(agzuData["Жидкость"], "м³") },
-          { Параметр: "Нефть", Значение: formatValue(agzuData["Нефть"], "т/сут") },
-          { Параметр: "Газ", Значение: formatValue(agzuData["Газ"], "м³/сут") },
-          { Параметр: "Обводненность", Значение: formatValue(agzuData["Обводненность"], "%") },
+          // { Параметр: "Скважина", Значение: wellNumber },
+          { Параметр: "Жидкость", Значение: formatValue(otvodDataToUse.liquid, "м³/ч") },
+          { Параметр: "Нефть", Значение: formatValue(otvodDataToUse.oil, "т/сут") },
+          { Параметр: "Газ", Значение: formatValue(otvodDataToUse.gas, "м³/сут") },
+          { Параметр: "Обводненность", Значение: formatValue(otvodDataToUse.waterCut, "%") },
         ];
-
         setAgzuModalData(transformedAgzuData);
-      } catch (agzuError) {
-        console.log("No AGZU data available for this well");
-        setAgzuModalData([]);
-      } finally {
         setAgzuModalLoading(false);
+      } else {
+        // Try to fetch AGZU data for this well
+        try {
+          const agzuResponse = await fetchAGZUWellData(wellNumber);
+          const agzuWellData = agzuResponse.data;
+          const agzuData = Array.isArray(agzuWellData) ? agzuWellData[0] : agzuWellData;
+
+          const transformedAgzuData = [
+            // { Параметр: "Скважина", Значение: agzuData["Скважина"] || wellNumber },
+            { Параметр: "Жидкость", Значение: formatValue(agzuData["Жидкость"], "м³") },
+            { Параметр: "Нефть", Значение: formatValue(agzuData["Нефть"], "т/сут") },
+            { Параметр: "Газ", Значение: formatValue(agzuData["Газ"], "м³/сут") },
+            { Параметр: "Обводненность", Значение: formatValue(agzuData["Обводненность"], "%") },
+          ];
+
+          setAgzuModalData(transformedAgzuData);
+        } catch (agzuError) {
+          console.log("No AGZU data available for this well");
+          setAgzuModalData([]);
+        } finally {
+          setAgzuModalLoading(false);
+        }
       }
 
     } catch (error) {
@@ -297,7 +320,13 @@ export default function AppLayout() {
           </div>
           <div className={styles.container}>
             {fond === 0 ? (
-              <AGZU wells={wellsForComponents} index={2}/>
+              <AGZU 
+                wells={wellsForComponents} 
+                index={2} 
+                handleWellClick={handleWellClick}
+                setCurrentOtvodWell={setCurrentOtvodWell}
+                setCurrentOtvodData={setCurrentOtvodData}
+              />
             ) : (
               <VRP wells={wellsForComponents} />
             )}
@@ -305,7 +334,6 @@ export default function AppLayout() {
         </div>
       </div>
 
-      {/* Well Data Modal with Side-by-Side Tables */}
       {showWellModal && (
         <Modal onClose={handleCloseWellModal}>
           <div style={{ padding: "20px" }}>
@@ -323,7 +351,6 @@ export default function AppLayout() {
               gap: '30px',
               flexWrap: 'wrap'
             }}>
-              {/* Well Matrix Data Table */}
               <div style={{ flex: '1', minWidth: '300px' }}>
                 <h3 style={{ 
                   color: 'white', 
@@ -349,7 +376,6 @@ export default function AppLayout() {
                 )}
               </div>
 
-              {/* AGZU Data Table */}
               <div style={{ flex: '1', minWidth: '300px' }}>
                 <h3 style={{ 
                   color: 'white', 
