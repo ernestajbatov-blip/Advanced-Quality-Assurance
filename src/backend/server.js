@@ -837,7 +837,7 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     return res.status(400).json({ error: "Category is required" });
   }
   
-  // Convert category to tag prefix (e.g., "АГЗУ-2" -> "agzu_2", "МФ №3" -> "mf_3")
+  // Convert category to tag prefix (e.g., "АГЗУ-2" -> "agzu_2")
   const tagPrefix = convertCategoryToTagPrefix(category);
   
   if (!tagPrefix) {
@@ -848,16 +848,20 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     SELECT tag_key, tag_value 
     FROM n_wincctags 
     WHERE oil_field = 'BSK' 
-    AND (tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ? OR tag_key LIKE ?)
+    AND (
+      tag_key LIKE ? OR 
+      tag_key LIKE ? OR 
+      tag_key LIKE ? OR 
+      tag_key LIKE ?
+    )
     ORDER BY tag_key;
   `;
   
   const params = [
-    `${tagPrefix}_time%`,
-    `${tagPrefix}_otvod%`, 
-    `${tagPrefix}_collector_pressure%`,
-    `${tagPrefix}_temperature%`,
-    `${tagPrefix}_current_skv%`,
+    `${tagPrefix}_current%`,
+    `${tagPrefix}_sep_pressure%`,
+    `${tagPrefix}_pass_time%`,
+    `${tagPrefix}_liq_temp%`,
   ];
   
   connection.query(query, params, (error, results) => {
@@ -869,7 +873,7 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     // Convert results to object for easier access
     const tags = {};
     results.forEach(row => {
-      tags[row.tag_key] = parseFloat(row.tag_value) || row.tag_value; // Keep as string if not a number
+      tags[row.tag_key] = parseFloat(row.tag_value) || row.tag_value;
     });
     
     res.json({ 

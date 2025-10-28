@@ -181,20 +181,27 @@ export default function Diagram() {
     // "ARM_PP063_TT": "МПа",
 
     // МФН-1
-    "ARM_MFN1_TEMP": "°C",
-    "ARM_MFN1_P_IN": "атм",
-    "ARM_MFN1_P_OUT": "атм", 
-    "ARM_MFN1_CURRENT": "А",
-    "ARM_MFN1_POWER": "кВт",
-    "ARM_MFN1_FREQ": "Гц",
+    "mfn_1_pump_t": "°C",
+    "mfn_1_pump_in_pressure": "бар",
+    "mfn_1_pump_out_pressure": "бар", 
+    // "mfn_1_set_freq": "Гц",
+    "mfn_1_freq": "Гц",
+    "mfn_1_work_time": "",
+    "mfn_1_power": "кВт",
+    "mfn_1_speed": "об/мин",
+    "mfn_1_pump_set_pressure": "бар",
+    "mfn_1_current": "А",
+    "mfn_1_rotor_speed": "об/мин",
 
     // МФН-2
-    "ARM_MFN2_TEMP": "°C",
-    "ARM_MFN2_P_IN": "атм",
-    "ARM_MFN2_P_OUT": "атм",
-    "ARM_MFN2_CURRENT": "А", 
-    "ARM_MFN2_POWER": "кВт",
-    "ARM_MFN2_FREQ": "Гц",
+    "mfn_2_pump_t": "°C",
+    "mfn_2_pump_in_pressure": "бар",
+    "mfn_2_pump_out_pressure": "бар",
+    // "mfn_2_set_freq": "Гц",
+    "mfn_2_freq": "Гц",
+    "mfn_2_work_time": "",
+    "mfn_2_power": "ч",
+    "mfn_2_speed": "об/мин",
 
     // Насосная перекачка нефти
     "Rabota_nasos__1-NPS": "",
@@ -318,20 +325,27 @@ export default function Diagram() {
     // "ARM_PP063_TT": "Давление",
 
     // МФН-1
-    "ARM_MFN1_TEMP": "Темп. насоса",
-    "ARM_MFN1_P_IN": "Давление вход.",
-    "ARM_MFN1_P_OUT": "Давление выход.",
-    "ARM_MFN1_CURRENT": "Ток двиг.",
-    "ARM_MFN1_POWER": "Мощность",
-    "ARM_MFN1_FREQ": "Частота",
+    "mfn_1_pump_t": "Темп. насоса",
+    "mfn_1_pump_in_pressure": "Давление вход.",
+    "mfn_1_pump_out_pressure": "Давление выход.",
+    // "mfn_1_set_freq": "Задание частоты",
+    "mfn_1_freq": "Частота",
+    "mfn_1_work_time": "Время работы",
+    "mfn_1_power": "Мощность",
+    "mfn_1_speed": "Скорость",
+    "mfn_1_pump_set_pressure": "Задание давления",
+    "mfn_1_current": "Ток",
+    "mfn_1_rotor_speed": "Скорость ротора",
 
     // МФН-2
-    "ARM_MFN2_TEMP": "Темп. насоса",
-    "ARM_MFN2_P_IN": "Давление вход.",
-    "ARM_MFN2_P_OUT": "Давление выход.",
-    "ARM_MFN2_CURRENT": "Ток двиг.",
-    "ARM_MFN2_POWER": "Мощность",
-    "ARM_MFN2_FREQ": "Частота",
+    "mfn_2_pump_t": "Темп. насоса",
+    "mfn_2_pump_in_pressure": "Давление вход.",
+    "mfn_2_pump_out_pressure": "Давление выход.",
+    // "mfn_2_set_freq": "Задание частоты",
+    "mfn_2_freq": "Частота",
+    "mfn_2_work_time": "Время работы",
+    "mfn_2_power": "Мощность",
+    "mfn_2_speed": "Скорость",
 
     // Насосная перекачка нефти
     "Rabota_nasos__1-NPS": "Статус работы",
@@ -423,92 +437,88 @@ export default function Diagram() {
     "quantity_netto_3": "Количество (нетто) - смена"
   };
 
-  const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
-    let transformedData;
-    if (filterTags && filterTags.length > 0) {
-      // Separate tags that should use random generation from those that shouldn't
-      const gasConsumptionTags = filterTags.filter(tag => tag.includes('gas_') && tag.includes('_consumption'));
-      const tagsForRandomGeneration = filterTags.filter(tag => !(tag.includes('gas_') && tag.includes('_consumption')));
+const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
+  let transformedData;
+  if (filterTags && filterTags.length > 0) {
+    // Get real data for all tags from oilProgressData
+    const filteredData = oilProgressData.filter(item => filterTags.includes(item.tag_key));
 
-      let filteredData = [];
+    // Sort by the order of original filterTags array
+    const sorted = filterTags.map(tag =>
+      filteredData.find(item => item.tag_key === tag)).filter(Boolean);
 
-      // Check if tags (excluding gas consumption) need random generation
-      if (tagsForRandomGeneration.some(tag => tag.includes('PNK') || tag.includes('PP063') || tag.includes('MFN') || tag.includes('GS') || tag.includes('GPS') || tag.includes('BKNS'))) {
-        // Generate random data for non-gas consumption tags if they match specific patterns
-        filteredData = generateRandomSensorData(tagsForRandomGeneration);
-      } else {
-        // Otherwise, get real data for non-gas consumption tags
-        filteredData = oilProgressData.filter(item => tagsForRandomGeneration.includes(item.tag_key));
-      }
+    transformedData = sorted.map(item => {
+      let value = item.value || item.tag_value;
 
-      // Get real data for gas consumption tags
-      const gasConsumptionData = oilProgressData.filter(item => gasConsumptionTags.includes(item.tag_key));
-
-      // Combine real gas consumption data with other data (random or real)
-      filteredData = [...filteredData, ...gasConsumptionData];
-
-      // Sort by the order of original filterTags array
-      const sorted = filterTags.map(tag =>
-        filteredData.find(item => item.tag_key === tag)).filter(Boolean);
-
-      transformedData = sorted.map(item => {
-        let value = item.value || item.tag_value;
-
-        // Handle boolean values specifically
-        if (value === "True" || value === true) {
-          value = "Включен";
-        } else if (value === "False" || value === false) {
-          value = "Выключен";
-        } else if (typeof value === 'number') {
-          value = `${value.toFixed(2)} ${TAG_UNITS[item.tag_key] || ''}`.trim();
-        } else {
-          // Try to parse as number for non-boolean string values
-          const numValue = parseFloat(value);
-          if (!isNaN(numValue)) {
-            value = `${numValue.toFixed(2)} ${TAG_UNITS[item.tag_key] || ''}`.trim();
-          } else {
-            value = `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim();
-          }
-        }
-
-        // Map tag keys to descriptive names for the table
-        return {
-          "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
-          "Показание": value
-        };
-      });
-
-      // --- ADDITION: Hardcode GNU specific entries if clicking on GNU pumps ---
-      if (buttonTitle.includes("ГНУ")) {
-        const expectedEntries = [
-          { "Датчик": "Температура", "Показание": "---" },
-          { "Датчик": "Мгновенный расход", "Показание": "---" },
-          { "Датчик": "Накопленный расход", "Показание": "---" }
-        ];
-
-        expectedEntries.forEach(expectedEntry => {
-          // Check if an entry with the same "Датчик" name already exists in transformedData
-          const exists = transformedData.some(existingItem => existingItem["Датчик"] === expectedEntry["Датчик"]);
-          // If it doesn't exist, add the static entry
-          if (!exists) {
-            transformedData.push(expectedEntry);
-          }
-        });
-      }
-      // --- END OF ADDITION ---
-
+    // Handle boolean values specifically
+    if (value === "True" || value === true) {
+      value = "Включен";
+    } else if (value === "False" || value === false) {
+      value = "Выключен";
+    } else if (item.tag_key.includes('work_time')) {
+      // Special handling for work_time values
+      value = value.toString();
+    } else if (typeof value === 'number') {
+      value = `${value.toFixed(2)} ${TAG_UNITS[item.tag_key] || ''}`.trim();
     } else {
-      // Default transformation if no specific tags are provided
-      transformedData = oilProgressData.map(item => ({
-        "Параметр": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
-        "Значение": item.value !== undefined && item.value !== null ? `${item.value} ${TAG_UNITS[item.tag_key] || ''}`.trim() : "N/A"
-      }));
+      // Try to parse as number for non-boolean string values
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue)) {
+        value = `${numValue.toFixed(2)} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+      } else {
+        value = `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+      }
     }
 
-    setTableData(transformedData);
-    setTableTitle(buttonTitle);
-    setShowTable(true);
-  };
+      // Map tag keys to descriptive names for the table
+      return {
+        "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+        "Показание": value
+      };
+    });
+
+    // For GNU pumps, show "Нет данных" if entries don't exist
+    if (buttonTitle.includes("ГНУ")) {
+      const expectedEntries = [
+        { "Датчик": "Температура", "Показание": "Нет данных" },
+        { "Датчик": "Мгновенный расход", "Показание": "Нет данных" },
+        { "Датчик": "Накопленный расход", "Показание": "Нет данных" }
+      ];
+
+      expectedEntries.forEach(expectedEntry => {
+        const exists = transformedData.some(existingItem => existingItem["Датчик"] === expectedEntry["Датчик"]);
+        if (!exists) {
+          transformedData.push(expectedEntry);
+        }
+      });
+    }
+
+  } else {
+    // Default transformation if no specific tags are provided
+    transformedData = oilProgressData.map(item => {
+      let value = item.value;
+      
+      if (value !== undefined && value !== null) {
+        if (item.tag_key.includes('work_time')) {
+          value = value.toString();
+        } else {
+          value = `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+        }
+      } else {
+        value = "N/A";
+      }
+      
+      return {
+        "Параметр": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+        "Значение": value
+      };
+    });
+  }
+
+  setTableData(transformedData);
+  setTableTitle(buttonTitle);
+  setShowTable(true);
+};
 
 
   // Handle Uzel Ucheta click to show all related data
@@ -656,60 +666,60 @@ export default function Diagram() {
   //   setVlagomerData(data);
   // };
 
-  const generateRandomSensorData = (tags) => {
-    // Filter out gas_*_consumption tags only
-    const filteredTags = tags.filter(tag => !(tag.includes('gas_') && tag.includes('_consumption')));
+  // const generateRandomSensorData = (tags) => {
+  //   // Filter out gas_*_consumption tags only
+  //   const filteredTags = tags.filter(tag => !(tag.includes('gas_') && tag.includes('_consumption')));
     
-    return filteredTags.map(tag => {
-      let value;
-      if (tag.includes('BKNS') && tag.includes('TEMP')) { // BKNS Temperature
-        value = (Math.random() * 30 + 50).toFixed(2); // 50-80°C
-      } else if (tag.includes('BKNS') && tag.includes('CURRENT')) { // BKNS Current
-        value = (Math.random() * 30 + 15).toFixed(2); // 15-45 A
-      } else if (tag.includes('BKNS') && tag.includes('POWER')) { // BKNS Power
-        value = (Math.random() * 40 + 30).toFixed(2); // 30-70 kW
-      } else if (tag.includes('BKNS') && tag.includes('FLOW')) { // BKNS Accumulated Flow
-        value = (Math.random() * 5000 + 10000).toFixed(2); // 10000-15000 m³
-      } else if (tag.includes('MFN') && tag.includes('TEMP')) { // Temperature sensors for MFN
-        value = (Math.random() * 60 + 40).toFixed(2); // 40-100°C
-      } else if (tag.includes('P_IN')) { // Input pressure for MFN
-        value = (Math.random() * 3 + 2).toFixed(2); // 2-5 atm
-      } else if (tag.includes('P_OUT')) { // Output pressure for MFN 
-        value = (Math.random() * 2 + 4).toFixed(2); // 4-6 atm
-      } else if (tag.includes('CURRENT')) { // Current
-        value = (Math.random() * 20 + 10).toFixed(2); // 10-30 A
-      } else if (tag.includes('POWER')) { // Power
-        value = (Math.random() * 50 + 25).toFixed(2); // 25-75 kW
-      } else if (tag.includes('FREQ')) { // Frequency
-        value = (Math.random() * 10 + 45).toFixed(2); // 45-55 Hz
-      } else if (tag.includes('gnu_') && tag.includes('_voltage')) { // GNU Voltage
-        value = (Math.random() * 50 + 350).toFixed(2); // 350-400 V
-      } else if (tag.includes('gnu_') && tag.includes('_speed')) { // GNU Speed
-        value = (Math.random() * 200 + 1400).toFixed(2); // 1400-1600 rpm
-      } else if (tag.includes('gnu_') && tag.includes('_temp')) { // GNU Temperature - SET TO 0
-        value = "---";
-      } else if (tag.includes('gnu_') && tag.includes('_nagn')) { // GNU Instant flow - SET TO 0
-        value = "---";
-      } else if (tag.includes('gnu_') && tag.includes('_nakop')) { // GNU Accumulated - SET TO 0
-        value = "---";
-      } else if (tag.includes('PNK') && (tag.includes('LC') || tag.includes('PT'))) { 
-        // Temperature sensors for PNK
-        value = (Math.random() * 80 + 60).toFixed(2); // 60-140°C
-      } else if (tag.includes('PP063') && (tag.includes('LC') || tag.includes('PT'))) { 
-        // Temperature sensors for PP-0,63
-        value = (Math.random() * 80 + 60).toFixed(2); // 60-140°C
-      } else if (tag.includes('TT')) { // Pressure sensors
-        value = (Math.random() * 5 + 1).toFixed(2); // 1-6 atm or MPa
-      } else {
-        value = (Math.random() * 100).toFixed(2);
-      }
+  //   return filteredTags.map(tag => {
+  //     let value;
+  //     if (tag.includes('BKNS') && tag.includes('TEMP')) { // BKNS Temperature
+  //       value = (Math.random() * 30 + 50).toFixed(2); // 50-80°C
+  //     } else if (tag.includes('BKNS') && tag.includes('CURRENT')) { // BKNS Current
+  //       value = (Math.random() * 30 + 15).toFixed(2); // 15-45 A
+  //     } else if (tag.includes('BKNS') && tag.includes('POWER')) { // BKNS Power
+  //       value = (Math.random() * 40 + 30).toFixed(2); // 30-70 kW
+  //     } else if (tag.includes('BKNS') && tag.includes('FLOW')) { // BKNS Accumulated Flow
+  //       value = (Math.random() * 5000 + 10000).toFixed(2); // 10000-15000 m³
+  //     } else if (tag.includes('MFN') && tag.includes('TEMP')) { // Temperature sensors for MFN
+  //       value = (Math.random() * 60 + 40).toFixed(2); // 40-100°C
+  //     } else if (tag.includes('P_IN')) { // Input pressure for MFN
+  //       value = (Math.random() * 3 + 2).toFixed(2); // 2-5 atm
+  //     } else if (tag.includes('P_OUT')) { // Output pressure for MFN 
+  //       value = (Math.random() * 2 + 4).toFixed(2); // 4-6 atm
+  //     } else if (tag.includes('CURRENT')) { // Current
+  //       value = (Math.random() * 20 + 10).toFixed(2); // 10-30 A
+  //     } else if (tag.includes('POWER')) { // Power
+  //       value = (Math.random() * 50 + 25).toFixed(2); // 25-75 kW
+  //     } else if (tag.includes('FREQ')) { // Frequency
+  //       value = (Math.random() * 10 + 45).toFixed(2); // 45-55 Hz
+  //     } else if (tag.includes('gnu_') && tag.includes('_voltage')) { // GNU Voltage
+  //       value = (Math.random() * 50 + 350).toFixed(2); // 350-400 V
+  //     } else if (tag.includes('gnu_') && tag.includes('_speed')) { // GNU Speed
+  //       value = (Math.random() * 200 + 1400).toFixed(2); // 1400-1600 rpm
+  //     } else if (tag.includes('gnu_') && tag.includes('_temp')) { // GNU Temperature - SET TO 0
+  //       value = "---";
+  //     } else if (tag.includes('gnu_') && tag.includes('_nagn')) { // GNU Instant flow - SET TO 0
+  //       value = "---";
+  //     } else if (tag.includes('gnu_') && tag.includes('_nakop')) { // GNU Accumulated - SET TO 0
+  //       value = "---";
+  //     } else if (tag.includes('PNK') && (tag.includes('LC') || tag.includes('PT'))) { 
+  //       // Temperature sensors for PNK
+  //       value = (Math.random() * 80 + 60).toFixed(2); // 60-140°C
+  //     } else if (tag.includes('PP063') && (tag.includes('LC') || tag.includes('PT'))) { 
+  //       // Temperature sensors for PP-0,63
+  //       value = (Math.random() * 80 + 60).toFixed(2); // 60-140°C
+  //     } else if (tag.includes('TT')) { // Pressure sensors
+  //       value = (Math.random() * 5 + 1).toFixed(2); // 1-6 atm or MPa
+  //     } else {
+  //       value = (Math.random() * 100).toFixed(2);
+  //     }
       
-      return {
-        tag_key: tag,
-        value: parseFloat(value)
-      };
-    });
-  };
+  //     return {
+  //       tag_key: tag,
+  //       value: parseFloat(value)
+  //     };
+  //   });
+  // };
 
   const handleVlagomerDateChange = (date) => {
     if (date) {
@@ -830,7 +840,7 @@ export default function Diagram() {
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["ARM_MFN1_TEMP", "ARM_MFN1_P_IN", "ARM_MFN1_P_OUT", "ARM_MFN1_CURRENT", "ARM_MFN1_POWER", "ARM_MFN1_FREQ"], 
+            ["mfn_1_pump_t", "mfn_1_pump_in_pressure", "mfn_1_pump_out_pressure", "mfn_1_freq", "mfn_1_work_time", "mfn_1_power", "mfn_1_speed", "mfn_1_pump_set_pressure", "mfn_1_current", "mfn_1_rotor_speed"], 
             "МФН-1"
           )}
           style={{
@@ -854,7 +864,7 @@ export default function Diagram() {
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["ARM_MFN2_TEMP", "ARM_MFN2_P_IN", "ARM_MFN2_P_OUT", "ARM_MFN2_CURRENT", "ARM_MFN2_POWER", "ARM_MFN2_FREQ"], 
+            ["mfn_2_pump_t", "mfn_2_pump_in_pressure", "mfn_2_pump_out_pressure", "mfn_2_freq", "mfn_2_work_time", "mfn_2_power", "mfn_2_speed"], 
             "МФН-2"
           )}
           style={{
@@ -1105,73 +1115,88 @@ export default function Diagram() {
       top: "34.5%",
       left: "91.2%",
       content: (
-      <>
-        <div 
-        style={{
-          cursor: "pointer",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          position: "relative"
-        }}
-        >
-        <Pumps numberOfSquares={3} activeIndex={2} width={55} height={52} />
-        <LabelBox
-          label={"БКНС"}
-          width={150}
-          height={10}
-          fontSize={10}
-        />
-        {/* БКНС Pump 1 clickable area */}
-        <div 
-          onClick={() => handleTableClick(
-          ["gnu_1_freq", "gnu_1_voltage", "gnu_1_current", "gnu_1_power", "gnu_1_speed", "gnu_1_temp", "gnu_1_nagn", "gnu_1_nakop", "gnu_1_consumption"], 
-          "ГНУ-1"
-          )}
-          style={{
-          position: "absolute",
-          top: "0%",
-          left: "0%",
-          width: "55px",
-          height: "52px",
-          cursor: "pointer",
-          // backgroundColor: "red"
-          }}
-        />
-        {/* БКНС Pump 2 clickable area */}
-        <div 
-          onClick={() => handleTableClick(
-          ["gnu_2_freq", "gnu_2_voltage", "gnu_2_current", "gnu_2_power", "gnu_2_speed", "gnu_2_temp", "gnu_2_nagn", "gnu_2_nakop", "gnu_2_consumption"],
-          "ГНУ-2"
-          )}
-          style={{
-          position: "absolute",
-          top: "0%",
-          left: "33%",
-          width: "55px",
-          height: "52px",
-          cursor: "pointer",
-          // backgroundColor: "green"
-          }}
-        />
-        {/* БКНС Pump 3 clickable area */}
-        <div 
-          onClick={() => handleTableClick(
-          ["gnu_3_freq", "gnu_3_voltage", "gnu_3_current", "gnu_3_power", "gnu_3_speed", "gnu_3_temp", "gnu_3_nagn", "gnu_3_nakop", "gnu_3_consumption"],
-          "ГНУ-3"
-          )}
-          style={{
-          position: "absolute",
-          top: "0%",
-          left: "67%",
-          width: "55px", 
-          height: "52px",
-          cursor: "pointer",
-          // backgroundColor: "blue"
-          }}
-        />
-        </div>
-      </>
+        <>
+          <div
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              position: "relative"
+            }}
+          >
+            <Pumps 
+              numberOfSquares={3} 
+              width={55} 
+              height={52}
+              pumpStatuses={[
+                { 
+                  tag: "gnu_1_status", 
+                  status: oilProgressData.find(d => d.tag_key === "gnu_1_status")?.value || 0 
+                },
+                { 
+                  tag: "gnu_2_status", 
+                  status: oilProgressData.find(d => d.tag_key === "gnu_2_status")?.value || 0 
+                },
+                { 
+                  tag: "gnu_3_status", 
+                  status: oilProgressData.find(d => d.tag_key === "gnu_3_status")?.value || 0 
+                }
+              ]}
+            />
+            <LabelBox
+              label={"БКНС"}
+              width={150}
+              height={10}
+              fontSize={10}
+            />
+            {/* БКНС Pump 1 clickable area */}
+            <div
+              onClick={() => handleTableClick(
+                ["gnu_1_freq", "gnu_1_voltage", "gnu_1_current", "gnu_1_power", "gnu_1_speed", "gnu_1_temp", "gnu_1_nagn", "gnu_1_nakop", "gnu_1_consumption"],
+                "ГНУ-1"
+              )}
+              style={{
+                position: "absolute",
+                top: "0%",
+                left: "0%",
+                width: "55px",
+                height: "52px",
+                cursor: "pointer",
+              }}
+            />
+            {/* БКНС Pump 2 clickable area */}
+            <div
+              onClick={() => handleTableClick(
+                ["gnu_2_freq", "gnu_2_voltage", "gnu_2_current", "gnu_2_power", "gnu_2_speed", "gnu_2_temp", "gnu_2_nagn", "gnu_2_nakop", "gnu_2_consumption"],
+                "ГНУ-2"
+              )}
+              style={{
+                position: "absolute",
+                top: "0%",
+                left: "33%",
+                width: "55px",
+                height: "52px",
+                cursor: "pointer",
+              }}
+            />
+            {/* БКНС Pump 3 clickable area */}
+            <div
+              onClick={() => handleTableClick(
+                ["gnu_3_freq", "gnu_3_voltage", "gnu_3_current", "gnu_3_power", "gnu_3_speed", "gnu_3_temp", "gnu_3_nagn", "gnu_3_nakop", "gnu_3_consumption"],
+                "ГНУ-3"
+              )}
+              style={{
+                position: "absolute",
+                top: "0%",
+                left: "67%",
+                width: "55px",
+                height: "52px",
+                cursor: "pointer",
+              }}
+            />
+          </div>
+        </>
       ),
     },
     {
@@ -1530,7 +1555,7 @@ export default function Diagram() {
       left: "91.8%",
       content: (
         <div 
-          title={`Расходомер 1\nМгновенный расход: ${(Math.random() * 50 + 10).toFixed(1)} м³/ч\nНакопленный расход: ${(Math.random() * 1000 + 500).toFixed(0)} м³`}
+          title="Расходомер 1"
           style={{
             position: "absolute",
             top: "0%",
@@ -1538,8 +1563,6 @@ export default function Diagram() {
             width: "30px",
             height: "30px",
             cursor: "pointer",
-            // backgroundColor: "rgba(255, 255, 0, 0.1)", // Optional: visible area for testing
-            // border: "1px solid rgba(255, 255, 0, 0.3)"
           }}
         />
       ),
@@ -1551,7 +1574,7 @@ export default function Diagram() {
       left: "94.8%",
       content: (
         <div 
-          title={`Расходомер 2\nМгновенный расход: ${(Math.random() * 50 + 10).toFixed(1)} м³/ч\nНакопленный расход: ${(Math.random() * 1000 + 500).toFixed(0)} м³`}
+          title="Расходомер 2"
           style={{
             position: "absolute",
             top: "0%",
@@ -1559,8 +1582,6 @@ export default function Diagram() {
             width: "30px",
             height: "30px",
             cursor: "pointer",
-            // backgroundColor: "rgba(255, 0, 255, 0.1)", // Optional: visible area for testing
-            // border: "1px solid rgba(255, 0, 255, 0.3)"
           }}
         />
       ),
@@ -1572,7 +1593,7 @@ export default function Diagram() {
       left: "97.8%", 
       content: (
         <div 
-          title={`Расходомер 3\nМгновенный расход: ${(Math.random() * 50 + 10).toFixed(1)} м³/ч\nНакопленный расход: ${(Math.random() * 1000 + 500).toFixed(0)} м³`}
+          title="Расходомер 3"
           style={{
             position: "absolute",
             top: "0%",
@@ -1580,8 +1601,6 @@ export default function Diagram() {
             width: "30px",
             height: "30px",
             cursor: "pointer",
-            // backgroundColor: "rgba(0, 255, 255, 0.1)", // Optional: visible area for testing
-            // border: "1px solid rgba(0, 255, 255, 0.3)"
           }}
         />
       ),

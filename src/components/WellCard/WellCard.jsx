@@ -1,3 +1,4 @@
+// WellCard.jsx:
 import React, {useState, useContext} from "react";
 import styles from "./WellCard.module.css";
 import { fetchWellData } from "../../axios/wellService";
@@ -8,10 +9,10 @@ import { WellsABCContext } from "../../states/WellsABCContext";
 
 export default function WellCard({
   leftTop,
-  rightTop,
-  middle,
-  leftBottom,
-  rightBottom,
+  rightTop, // tr_oil or plan zakachka
+  middle, // THE PERCENTAGE DIFFERENCE (calculated in Grid)
+  leftBottom, // tr_fluid or nothing for injection
+  rightBottom, // tr_water or nothing for injection
   setSelectedWell,
   maxThreshold,
   colorMax,
@@ -20,18 +21,19 @@ export default function WellCard({
   inBetweenThresholdMin,
   inBetweenColor,
   inBetweenThresholdMax,
-  realMiddle,
+  realMiddle, // THE VALUE TO DISPLAY (raw measured value)
   onWellClick,
   working,
   hideWorkingStatus = false,
   wellStopped = false,
   fond,
-  well
+  well,
+  chartType
 }) {
   const location = useLocation();
   const context = location.pathname === "/abc" ? useContext(WellsABCContext) : null;
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [wellData, setWellData] = useState(null); // Changed from 'well' to 'wellData'
+  const [wellData, setWellData] = useState(null);
 
   const handleClick = async () => {
     if (onWellClick) {
@@ -47,7 +49,7 @@ export default function WellCard({
         const selected = wells.filter((well) => well.well === leftTop);
         console.log(selected);
         setWellsChart(selected);
-        setWellData(data); // Changed from setWell to setWellData
+        setWellData(data);
         setSelectedWell(selected);
         setIsModalOpen(true);
       } catch (err) {
@@ -60,53 +62,47 @@ export default function WellCard({
 
   // Helper function to format numeric values
   const formatValue = (value, decimals = 2) => {
-    // Check for null, undefined, or empty string
     if (value === null || value === undefined || value === '') {
       return "N/A";
     }
     
-    // Convert to number
     const numValue = parseFloat(value);
     
-    // Check if conversion resulted in NaN or Infinity
     if (isNaN(numValue) || !isFinite(numValue)) {
       return "N/A";
     }
     
-    // Return formatted number (including 0.00)
     return numValue.toFixed(decimals);
   };
 
-  // DEBUG: Log the values to see what's happening
+  // DEBUG: Log the values
   console.log(`Well ${leftTop}:`, {
-    fond: fond,
-    wellStopped: wellStopped,
-    middle: middle,
-    minThreshold: minThreshold,
-    maxThreshold: maxThreshold,
-    rightTop: rightTop,
-    leftBottom: leftBottom,
-    rightBottom: rightBottom
+    fond,
+    chartType,
+    middle, // This is the PERCENTAGE difference
+    realMiddle, // This is the RAW measured value to display
+    rightTop, // tr_oil
+    leftBottom, // tr_fluid
   });
 
   let cardColorClass = styles.grayCard;
 
-  // Check if we're on the ABC page for different coloring logic
+  // Check if we're on the ABC page
   if (location.pathname === "/abc") {
-    // ABC-specific coloring logic
+    // ABC-specific coloring logic using the percentage (middle)
     if (middle < 0) {
-      cardColorClass = styles.greenCard; // Green for values less than 0
+      cardColorClass = styles.greenCard;
     } else if (middle > 20) {
-      cardColorClass = styles.redCard; // Red for values greater than 20
+      cardColorClass = styles.redCard;
     } else if (middle > 10 && middle <= 20) {
-      cardColorClass = styles.orangeCard; // Orange for values between 10 and 20
+      cardColorClass = styles.orangeCard;
     } else if (middle >= 0 && middle <= 10) {
-      cardColorClass = styles.grayCard; // Gray for values between 0 and 10
+      cardColorClass = styles.grayCard;
     }
   } else {
-    // Original logic for other pages (AppLayout)
+    // AppLayout logic
     if (fond === 1) {
-      // For injection wells, completely different color logic
+      // For injection wells, original logic with different thresholds
       if (middle > maxThreshold) {
         cardColorClass = styles[colorMax]; // Green
       } else if (middle !== 0 && middle > inBetweenThresholdMin && middle <= inBetweenThresholdMax) {
@@ -115,27 +111,29 @@ export default function WellCard({
         cardColorClass = styles.grayCard; // Gray
       }
     } else if (fond === 0) {
-      // For production wells
+      // Production wells
       const current = parseFloat(well?.c_current) || 0;
       const currentMin = parseFloat(well?.c_current_min) || 0;
       const currentMax = parseFloat(well?.c_current_max) || Infinity;
-      
+      const percentageDiff = parseFloat(middle); // The percentage difference
+
+      // Priority 1: Red conditions (using 'current')
       if (current < 1) {
-        // Static red for current < 1
-        cardColorClass = styles.redCardStatic; // Use the new static class
+        cardColorClass = styles.redCardStatic; // Static red for current < 1
       } else if (current < currentMin || current > currentMax) {
-        // Blinking red for outside min/max range (but >= 1)
-        cardColorClass = styles.redCard; // Use the animated class
+        cardColorClass = styles.redCard; // Blinking red for current out of range
       } else if (wellStopped && working !== 3) {
-        // Blinking red for other stopped conditions
-        cardColorClass = styles.redCard; // Use the animated class
-      } else if (middle > maxThreshold) {
-        cardColorClass = styles[colorMax]; // Green for good performance
-      } else if (middle !== 0) {
-        const percentageDifference = middle;
-        if (percentageDifference > inBetweenThresholdMin &&
-            percentageDifference <= inBetweenThresholdMax) {
-          cardColorClass = styles[inBetweenColor]; // Orange
+        cardColorClass = styles.redCard; // Blinking red for stopped
+      } else {
+        // If not red, check for orange: percentage < -15%
+        const orangeThreshold = -15;
+
+        if (!isNaN(percentageDiff) && percentageDiff < orangeThreshold) {
+          cardColorClass = styles.orangeCard; // Orange if 15% below target
+        } else if (percentageDiff > maxThreshold) {
+          cardColorClass = styles[colorMax]; // Green for good performance
+        } else {
+          cardColorClass = styles.grayCard; // Default gray
         }
       }
     }

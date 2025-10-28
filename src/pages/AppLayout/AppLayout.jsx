@@ -1,3 +1,4 @@
+// AppLayout.jsx:
 import React, { useState, useEffect, useContext, useMemo } from "react";
 import { fetchWells, fetchWellData } from "../../axios/wellService";
 import styles from "./AppLayout.module.css";
@@ -24,7 +25,7 @@ export default function AppLayout() {
   const [wellModalData, setWellModalData] = useState([]);
   const [wellModalTitle, setWellModalTitle] = useState("Well Data");
   const [wellModalLoading, setWellModalLoading] = useState(false);
-  const [chartType, setChartType] = useState("liquid"); // 'liquid' or 'oil'
+  const [chartType, setChartType] = useState("liquid"); // 'liquid' or 'oil' // ADDED STATE
   
   // ЧРП filter state
   const [chrpFilter, setChrpFilter] = useState(false);
@@ -41,14 +42,14 @@ export default function AppLayout() {
   const fieldMappings = useMemo(() => ({
     leftTop: "well",
     rightTop: "tr_oil",
-    middle: chartType === "liquid" ? "zamer" : "zamer_oil",
-    leftBottom: "tr_fluid",
+    middle: chartType === "liquid" ? "zamer" : "zamer_oil", // ADDED LOGIC
+    leftBottom: "tr_fluid", // ADDED MAPPING
     rightBottom: "tr_water",
   }), [chartType]);
 
   const calculateMiddleValue = (wells, values) => {
     // Choose the base value based on chart type
-    const baseValue = chartType === "oil" ? values.rightTop : values.leftBottom;
+    const baseValue = chartType === "oil" ? values.rightTop : values.leftBottom; // CHANGED LOGIC
     
     // Calculate percentage difference
     return parseFloat(((values.middle - baseValue) / baseValue * 100).toFixed(2));
@@ -198,7 +199,7 @@ export default function AppLayout() {
       <div className={styles.mainSection}>
         <div className={styles.row}>
           <div className={styles.chartContainer}>
-            <Chart type={chartType} setType={setChartType} />
+            <Chart type={chartType} setType={setChartType} /> {/* PASSED chartType AND setChartType */}
           </div>
           <div className={styles.container}>
             <KPI chartType={chartType} />
@@ -262,6 +263,7 @@ export default function AppLayout() {
               isWellStopped={isWellStopped} // Pass the function to check if well is stopped
               fond={fond} // Pass fond to Grid
               chrpFilter={chrpFilter}
+              chartType={chartType} // PASS chartType TO Grid
             />
           </div>
           <div className={styles.container}>

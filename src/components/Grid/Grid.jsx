@@ -1,3 +1,4 @@
+// Grid.jsx:
 import React from "react";
 import WellCard from "../WellCard/WellCard";
 import styles from "./Grid.module.css";
@@ -19,7 +20,8 @@ export default function Grid({
   hideWorkingStatus = false,
   isWellStopped,
   fond,
-  chrpFilter
+  chrpFilter,
+  chartType // RECEIVE chartType PROP
 }) {
   return (
     <div className={styles.gridContainer}>
@@ -70,6 +72,7 @@ export default function Grid({
             hideWorkingStatus={!shouldShowWorkingStatus}
             wellStopped={wellStopped}
             fond={fond}
+            chartType={chartType} // PASS chartType TO WellCard
           />
         );
       })}
