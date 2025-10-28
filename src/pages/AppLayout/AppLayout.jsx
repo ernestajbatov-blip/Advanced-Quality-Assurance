@@ -1,6 +1,6 @@
 // AppLayout.jsx:
 import React, { useState, useEffect, useContext, useMemo } from "react";
-import { fetchWells, fetchWellData } from "../../axios/wellService";
+import { fetchWells, fetchWellData, fetchAGZUWellData } from "../../axios/wellService";
 import styles from "./AppLayout.module.css";
 import Chart from "../../components/Chart/Chart";
 import Grid from "../../components/Grid/Grid";
@@ -23,9 +23,11 @@ export default function AppLayout() {
   // Modal state management
   const [showWellModal, setShowWellModal] = useState(false);
   const [wellModalData, setWellModalData] = useState([]);
+  const [agzuModalData, setAgzuModalData] = useState([]);
   const [wellModalTitle, setWellModalTitle] = useState("Well Data");
   const [wellModalLoading, setWellModalLoading] = useState(false);
-  const [chartType, setChartType] = useState("liquid"); // 'liquid' or 'oil' // ADDED STATE
+  const [agzuModalLoading, setAgzuModalLoading] = useState(false);
+  const [chartType, setChartType] = useState("liquid");
   
   // ЧРП filter state
   const [chrpFilter, setChrpFilter] = useState(false);
@@ -42,41 +44,35 @@ export default function AppLayout() {
   const fieldMappings = useMemo(() => ({
     leftTop: "well",
     rightTop: "tr_oil",
-    middle: chartType === "liquid" ? "zamer" : "zamer_oil", // ADDED LOGIC
-    leftBottom: "tr_fluid", // ADDED MAPPING
+    middle: chartType === "liquid" ? "zamer" : "zamer_oil",
+    leftBottom: "tr_fluid",
     rightBottom: "tr_water",
   }), [chartType]);
 
   const calculateMiddleValue = (wells, values) => {
-    // Choose the base value based on chart type
-    const baseValue = chartType === "oil" ? values.rightTop : values.leftBottom; // CHANGED LOGIC
-    
-    // Calculate percentage difference
+    const baseValue = chartType === "oil" ? values.rightTop : values.leftBottom;
     return parseFloat(((values.middle - baseValue) / baseValue * 100).toFixed(2));
   };
 
   const isWellStopped = (well) => {
-    // Only check production wells (fond === 0)
     if (fond !== 0) {
       return false;
     }
     
-    // Check if c_current exists and has a valid value
     if (well.c_current === null || 
         well.c_current === undefined || 
         well.c_current === '' || 
         well.c_current === 'NULL') {
-      return false; // No data available, don't consider it stopped
+      return false;
     }
     
     const current = parseFloat(well.c_current);
     
-    // Only consider stopped if it's a valid number and less than 1
     if (!isNaN(current) && isFinite(current)) {
       return current < 1;
     }
     
-    return false; // Invalid data, don't consider it stopped
+    return false;
   };
 
   const filteredWells = useMemo(() => {
@@ -125,29 +121,37 @@ export default function AppLayout() {
     if (value === null || value === undefined || value === '') {
       return "N/A";
     }
-    // Convert to number to check if it's a valid number
     const numValue = parseFloat(value);
     if (isNaN(numValue)) {
-      return value; // Return original value if it's not a number (like strings)
+      return value;
     }
-    return numValue.toString(); // Return the number as string, including "0"
+    return numValue.toString();
+  };
+
+  const formatValue = (value, unit = "", decimals = 2) => {
+    if (value === null || value === undefined || value === "") return "N/A";
+    if (typeof value === "number") {
+      return `${value.toFixed(decimals)} ${unit}`.trim();
+    }
+    return value;
   };
 
   const handleWellClick = async (wellNumber) => {
     try {
       setWellModalLoading(true);
-      setWellModalTitle(`Данные скважины ${wellNumber}`);
+      setAgzuModalLoading(true);
+      setWellModalTitle(`Данные ЧРП на ${wellNumber}`);
       setShowWellModal(true);
+      setAgzuModalData([]); // Reset AGZU data
 
       // Fetch specific well data using fetchWellData
       const response = await fetchWellData(wellNumber);
       const specificWellData = response.data;
 
-      // If API returns array, use first item, otherwise use the data directly
       const wellData = Array.isArray(specificWellData) ? specificWellData[0] : specificWellData;
 
       const transformedData = [
-        { "Параметр": "Скважина", "Значение": wellData["Скважина"] || wellNumber },
+        // { "Параметр": "Скважина", "Значение": wellData["Скважина"] || wellNumber },
         { "Параметр": "Последнее обновление", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
         { "Параметр": "Напряжение", "Значение": formatModalValue(wellData["Напряжение"]) },
         { "Параметр": "Мощность", "Значение": formatModalValue(wellData["Мощность"]) },
@@ -158,6 +162,29 @@ export default function AppLayout() {
         ...(wellData["Тип"] === 1 ? [{ "Параметр": "Температура устья", "Значение": formatModalValue(wellData["Температура"]) }] : [])
       ];
       setWellModalData(transformedData);
+      setWellModalLoading(false);
+
+      // Try to fetch AGZU data for this well
+      try {
+        const agzuResponse = await fetchAGZUWellData(wellNumber);
+        const agzuWellData = agzuResponse.data;
+        const agzuData = Array.isArray(agzuWellData) ? agzuWellData[0] : agzuWellData;
+
+        const transformedAgzuData = [
+          // { Параметр: "Скважина", Значение: agzuData["Скважина"] || wellNumber },
+          { Параметр: "Жидкость", Значение: formatValue(agzuData["Жидкость"], "м³") },
+          { Параметр: "Нефть", Значение: formatValue(agzuData["Нефть"], "т/сут") },
+          { Параметр: "Газ", Значение: formatValue(agzuData["Газ"], "м³/сут") },
+          { Параметр: "Обводненность", Значение: formatValue(agzuData["Обводненность"], "%") },
+        ];
+
+        setAgzuModalData(transformedAgzuData);
+      } catch (agzuError) {
+        console.log("No AGZU data available for this well");
+        setAgzuModalData([]);
+      } finally {
+        setAgzuModalLoading(false);
+      }
 
     } catch (error) {
       console.error("Error fetching well data:", error);
@@ -179,15 +206,17 @@ export default function AppLayout() {
           { "Параметр": "Последнее обновление", "Значение": "N/A" }
         ]);
       }
-    } finally {
       setWellModalLoading(false);
+      setAgzuModalLoading(false);
     }
   };
 
   const handleCloseWellModal = () => {
     setShowWellModal(false);
     setWellModalData([]);
+    setAgzuModalData([]);
     setWellModalLoading(false);
+    setAgzuModalLoading(false);
   };
 
   return (
@@ -199,7 +228,7 @@ export default function AppLayout() {
       <div className={styles.mainSection}>
         <div className={styles.row}>
           <div className={styles.chartContainer}>
-            <Chart type={chartType} setType={setChartType} /> {/* PASSED chartType AND setChartType */}
+            <Chart type={chartType} setType={setChartType} />
           </div>
           <div className={styles.container}>
             <KPI chartType={chartType} />
@@ -258,12 +287,12 @@ export default function AppLayout() {
               inBetweenColor={'orangeCard'}
               inBetweenThresholdMax={-15}
               realMiddle={true}
-              onWellClick={fond === 0 ? handleWellClick : undefined} // Disable well clicks in VRP mode
-              hideWorkingStatus={fond === 1} // Hide working status for injection wells (VRP)
-              isWellStopped={isWellStopped} // Pass the function to check if well is stopped
-              fond={fond} // Pass fond to Grid
+              onWellClick={fond === 0 ? handleWellClick : undefined}
+              hideWorkingStatus={fond === 1}
+              isWellStopped={isWellStopped}
+              fond={fond}
               chrpFilter={chrpFilter}
-              chartType={chartType} // PASS chartType TO Grid
+              chartType={chartType}
             />
           </div>
           <div className={styles.container}>
@@ -276,7 +305,7 @@ export default function AppLayout() {
         </div>
       </div>
 
-      {/* Well Data Modal */}
+      {/* Well Data Modal with Side-by-Side Tables */}
       {showWellModal && (
         <Modal onClose={handleCloseWellModal}>
           <div style={{ padding: "20px" }}>
@@ -288,20 +317,71 @@ export default function AppLayout() {
             }}>
               {wellModalTitle}
             </h2>
-            {wellModalLoading ? (
-              <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
-                Загрузка данных скважины...
-              </div>
-            ) : (
-              wellModalData.length > 0 && (
-                <div style={{ 
-                  overflow: "auto",
-                  maxHeight: "70vh"
+            
+            <div style={{ 
+              display: 'flex', 
+              gap: '30px',
+              flexWrap: 'wrap'
+            }}>
+              {/* Well Matrix Data Table */}
+              <div style={{ flex: '1', minWidth: '300px' }}>
+                <h3 style={{ 
+                  color: 'white', 
+                  marginTop: 0, 
+                  marginBottom: '15px',
+                  fontSize: '18px'
                 }}>
-                  <ResponsiveTable data={wellModalData} />
-                </div>
-              )
-            )}
+                  Данные скважины
+                </h3>
+                {wellModalLoading ? (
+                  <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
+                    Загрузка данных скважины...
+                  </div>
+                ) : (
+                  wellModalData.length > 0 && (
+                    <div style={{ 
+                      overflow: "auto",
+                      maxHeight: "60vh"
+                    }}>
+                      <ResponsiveTable data={wellModalData} />
+                    </div>
+                  )
+                )}
+              </div>
+
+              {/* AGZU Data Table */}
+              <div style={{ flex: '1', minWidth: '300px' }}>
+                <h3 style={{ 
+                  color: 'white', 
+                  marginTop: 0, 
+                  marginBottom: '15px',
+                  fontSize: '18px'
+                }}>
+                  Данные АГЗУ
+                </h3>
+                {agzuModalLoading ? (
+                  <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
+                    Загрузка данных АГЗУ...
+                  </div>
+                ) : agzuModalData.length > 0 ? (
+                  <div style={{ 
+                    overflow: "auto",
+                    maxHeight: "60vh"
+                  }}>
+                    <ResponsiveTable data={agzuModalData} />
+                  </div>
+                ) : (
+                  <div style={{ 
+                    color: "#999", 
+                    textAlign: "center", 
+                    padding: "20px",
+                    fontStyle: 'italic'
+                  }}>
+                    Данные АГЗУ недоступны для этой скважины
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
         </Modal>
       )}
