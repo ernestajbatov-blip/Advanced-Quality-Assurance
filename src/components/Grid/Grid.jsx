@@ -21,33 +21,35 @@ export default function Grid({
   isWellStopped,
   fond,
   chrpFilter,
-  chartType // RECEIVE chartType PROP
+  chartType
 }) {
   return (
     <div className={styles.gridContainer}>
       {wells.map((well, index) => {
         const wellValues = {
           leftTop: well[fieldMappings.leftTop],
-          rightTop: well[fieldMappings.rightTop],
+          rightTop: fond === 0 
+            ? well[fieldMappings.rightTop] * 0.87 
+            : well[fieldMappings.rightTop],
           middle: well[fieldMappings.middle],
           leftBottom: well[fieldMappings.leftBottom],
           rightBottom: well[fieldMappings.rightBottom]
         };
-
+        
         const calculatedMiddleValue = typeof calculateMiddleValue === 'function'
           ? calculateMiddleValue(well, wellValues)
           : wellValues.middle;
-
+        
         const middleValue = realMiddle === true ? wellValues.middle : calculatedMiddleValue;
-
+        
         let wellStopped = false;
         if (fond === 0 && isWellStopped) {
           wellStopped = isWellStopped(well);
         }
-
+        
         // Only show working status for ЧРП wells (type === 1)
         const shouldShowWorkingStatus = !hideWorkingStatus && well.type === 1;
-
+        
         return (
           <WellCard
             key={index}
@@ -72,7 +74,7 @@ export default function Grid({
             hideWorkingStatus={!shouldShowWorkingStatus}
             wellStopped={wellStopped}
             fond={fond}
-            chartType={chartType} // PASS chartType TO WellCard
+            chartType={chartType}
           />
         );
       })}

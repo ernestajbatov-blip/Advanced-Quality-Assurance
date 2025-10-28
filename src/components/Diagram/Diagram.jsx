@@ -184,7 +184,6 @@ export default function Diagram() {
     "mfn_1_pump_t": "°C",
     "mfn_1_pump_in_pressure": "бар",
     "mfn_1_pump_out_pressure": "бар", 
-    // "mfn_1_set_freq": "Гц",
     "mfn_1_freq": "Гц",
     "mfn_1_work_time": "",
     "mfn_1_power": "кВт",
@@ -197,8 +196,8 @@ export default function Diagram() {
     "mfn_2_pump_t": "°C",
     "mfn_2_pump_in_pressure": "бар",
     "mfn_2_pump_out_pressure": "бар",
-    // "mfn_2_set_freq": "Гц",
-    "mfn_2_freq": "Гц",
+    "mfn_2_set_freq": "Гц",
+    // "mfn_2_freq": "Гц",
     "mfn_2_work_time": "",
     "mfn_2_power": "кВт",
     "mfn_2_speed": "об/мин",
@@ -344,8 +343,8 @@ export default function Diagram() {
     "mfn_2_pump_t": "Темп. насоса",
     "mfn_2_pump_in_pressure": "Давление вход.",
     "mfn_2_pump_out_pressure": "Давление выход.",
-    // "mfn_2_set_freq": "Задание частоты",
-    "mfn_2_freq": "Частота",
+    "mfn_2_set_freq": "Частота",
+    // "mfn_2_freq": "Частота",
     "mfn_2_work_time": "Время работы",
     "mfn_2_power": "Мощность",
     "mfn_2_speed": "Обороты двигателя",
@@ -446,18 +445,15 @@ export default function Diagram() {
 
   
 const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
-  alert(`Clicked: ${buttonTitle}, Tags: ${filterTags?.length}`);
   
   let transformedData;
   if (filterTags && filterTags.length > 0) {
     const filteredData = oilProgressData.filter(item => filterTags.includes(item.tag_key));
-    alert(`Found ${filteredData.length} items out of ${filterTags.length} requested`);
     
     // Sort by the order of original filterTags array
     const sorted = filterTags.map(tag =>
       filteredData.find(item => item.tag_key === tag)).filter(Boolean);
     
-    alert(`After sorting and filtering: ${sorted.length} items`);
 
     transformedData = sorted.map(item => {
       let value = item.value || item.tag_value;
@@ -876,7 +872,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
       content: (
         <div 
           onClick={() => handleTableClick(
-            ["mfn_2_pump_t", "mfn_2_pump_in_pressure", "mfn_2_pump_out_pressure", "mfn_2_freq", "mfn_2_work_time", "mfn_2_power", "mfn_2_speed", "mfn_2_pump_set_pressure", "mfn_2_current", "mfn_2_rotor_speed"], 
+            ["mfn_2_pump_t", "mfn_2_pump_in_pressure", "mfn_2_pump_out_pressure", "mfn_2_set_freq", "mfn_2_work_time", "mfn_2_power", "mfn_2_speed", "mfn_2_pump_set_pressure", "mfn_2_current", "mfn_2_rotor_speed"], 
             "МФН-2"
           )}
           style={{

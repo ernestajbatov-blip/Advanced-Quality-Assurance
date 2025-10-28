@@ -45,14 +45,18 @@ export default function AppLayout() {
 
   const fieldMappings = useMemo(() => ({
     leftTop: "well",
-    rightTop: "tr_oil",
-    middle: chartType === "liquid" ? "zamer" : "zamer_oil",
+    rightTop: fond === 1 ? "tr_fluid" : "tr_oil",  // Use tr_fluid for injection wells
+    middle: fond === 1 ? "zamer" : (chartType === "liquid" ? "zamer" : "zamer_oil"),
     leftBottom: "tr_fluid",
     rightBottom: "tr_water",
-  }), [chartType]);
+  }), [chartType, fond]);
 
   const calculateMiddleValue = (wells, values) => {
-    const baseValue = chartType === "oil" ? values.rightTop : values.leftBottom;
+    // For injection wells, always use rightTop (which is now tr_fluid)
+    // For production wells, use rightTop for oil mode, leftBottom for liquid mode
+    const baseValue = fond === 1 
+      ? values.rightTop  // tr_fluid for injection
+      : (chartType === "oil" ? values.rightTop : values.leftBottom);
     return parseFloat(((values.middle - baseValue) / baseValue * 100).toFixed(2));
   };
 
@@ -295,14 +299,16 @@ export default function AppLayout() {
                   rightBottom={"в пределах нормы"}
                 />
               ) : (
-                <Details leftBottom={"-30% откл. от cнижение замерной добычи"} />
+                <Details 
+                leftTop={"-15% откл. от плановой закачки"}
+                leftBottom={"+30% откл. от плановой закачки"} />
               )}
             </div>
             <Grid
               wells={filteredWells}
               fieldMappings={fieldMappings}
               calculateMiddleValue={calculateMiddleValue}
-              maxThreshold={15}
+              maxThreshold={fond === 0 ? 15 : 30}
               colorMax={'greenCard'}
               minThreshold={-30}
               colorMin={'redCard'}
