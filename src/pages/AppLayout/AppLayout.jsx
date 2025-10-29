@@ -216,7 +216,7 @@ export default function AppLayout() {
         const wellData = Array.isArray(specificWellData) ? specificWellData[0] : specificWellData;
 
         const transformedData = [
-          { "Параметр": "Последнее обновление", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
+          { "Параметр": "Дата замера", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
           { "Параметр": "Напряжение", "Значение": formatModalValue(wellData["Напряжение"]) },
           { "Параметр": "Мощность", "Значение": formatModalValue(wellData["Мощность"]) },
           { "Параметр": "Частота", "Значение": formatModalValue(wellData["Частота"]) },
@@ -237,7 +237,7 @@ export default function AppLayout() {
 
       if (otvodDataToUse) {
         const transformedAgzuData = [
-          { Параметр: "Последнее обновление", Значение: formatDate(otvodDataToUse.lastDate || selectedWell?.update_date) },
+          { Параметр: "Дата замера", Значение: formatDate(otvodDataToUse.lastDate || selectedWell?.update_date) },
           { Параметр: "Жидкость", Значение: formatValue(otvodDataToUse.liquid, "м³/ч") },
           { Параметр: "Нефть", Значение: formatValue(otvodDataToUse.oil, "т/сут") },
           { Параметр: "Газ", Значение: formatValue(otvodDataToUse.gas, "м³/сут") },
@@ -252,7 +252,7 @@ export default function AppLayout() {
           const agzuData = Array.isArray(agzuWellData) ? agzuWellData[0] : agzuWellData;
 
           const transformedAgzuData = [
-            { Параметр: "Последнее обновление", Значение: formatDate(agzuData["Дата и время"] || selectedWell?.update_date) },
+            { Параметр: "Дата замера", Значение: formatDate(agzuData["Дата и время"] || selectedWell?.update_date) },
             { Параметр: "Жидкость", Значение: formatValue(agzuData["Жидкость"], "м³") },
             { Параметр: "Нефть", Значение: formatValue(agzuData["Нефть"], "т/сут") },
             { Параметр: "Газ", Значение: formatValue(agzuData["Газ"], "м³/сут") },
@@ -364,8 +364,8 @@ export default function AppLayout() {
                 />
               ) : (
                 <Details 
-                leftTop={"-15% откл. от плановой закачки"}
-                leftBottom={"+30% откл. от плановой закачки"} />
+                leftTop={"-15% откл."}
+                leftBottom={"более 30% откл."} />
               )}
             </div>
             <Grid

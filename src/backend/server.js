@@ -803,7 +803,7 @@ app.get("/api/well/agzu-data", (req, res) => {
       well AS 'Скважина',
       zamer_oil AS 'Нефть',
       gas AS 'Газ', 
-      tr_water AS 'Обводненность',
+      water_tm AS 'Обводненность',
       zamer AS 'Жидкость',
       update_date AS 'Дата и время'
     FROM n_well_matrix

@@ -226,7 +226,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     // If this is the active/highlighted well, use the current otvod data
     if (isActiveBox && localOtvodData) {
       const transformedData = [
-        { Параметр: "Последнее обновление", Значение: formatDate(well.update_date) }, // First row
+        { Параметр: "Дата замера", Значение: formatDate(well.update_date) }, // First row
         { Параметр: "Скважина", Значение: wellNumber },
         { Параметр: "Жидкость", Значение: formatValue(localOtvodData.liquid, "м³/ч") },
         { Параметр: "Нефть", Значение: formatValue(localOtvodData.oil, "т/сут") },
@@ -246,7 +246,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       : agzuWellData;
 
     const transformedData = [
-      { Параметр: "Последнее обновление", Значение: formatDate(wellData["Дата и время"] || well.update_date) }, // First row
+      { Параметр: "Дата замера", Значение: formatDate(wellData["Дата и время"] || well.update_date) }, // First row
       { Параметр: "Скважина", Значение: wellData["Скважина"] || wellNumber },
       { Параметр: "Жидкость", Значение: formatValue(wellData["Жидкость"], "м³") },
       { Параметр: "Нефть", Значение: formatValue(wellData["Нефть"], "т/сут") },
@@ -260,7 +260,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     setWellModalData(transformedData);
     } catch (error) {
       const fallbackData = [
-        { Параметр: "Последнее обновление", Значение: formatDate(well.update_date) },
+        { Параметр: "Дата замера", Значение: formatDate(well.update_date) },
         { Параметр: "Скважина", Значение: well.well || wellNumber },
         { Параметр: "Жидкость", Значение: "N/A" },
         { Параметр: "Нефть", Значение: formatValue(well.zamer_oil, "т/сут") },
@@ -459,4 +459,4 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       )}
     </div>
   );
-}
+} 
