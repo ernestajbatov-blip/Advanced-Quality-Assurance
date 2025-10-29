@@ -29,16 +29,16 @@ function Dropdown({ options, active, onSelect }) {
         <div className={styles.dropdownMenu}>
           {options.map((option) => (
             <div
-              key={option}
+              key={option.value}
               className={`${styles.dropdownItem} ${
-                active === option ? styles.active : ""
+                active === option.display ? styles.active : ""
               }`}
               onClick={() => {
-                onSelect(option);
+                onSelect(option.value);
                 setIsOpen(false);
               }}
             >
-              {option}
+              {option.display}
             </div>
           ))}
         </div>
@@ -72,6 +72,16 @@ export default function AGZU({ wells, index, handleWellClick, setCurrentOtvodWel
     },
   ];
 
+  // Format category display name
+  const formatCategoryDisplay = (category) => {
+    if (!category) return category;
+    const normalized = category.toLowerCase().replace(/\s+/g, '');
+    if (normalized === "агзу-4" || normalized === "agzu-4") {
+      return category.includes("СКЖ") ? category : `${category} (СКЖ)`;
+    }
+    return category;
+  };
+
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -82,10 +92,16 @@ export default function AGZU({ wells, index, handleWellClick, setCurrentOtvodWel
           category.startsWith("АГЗУ") || category.startsWith("МФ №")
         );
 
-        setCategories(filteredCategories);
+        // Create category objects with both value (original) and display (formatted)
+        const formattedCategories = filteredCategories.map(cat => ({
+          value: cat,
+          display: formatCategoryDisplay(cat)
+        }));
 
-        if (filteredCategories.length > 0) {
-          const firstCategory = filteredCategories[0];
+        setCategories(formattedCategories);
+
+        if (formattedCategories.length > 0) {
+          const firstCategory = formattedCategories[0].value;
           setActiveButton(firstCategory);
         }
 
@@ -132,22 +148,25 @@ export default function AGZU({ wells, index, handleWellClick, setCurrentOtvodWel
 
   const useDropdown = categories.length > 8;
 
+  // Get display name for active button
+  const activeDisplayName = categories.find(cat => cat.value === activeButton)?.display || activeButton;
+
   return (
     <div className={styles.upperDiv}>
       <div className={styles.container}>
         {useDropdown ? (
           <Dropdown
             options={categories}
-            active={activeButton}
+            active={activeDisplayName}
             onSelect={handleButtonClick}
           />
         ) : (
           categories.map((category) => (
             <Button
-              key={category}
-              label={category}
-              active={activeButton === category}
-              onClick={() => handleButtonClick(category)}
+              key={category.value}
+              label={category.display}
+              active={activeButton === category.value}
+              onClick={() => handleButtonClick(category.value)}
             />
           ))
         )}

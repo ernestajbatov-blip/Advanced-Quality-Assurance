@@ -49,6 +49,24 @@ export default function AppLayout() {
     }
   }, [fond]);
 
+  // Auto-refresh all wells data every 2 seconds
+  useEffect(() => {
+    const fetchAllWellsData = async () => {
+      try {
+        const response = await fetchWells();
+        setWells(response.data);
+      } catch (error) {
+        console.error("Error refreshing wells data:", error);
+      }
+    };
+
+    // Set up interval for auto-refresh
+    const intervalId = setInterval(fetchAllWellsData, 2000);
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId);
+  }, [setWells]);
+
   const fieldMappings = useMemo(() => ({
     leftTop: "well",
     rightTop: fond === 1 ? "tr_fluid" : "tr_oil",
@@ -128,6 +146,31 @@ export default function AppLayout() {
     }
   }, []);
 
+  const formatDate = useCallback((dateString) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      // Check if the date is valid (getTime() returns NaN for invalid dates)
+      if (isNaN(date.getTime())) {
+        return "N/A";
+      }
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const seconds = date.getSeconds().toString().padStart(2, '0');
+      
+      return `${day}.${month}.${year}, ${hours}:${minutes}:${seconds}`;
+    } catch (error) {
+      // This catch block handles errors from new Date() if dateString is a malformed string
+      // or any other unexpected error during parsing/formatting.
+      // The isNaN check above should catch most cases, but this adds extra safety.
+      return "N/A";
+    }
+  }, []);
+
   const formatModalValue = useCallback((value) => {
     if (value === null || value === undefined || value === '') {
       return "N/A";
@@ -194,6 +237,7 @@ export default function AppLayout() {
 
       if (otvodDataToUse) {
         const transformedAgzuData = [
+          { Параметр: "Последнее обновление", Значение: formatDate(otvodDataToUse.lastDate || selectedWell?.update_date) },
           { Параметр: "Жидкость", Значение: formatValue(otvodDataToUse.liquid, "м³/ч") },
           { Параметр: "Нефть", Значение: formatValue(otvodDataToUse.oil, "т/сут") },
           { Параметр: "Газ", Значение: formatValue(otvodDataToUse.gas, "м³/сут") },
@@ -208,6 +252,7 @@ export default function AppLayout() {
           const agzuData = Array.isArray(agzuWellData) ? agzuWellData[0] : agzuWellData;
 
           const transformedAgzuData = [
+            { Параметр: "Последнее обновление", Значение: formatDate(agzuData["Дата и время"] || selectedWell?.update_date) },
             { Параметр: "Жидкость", Значение: formatValue(agzuData["Жидкость"], "м³") },
             { Параметр: "Нефть", Значение: formatValue(agzuData["Нефть"], "т/сут") },
             { Параметр: "Газ", Значение: formatValue(agzuData["Газ"], "м³/сут") },

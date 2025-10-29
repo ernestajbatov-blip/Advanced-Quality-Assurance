@@ -8,6 +8,17 @@ import { NavLink } from "react-router-dom";
 import { fetchAGZUWellData, fetchAGZUTags } from "../../axios/wellService";
 
 export default function AgzuDiagram({ filteredWells, category, handleWellClick, setCurrentOtvodWell, setCurrentOtvodData }) {
+  // Format category display name
+  const getDisplayCategory = (cat) => {
+    if (!cat) return cat;
+    const normalized = cat.toLowerCase().replace(/\s+/g, '');
+    if (normalized === "агзу-4" || normalized === "agzu-4") {
+      return cat.includes("СКЖ") ? cat : `${cat} (СКЖ)`;
+    }
+    return cat;
+  };
+  
+  const displayCategory = getDisplayCategory(category);
   const [centerData, setCenterData] = useState({
     density: 0,
     time: "0:00",
@@ -20,6 +31,40 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
   const [wellModalData, setWellModalData] = useState([]);
   const [wellModalTitle, setWellModalTitle] = useState("Данные скважины");
   const [wellModalLoading, setWellModalLoading] = useState(false);
+
+  // Determine number of boxes based on category
+  const getBoxCount = () => {
+    if (!category) return 14;
+    
+    // Normalize category for comparison (handle both "АГЗУ-4" and "agzu-4")
+    const normalizedCategory = category.toLowerCase().replace(/\s+/g, '');
+    
+    if (normalizedCategory === "агзу-4" || normalizedCategory === "agzu-4") {
+      return 7;
+    }
+    return 14;
+  };
+
+  const boxCount = getBoxCount();
+  const boxesPerRow = 7;
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const seconds = date.getSeconds().toString().padStart(2, '0');
+      
+      return `${day}.${month}.${year}, ${hours}:${minutes}:${seconds}`;
+    } catch (error) {
+      return "N/A";
+    }
+  };
 
   const fetchCategoryData = useCallback(async () => {
     try {
@@ -48,18 +93,20 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       const currentWTag = Object.keys(tags).find((key) =>
         key.includes("_current_W")
       );
+      // Find the well for the current otvod and get its update_date
+      const currentWell = filteredWells.find(w => w.otvod === currentOtvodValue);
+      const lastDate = currentWell?.update_date || null;
 
       const otvodData = {
         liquid: tags[currentLiquidTag] ? parseFloat(tags[currentLiquidTag]) : null,
         oil: tags[currentOilTag] ? parseFloat(tags[currentOilTag]) : null,
         gas: tags[currentGasTag] ? parseFloat(tags[currentGasTag]) : null,
         waterCut: tags[currentWTag] ? parseFloat(tags[currentWTag]) : null,
+        lastDate: lastDate,
       };
       
       setLocalOtvodData(otvodData);
-      
-      // Find the well number for the current otvod box and update shared state
-      const currentWell = filteredWells.find(w => w.otvod === currentOtvodValue);
+
       if (currentWell && setCurrentOtvodWell && setCurrentOtvodData) {
         setCurrentOtvodWell(currentWell.well);
         setCurrentOtvodData(otvodData);
@@ -120,9 +167,9 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     };
   }, [fetchCategoryData]);
 
-  const boxes = Array(14).fill(null);
+  const boxes = Array(boxCount).fill(null);
   filteredWells.forEach((well) => {
-    if (well.otvod >= 1 && well.otvod <= 14) {
+    if (well.otvod >= 1 && well.otvod <= boxCount) {
       boxes[well.otvod - 1] = well;
     }
   });
@@ -134,11 +181,11 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     return defaultColor;
   };
 
-  const pipes = Array.from({ length: 14 }, (_, i) => ({
-    x1: 116 + (i % 7) * 264,
-    y1: i < 7 ? 130 : 720,
-    x2: 116 + (i % 7) * 264,
-    y2: i < 7 ? 305 : 563,
+  const pipes = Array.from({ length: boxCount }, (_, i) => ({
+    x1: 116 + (i % boxesPerRow) * 264,
+    y1: i < boxesPerRow ? 130 : 720,
+    x2: 116 + (i % boxesPerRow) * 264,
+    y2: i < boxesPerRow ? 305 : 563,
   }));
 
   const formatValue = (value, unit = "", decimals = 2) => {
@@ -176,41 +223,44 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       setWellModalTitle(`Данные скважины ${wellNumber}`);
       setShowWellModal(true);
 
-      // If this is the active/highlighted well, use the current otvod data
-      if (isActiveBox && localOtvodData) {
-        const transformedData = [
-          { Параметр: "Скважина", Значение: wellNumber },
-          { Параметр: "Жидкость", Значение: formatValue(localOtvodData.liquid, "м³/ч") },
-          { Параметр: "Нефть", Значение: formatValue(localOtvodData.oil, "т/сут") },
-          { Параметр: "Газ", Значение: formatValue(localOtvodData.gas, "м³/сут") },
-          { Параметр: "Обводненность", Значение: formatValue(localOtvodData.waterCut, "%") },
-        ];
-        setWellModalData(transformedData);
-        setWellModalLoading(false);
-        return;
-      }
-
-      // Otherwise, fetch the data from the API as before
-      const response = await fetchAGZUWellData(wellNumber);
-      const agzuWellData = response.data;
-      const wellData = Array.isArray(agzuWellData)
-        ? agzuWellData[0]
-        : agzuWellData;
-
+    // If this is the active/highlighted well, use the current otvod data
+    if (isActiveBox && localOtvodData) {
       const transformedData = [
-        { Параметр: "Скважина", Значение: wellData["Скважина"] || wellNumber },
-        { Параметр: "Жидкость", Значение: formatValue(wellData["Жидкость"], "м³") },
-        { Параметр: "Нефть", Значение: formatValue(wellData["Нефть"], "т/сут") },
-        { Параметр: "Газ", Значение: formatValue(wellData["Газ"], "м³/сут") },
-        {
-          Параметр: "Обводненность",
-          Значение: formatValue(wellData["Обводненность"], "%"),
-        },
+        { Параметр: "Последнее обновление", Значение: formatDate(well.update_date) }, // First row
+        { Параметр: "Скважина", Значение: wellNumber },
+        { Параметр: "Жидкость", Значение: formatValue(localOtvodData.liquid, "м³/ч") },
+        { Параметр: "Нефть", Значение: formatValue(localOtvodData.oil, "т/сут") },
+        { Параметр: "Газ", Значение: formatValue(localOtvodData.gas, "м³/сут") },
+        { Параметр: "Обводненность", Значение: formatValue(localOtvodData.waterCut, "%") },
       ];
-
       setWellModalData(transformedData);
+      setWellModalLoading(false);
+      return;
+    }
+
+    // Otherwise, fetch the data from the API as before
+    const response = await fetchAGZUWellData(wellNumber);
+    const agzuWellData = response.data;
+    const wellData = Array.isArray(agzuWellData)
+      ? agzuWellData[0]
+      : agzuWellData;
+
+    const transformedData = [
+      { Параметр: "Последнее обновление", Значение: formatDate(wellData["Дата и время"] || well.update_date) }, // First row
+      { Параметр: "Скважина", Значение: wellData["Скважина"] || wellNumber },
+      { Параметр: "Жидкость", Значение: formatValue(wellData["Жидкость"], "м³") },
+      { Параметр: "Нефть", Значение: formatValue(wellData["Нефть"], "т/сут") },
+      { Параметр: "Газ", Значение: formatValue(wellData["Газ"], "м³/сут") },
+      {
+        Параметр: "Обводненность",
+        Значение: formatValue(wellData["Обводненность"], "%"),
+      },
+    ];
+
+    setWellModalData(transformedData);
     } catch (error) {
       const fallbackData = [
+        { Параметр: "Последнее обновление", Значение: formatDate(well.update_date) },
         { Параметр: "Скважина", Значение: well.well || wellNumber },
         { Параметр: "Жидкость", Значение: "N/A" },
         { Параметр: "Нефть", Значение: formatValue(well.zamer_oil, "т/сут") },
@@ -271,8 +321,8 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
               key={index}
               boxText1={well?.well || ""}
               boxText2={boxText2}
-              top={index < 7 ? "5%" : "100%"}
-              left={`${10 + (index % 7) * 135}px`}
+              top={index < boxesPerRow ? "5%" : "100%"}
+              left={`${10 + (index % boxesPerRow) * 135}px`}
               number={index + 1}
               borderColor={getPipeColor(index, "#FFFFFF")}
               onClick={

@@ -804,7 +804,8 @@ app.get("/api/well/agzu-data", (req, res) => {
       zamer_oil AS 'Нефть',
       gas AS 'Газ', 
       tr_water AS 'Обводненность',
-      zamer AS 'Жидкость'
+      zamer AS 'Жидкость',
+      update_date AS 'Дата и время'
     FROM n_well_matrix
     WHERE well = ?;
   `;
@@ -862,6 +863,7 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     `${tagPrefix}_sep_pressure%`,
     `${tagPrefix}_pass_time%`,
     `${tagPrefix}_liq_temp%`,
+    // `${tagPrefix}_last_dt%`,
   ];
   
   connection.query(query, params, (error, results) => {
