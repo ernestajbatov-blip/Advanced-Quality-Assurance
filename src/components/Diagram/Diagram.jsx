@@ -187,10 +187,10 @@ export default function Diagram() {
     "mfn_1_pump_out_pressure": "бар", 
     "mfn_1_freq": "Гц",
     "mfn_1_work_time": "",
-    "mfn_1_power": "кВт",
+    "mfn_1_current": "кВт",
     "mfn_1_speed": "об/мин",
     "mfn_1_pump_set_pressure": "бар",
-    "mfn_1_current": "А",
+    "mfn_1_power": "А",
     "mfn_1_rotor_speed": "об/мин",
 
     // МФН-2
@@ -334,10 +334,10 @@ export default function Diagram() {
     // "mfn_1_set_freq": "Задание частоты",
     "mfn_1_freq": "Частота",
     "mfn_1_work_time": "Время работы",
-    "mfn_1_power": "Мощность",
+    "mfn_1_current": "Мощность",
     "mfn_1_speed": "Обороты двигателя",
     "mfn_1_pump_set_pressure": "Задание давления",
-    "mfn_1_current": "Ток",
+    "mfn_1_power": "Ток",
     "mfn_1_rotor_speed": "Скорость ротора",
 
     // МФН-2

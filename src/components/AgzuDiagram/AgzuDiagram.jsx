@@ -246,7 +246,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       : agzuWellData;
 
     const transformedData = [
-      { Параметр: "Дата замера", Значение: formatDate(wellData["Дата и время"] || well.update_date) }, // First row
+      { Параметр: "Дата замера", Значение: formatDate(wellData["Дата и время"] || well.update_date) },
       { Параметр: "Скважина", Значение: wellData["Скважина"] || wellNumber },
       { Параметр: "Жидкость", Значение: formatValue(wellData["Жидкость"], "м³") },
       { Параметр: "Нефть", Значение: formatValue(wellData["Нефть"], "т/сут") },
