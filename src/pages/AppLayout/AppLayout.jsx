@@ -1,5 +1,6 @@
-// AppLayout.jsx:
-import React, { useState, useEffect, useContext, useMemo } from "react";
+// AppLayout.jsx - Final working version
+
+import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from "react";
 import { fetchWells, fetchWellData, fetchAGZUWellData } from "../../axios/wellService";
 import styles from "./AppLayout.module.css";
 import Chart from "../../components/Chart/Chart";
@@ -33,7 +34,9 @@ export default function AppLayout() {
   const [currentOtvodData, setCurrentOtvodData] = useState(null);
 
   const [currentWellNumber, setCurrentWellNumber] = useState(null);
-  const [currentProvidedOtvodData, setCurrentProvidedOtvodData] = useState(null);
+  
+  // Use ref instead of state to avoid triggering useEffect
+  const currentProvidedOtvodDataRef = useRef(null);
   
   // ЧРП filter state
   const [chrpFilter, setChrpFilter] = useState(false);
@@ -48,17 +51,15 @@ export default function AppLayout() {
 
   const fieldMappings = useMemo(() => ({
     leftTop: "well",
-    rightTop: fond === 1 ? "tr_fluid" : "tr_oil",  // Use tr_fluid for injection wells
+    rightTop: fond === 1 ? "tr_fluid" : "tr_oil",
     middle: fond === 1 ? "zamer" : (chartType === "liquid" ? "zamer" : "zamer_oil"),
     leftBottom: "tr_fluid",
     rightBottom: "tr_water",
   }), [chartType, fond]);
 
   const calculateMiddleValue = (wells, values) => {
-    // For injection wells, always use rightTop (which is now tr_fluid)
-    // For production wells, use rightTop for oil mode, leftBottom for liquid mode
     const baseValue = fond === 1 
-      ? values.rightTop  // tr_fluid for injection
+      ? values.rightTop
       : (chartType === "oil" ? values.rightTop : values.leftBottom);
     return parseFloat(((values.middle - baseValue) / baseValue * 100).toFixed(2));
   };
@@ -108,7 +109,8 @@ export default function AppLayout() {
     }
   }, [wells, fond]);
 
-  const formatLastUpdate = (dateString) => {
+  // Memoize format functions
+  const formatLastUpdate = useCallback((dateString) => {
     if (!dateString) return "N/A";
     
     try {
@@ -124,9 +126,9 @@ export default function AppLayout() {
     } catch (error) {
       return "N/A";
     }
-  };
+  }, []);
 
-  const formatModalValue = (value) => {
+  const formatModalValue = useCallback((value) => {
     if (value === null || value === undefined || value === '') {
       return "N/A";
     }
@@ -135,39 +137,36 @@ export default function AppLayout() {
       return value;
     }
     return numValue.toString();
-  };
+  }, []);
 
-  const formatValue = (value, unit = "", decimals = 2) => {
+  const formatValue = useCallback((value, unit = "", decimals = 2) => {
     if (value === null || value === undefined || value === "") return "N/A";
     if (typeof value === "number") {
       return `${value.toFixed(decimals)} ${unit}`.trim();
     }
     return value;
-  };
+  }, []);
 
-  const handleWellClick = async (wellNumber, providedOtvodData = null, silent = false) => {
+  const handleWellClick = useCallback(async (wellNumber, providedOtvodData = null, silent = false) => {
     setCurrentWellNumber(wellNumber);
-    setCurrentProvidedOtvodData(providedOtvodData);
+    currentProvidedOtvodDataRef.current = providedOtvodData;
     
-    // Find the well to check its type
     const selectedWell = wells.find(well => well.well === wellNumber);
     const isChrpWell = selectedWell?.type === 1;
     
     try {
-      // Only show loading states if NOT silent refresh
       if (!silent) {
         if (isChrpWell) {
           setWellModalLoading(true);
         }
         setAgzuModalLoading(true);
-        setWellModalTitle(`Данные ${isChrpWell ? 'ЧРП на' : 'скважины'} ${wellNumber}`);
+        setWellModalTitle(`Скважина ${wellNumber}`);
         setShowWellModal(true);
         if (!isChrpWell) {
-          setWellModalData([]); // Clear ЧРП data for non-ЧРП wells
+          setWellModalData([]);
         }
       }
 
-      // Only fetch ЧРП data if it's a ЧРП well
       if (isChrpWell) {
         const response = await fetchWellData(wellNumber);
         const specificWellData = response.data;
@@ -187,7 +186,6 @@ export default function AppLayout() {
         if (!silent) setWellModalLoading(false);
       }
 
-      // Determine which otvod data to use
       let otvodDataToUse = providedOtvodData;
       
       if (!otvodDataToUse && currentOtvodWell === wellNumber && currentOtvodData) {
@@ -229,14 +227,13 @@ export default function AppLayout() {
       console.error("Error fetching well data:", error);
       
       if (isChrpWell) {
-        // Show error for ЧРП wells
         const fallbackData = [
-          { "Параметр": "Номер скважины", "Значение": selectedWell.well || "N/A" },
+          { "Параметр": "Номер скважины", "Значение": selectedWell?.well || "N/A" },
           { "Параметр": "Последнее обновление", "Значение": "Не удалось загрузить" },
           { "Параметр": "Ошибка", "Значение": "Не удалось загрузить подробные данные. Показаны базовые данные из кэша." },
-          { "Параметр": "Тех. режим по жидкости", "Значение": selectedWell.tr_fluid != null ? `${selectedWell.tr_fluid.toFixed(2)} м³/сут` : "N/A" },
-          { "Параметр": "Замер", "Значение": selectedWell.zamer != null ? `${selectedWell.zamer.toFixed(2)}` : "N/A" },
-          { "Параметр": "Тип", "Значение": selectedWell.type === 1 ? "ЧРП" : "Обычная" }
+          { "Параметр": "Тех. режим по жидкости", "Значение": selectedWell?.tr_fluid != null ? `${selectedWell.tr_fluid.toFixed(2)} м³/сут` : "N/A" },
+          { "Параметр": "Замер", "Значение": selectedWell?.zamer != null ? `${selectedWell.zamer.toFixed(2)}` : "N/A" },
+          { "Параметр": "Тип", "Значение": selectedWell?.type === 1 ? "ЧРП" : "Обычная" }
         ];
         setWellModalData(fallbackData);
       }
@@ -246,7 +243,7 @@ export default function AppLayout() {
         setAgzuModalLoading(false);
       }
     }
-  };
+  }, [wells, currentOtvodWell, currentOtvodData, formatLastUpdate, formatModalValue, formatValue]);
 
   const handleCloseWellModal = () => {
     setShowWellModal(false);
@@ -255,20 +252,18 @@ export default function AppLayout() {
     setWellModalLoading(false);
     setAgzuModalLoading(false);
     setCurrentWellNumber(null);
-    setCurrentProvidedOtvodData(null);
+    currentProvidedOtvodDataRef.current = null;
   };
 
-  // Auto-refresh well modal data when open
   useEffect(() => {
     if (!showWellModal || !currentWellNumber) return;
 
     const intervalId = setInterval(() => {
-      // Silently refresh data without showing loading state
-      handleWellClick(currentWellNumber, currentProvidedOtvodData);
-    }, 5000); // Update every 5 seconds
+      handleWellClick(currentWellNumber, currentProvidedOtvodDataRef.current, true);
+    }, 2000);
 
     return () => clearInterval(intervalId);
-  }, [showWellModal, currentWellNumber, currentProvidedOtvodData]);
+  }, [showWellModal, currentWellNumber]);
 
   return (
     <div className={styles.app}>
@@ -364,11 +359,7 @@ export default function AppLayout() {
         </div>
       </div>
 
-    {showWellModal && (() => {
-      const selectedWell = wells.find(well => well.well === currentWellNumber);
-      const isChrpWell = selectedWell?.type === 1;
-      
-      return (
+      {showWellModal && (
         <Modal onClose={handleCloseWellModal}>
           <div style={{ padding: "20px" }}>
             <h2 style={{ 
@@ -385,8 +376,11 @@ export default function AppLayout() {
               gap: '30px',
               flexWrap: 'wrap'
             }}>
-              {/* Only show ЧРП data section if it's a ЧРП well */}
-              {isChrpWell && (
+              {(() => {
+                const selectedWell = wells.find(well => well.well === currentWellNumber);
+                const isChrpWell = selectedWell?.type === 1;
+                return isChrpWell;
+              })() && (
                 <div style={{ flex: '1', minWidth: '300px' }}>
                   <h3 style={{ 
                     color: 'white', 
@@ -394,7 +388,7 @@ export default function AppLayout() {
                     marginBottom: '15px',
                     fontSize: '18px'
                   }}>
-                    Данные скважины
+                    Данные ЧРП
                   </h3>
                   {wellModalLoading ? (
                     <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
@@ -447,8 +441,7 @@ export default function AppLayout() {
             </div>
           </div>
         </Modal>
-      );
-    })()}
+      )}
     </div>
   );
 }
