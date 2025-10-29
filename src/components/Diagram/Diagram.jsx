@@ -55,6 +55,7 @@ export default function Diagram() {
   const [availableVlagomerDates, setAvailableVlagomerDates] = useState([]);
   const [isVlagomerArchiveMode, setIsVlagomerArchiveMode] = useState(false);
   const [vlagomerAverage, setVlagomerAverage] = useState(0);
+  const [currentTableFilterTags, setCurrentTableFilterTags] = useState(null);
 
   const apiBaseURL = process.env.NODE_ENV === "production" 
     ? "http://192.168.1.42:3000/api" 
@@ -74,10 +75,10 @@ export default function Diagram() {
     // Fetch immediately on mount
     fetchOilProgressData();
 
-    // Set up polling interval (e.g., every 5 seconds)
+    // Set up polling interval 
     const intervalId = setInterval(() => {
       fetchOilProgressData();
-    }, 5000); // 5000ms = 5 seconds
+    }, 2000); 
 
     // Cleanup: clear interval when component unmounts
     return () => {
@@ -445,6 +446,7 @@ export default function Diagram() {
 
   
 const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
+  setCurrentTableFilterTags(filterTags);
   
   let transformedData;
   if (filterTags && filterTags.length > 0) {
@@ -560,6 +562,89 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
   const handleCloseTable = () => {
     setShowTable(false);
   };
+
+  // Auto-refresh table data when modal is open
+  useEffect(() => {
+    if (!showTable) return;
+
+    const intervalId = setInterval(() => {
+      // Re-transform the data based on the current table
+      if (tableTitle === "Узел учета") {
+        const uzelUchetaTags = [
+          "overpressure", "temperature", "volumetric_flow", "volume", "consumption_brutto", 
+          "quantity_brutto", "consumption_netto", "quantity_netto", "normal_operating_time",
+          "time_nonstandard_situations", "density_petroleum_liquid", "density_oil_20", 
+          "density_oil_15", "moisture_volume", "moisture_weight", "viscosity", 
+          "last_full_hour", "volume_brutto_1", "quantity_brutto_1", "quantity_netto_1",
+          "last_full_dayli", "volume_brutto_2", "quantity_brutto_2", "quantity_netto_2",
+          "last_full_shift", "volume_brutto_3", "quantity_brutto_3", "quantity_netto_3"
+        ];
+        
+        const transformedData = oilProgressData
+          .filter(item => uzelUchetaTags.includes(item.tag_key))
+          .map(item => {
+            const value = item.value || item.tag_value || "";
+            return {
+              "Параметр": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+              "Значение": value === "" ? "—" : `${Math.round(parseFloat(value) * 100) / 100} ${TAG_UNITS[item.tag_key] || ''}`.trim()
+            };
+          });
+        
+        setTableData(transformedData);
+      } else if (currentTableFilterTags && currentTableFilterTags.length > 0) {
+        // Refresh data for other tables using stored filter tags
+        const filteredData = oilProgressData.filter(item => currentTableFilterTags.includes(item.tag_key));
+        const sorted = currentTableFilterTags.map(tag =>
+          filteredData.find(item => item.tag_key === tag)).filter(Boolean);
+        
+        const transformedData = sorted.map(item => {
+          let value = item.value || item.tag_value;
+
+          if (value === "True" || value === true) {
+            value = "Включен";
+          } else if (value === "False" || value === false) {
+            value = "Выключен";
+          } else if (item.tag_key.includes('work_time')) {
+            value = value.toString();
+          } else if (typeof value === 'number') {
+            value = `${value.toFixed(2)} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+          } else {
+            const numValue = parseFloat(value);
+            if (!isNaN(numValue)) {
+              value = `${numValue.toFixed(2)} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+            } else {
+              value = `${value} ${TAG_UNITS[item.tag_key] || ''}`.trim();
+            }
+          }
+
+          return {
+            "Датчик": TAG_DESCRIPTIONS[item.tag_key] || item.tag_key,
+            "Показание": value
+          };
+        });
+
+        // Handle GNU pumps special case
+        if (tableTitle.includes("ГНУ")) {
+          const expectedEntries = [
+            { "Датчик": "Температура", "Показание": "Нет данных" },
+            { "Датчик": "Мгновенный расход", "Показание": "Нет данных" },
+            { "Датчик": "Накопленный расход", "Показание": "Нет данных" }
+          ];
+
+          expectedEntries.forEach(expectedEntry => {
+            const exists = transformedData.some(existingItem => existingItem["Датчик"] === expectedEntry["Датчик"]);
+            if (!exists) {
+              transformedData.push(expectedEntry);
+            }
+          });
+        }
+
+        setTableData(transformedData);
+      }
+    }, 2000); // Update every 2 seconds
+
+    return () => clearInterval(intervalId);
+  }, [showTable, tableTitle, oilProgressData, currentTableFilterTags]);
 
   const tableDataStatic = [
     "t вход: 0.0°C",
@@ -752,6 +837,17 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
   const handleCloseVlagomerChart = () => {
     setShowVlagomerChart(false);
   };
+
+  // Auto-refresh vlagomer data when chart is open (only for current data, not archive)
+  useEffect(() => {
+    if (!showVlagomerChart || isVlagomerArchiveMode) return;
+
+    const intervalId = setInterval(() => {
+      fetchVlagomerData();
+    }, 2000); // Update every 2 seconds for current data
+
+    return () => clearInterval(intervalId);
+  }, [showVlagomerChart, isVlagomerArchiveMode]);
 
   const realUzelUchetaData = getRealUzelUchetaData();
 

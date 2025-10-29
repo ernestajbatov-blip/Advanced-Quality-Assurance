@@ -31,6 +31,9 @@ export default function AppLayout() {
   // Shared state for current otvod well - updated by AGZU component
   const [currentOtvodWell, setCurrentOtvodWell] = useState(null);
   const [currentOtvodData, setCurrentOtvodData] = useState(null);
+
+  const [currentWellNumber, setCurrentWellNumber] = useState(null);
+  const [currentProvidedOtvodData, setCurrentProvidedOtvodData] = useState(null);
   
   // ЧРП filter state
   const [chrpFilter, setChrpFilter] = useState(false);
@@ -142,62 +145,71 @@ export default function AppLayout() {
     return value;
   };
 
-  const handleWellClick = async (wellNumber, providedOtvodData = null) => {
+  const handleWellClick = async (wellNumber, providedOtvodData = null, silent = false) => {
+    setCurrentWellNumber(wellNumber);
+    setCurrentProvidedOtvodData(providedOtvodData);
+    
+    // Find the well to check its type
+    const selectedWell = wells.find(well => well.well === wellNumber);
+    const isChrpWell = selectedWell?.type === 1;
+    
     try {
-      setWellModalLoading(true);
-      setAgzuModalLoading(true);
-      setWellModalTitle(`Данные ЧРП на ${wellNumber}`);
-      setShowWellModal(true);
-      setAgzuModalData([]);
+      // Only show loading states if NOT silent refresh
+      if (!silent) {
+        if (isChrpWell) {
+          setWellModalLoading(true);
+        }
+        setAgzuModalLoading(true);
+        setWellModalTitle(`Данные ${isChrpWell ? 'ЧРП на' : 'скважины'} ${wellNumber}`);
+        setShowWellModal(true);
+        if (!isChrpWell) {
+          setWellModalData([]); // Clear ЧРП data for non-ЧРП wells
+        }
+      }
 
-      // Fetch specific well data using fetchWellData
-      const response = await fetchWellData(wellNumber);
-      const specificWellData = response.data;
+      // Only fetch ЧРП data if it's a ЧРП well
+      if (isChrpWell) {
+        const response = await fetchWellData(wellNumber);
+        const specificWellData = response.data;
+        const wellData = Array.isArray(specificWellData) ? specificWellData[0] : specificWellData;
 
-      const wellData = Array.isArray(specificWellData) ? specificWellData[0] : specificWellData;
-
-      const transformedData = [
-        // { "Параметр": "Скважина", "Значение": wellData["Скважина"] || wellNumber },
-        { "Параметр": "Последнее обновление", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
-        { "Параметр": "Напряжение", "Значение": formatModalValue(wellData["Напряжение"]) },
-        { "Параметр": "Мощность", "Значение": formatModalValue(wellData["Мощность"]) },
-        { "Параметр": "Частота", "Значение": formatModalValue(wellData["Частота"]) },
-        { "Параметр": "Ток", "Значение": formatModalValue(wellData["Ток"]) },
-        { "Параметр": "Обороты ротора", "Значение": formatModalValue(wellData["Скорость двигателя"]) },
-        { "Параметр": "Тип ЧРП", "Значение": formatModalValue(wellData["Тип ЧРП"]) },
-        ...(wellData["Тип"] === 1 ? [{ "Параметр": "Температура устья", "Значение": formatModalValue(wellData["Температура"]) }] : [])
-      ];
-      setWellModalData(transformedData);
-      setWellModalLoading(false);
+        const transformedData = [
+          { "Параметр": "Последнее обновление", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
+          { "Параметр": "Напряжение", "Значение": formatModalValue(wellData["Напряжение"]) },
+          { "Параметр": "Мощность", "Значение": formatModalValue(wellData["Мощность"]) },
+          { "Параметр": "Частота", "Значение": formatModalValue(wellData["Частота"]) },
+          { "Параметр": "Ток", "Значение": formatModalValue(wellData["Ток"]) },
+          { "Параметр": "Обороты ротора", "Значение": formatModalValue(wellData["Скорость двигателя"]) },
+          { "Параметр": "Тип ЧРП", "Значение": formatModalValue(wellData["Тип ЧРП"]) },
+          ...(wellData["Тип"] === 1 ? [{ "Параметр": "Температура устья", "Значение": formatModalValue(wellData["Температура"]) }] : [])
+        ];
+        setWellModalData(transformedData);
+        if (!silent) setWellModalLoading(false);
+      }
 
       // Determine which otvod data to use
       let otvodDataToUse = providedOtvodData;
       
-      // If not provided directly, check if this well is the current otvod well
       if (!otvodDataToUse && currentOtvodWell === wellNumber && currentOtvodData) {
         otvodDataToUse = currentOtvodData;
       }
 
-      // If we have otvod data, use it
       if (otvodDataToUse) {
         const transformedAgzuData = [
-          // { Параметр: "Скважина", Значение: wellNumber },
           { Параметр: "Жидкость", Значение: formatValue(otvodDataToUse.liquid, "м³/ч") },
           { Параметр: "Нефть", Значение: formatValue(otvodDataToUse.oil, "т/сут") },
           { Параметр: "Газ", Значение: formatValue(otvodDataToUse.gas, "м³/сут") },
           { Параметр: "Обводненность", Значение: formatValue(otvodDataToUse.waterCut, "%") },
         ];
         setAgzuModalData(transformedAgzuData);
-        setAgzuModalLoading(false);
+        if (!silent) setAgzuModalLoading(false);
       } else {
-        // Try to fetch AGZU data for this well
         try {
           const agzuResponse = await fetchAGZUWellData(wellNumber);
           const agzuWellData = agzuResponse.data;
           const agzuData = Array.isArray(agzuWellData) ? agzuWellData[0] : agzuWellData;
 
           const transformedAgzuData = [
-            // { Параметр: "Скважина", Значение: agzuData["Скважина"] || wellNumber },
             { Параметр: "Жидкость", Значение: formatValue(agzuData["Жидкость"], "м³") },
             { Параметр: "Нефть", Значение: formatValue(agzuData["Нефть"], "т/сут") },
             { Параметр: "Газ", Значение: formatValue(agzuData["Газ"], "м³/сут") },
@@ -209,15 +221,15 @@ export default function AppLayout() {
           console.log("No AGZU data available for this well");
           setAgzuModalData([]);
         } finally {
-          setAgzuModalLoading(false);
+          if (!silent) setAgzuModalLoading(false);
         }
       }
 
     } catch (error) {
       console.error("Error fetching well data:", error);
       
-      const selectedWell = wells.find(well => well.well === wellNumber);
-      if (selectedWell) {
+      if (isChrpWell) {
+        // Show error for ЧРП wells
         const fallbackData = [
           { "Параметр": "Номер скважины", "Значение": selectedWell.well || "N/A" },
           { "Параметр": "Последнее обновление", "Значение": "Не удалось загрузить" },
@@ -227,14 +239,12 @@ export default function AppLayout() {
           { "Параметр": "Тип", "Значение": selectedWell.type === 1 ? "ЧРП" : "Обычная" }
         ];
         setWellModalData(fallbackData);
-      } else {
-        setWellModalData([
-          { "Параметр": "Ошибка", "Значение": "Не удалось загрузить данные скважины" },
-          { "Параметр": "Последнее обновление", "Значение": "N/A" }
-        ]);
       }
-      setWellModalLoading(false);
-      setAgzuModalLoading(false);
+      
+      if (!silent) {
+        if (isChrpWell) setWellModalLoading(false);
+        setAgzuModalLoading(false);
+      }
     }
   };
 
@@ -244,7 +254,21 @@ export default function AppLayout() {
     setAgzuModalData([]);
     setWellModalLoading(false);
     setAgzuModalLoading(false);
+    setCurrentWellNumber(null);
+    setCurrentProvidedOtvodData(null);
   };
+
+  // Auto-refresh well modal data when open
+  useEffect(() => {
+    if (!showWellModal || !currentWellNumber) return;
+
+    const intervalId = setInterval(() => {
+      // Silently refresh data without showing loading state
+      handleWellClick(currentWellNumber, currentProvidedOtvodData);
+    }, 5000); // Update every 5 seconds
+
+    return () => clearInterval(intervalId);
+  }, [showWellModal, currentWellNumber, currentProvidedOtvodData]);
 
   return (
     <div className={styles.app}>
@@ -340,7 +364,11 @@ export default function AppLayout() {
         </div>
       </div>
 
-      {showWellModal && (
+    {showWellModal && (() => {
+      const selectedWell = wells.find(well => well.well === currentWellNumber);
+      const isChrpWell = selectedWell?.type === 1;
+      
+      return (
         <Modal onClose={handleCloseWellModal}>
           <div style={{ padding: "20px" }}>
             <h2 style={{ 
@@ -357,30 +385,33 @@ export default function AppLayout() {
               gap: '30px',
               flexWrap: 'wrap'
             }}>
-              <div style={{ flex: '1', minWidth: '300px' }}>
-                <h3 style={{ 
-                  color: 'white', 
-                  marginTop: 0, 
-                  marginBottom: '15px',
-                  fontSize: '18px'
-                }}>
-                  Данные скважины
-                </h3>
-                {wellModalLoading ? (
-                  <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
-                    Загрузка данных скважины...
-                  </div>
-                ) : (
-                  wellModalData.length > 0 && (
-                    <div style={{ 
-                      overflow: "auto",
-                      maxHeight: "60vh"
-                    }}>
-                      <ResponsiveTable data={wellModalData} />
+              {/* Only show ЧРП data section if it's a ЧРП well */}
+              {isChrpWell && (
+                <div style={{ flex: '1', minWidth: '300px' }}>
+                  <h3 style={{ 
+                    color: 'white', 
+                    marginTop: 0, 
+                    marginBottom: '15px',
+                    fontSize: '18px'
+                  }}>
+                    Данные скважины
+                  </h3>
+                  {wellModalLoading ? (
+                    <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
+                      Загрузка данных скважины...
                     </div>
-                  )
-                )}
-              </div>
+                  ) : (
+                    wellModalData.length > 0 && (
+                      <div style={{ 
+                        overflow: "auto",
+                        maxHeight: "60vh"
+                      }}>
+                        <ResponsiveTable data={wellModalData} />
+                      </div>
+                    )
+                  )}
+                </div>
+              )}
 
               <div style={{ flex: '1', minWidth: '300px' }}>
                 <h3 style={{ 
@@ -416,7 +447,8 @@ export default function AppLayout() {
             </div>
           </div>
         </Modal>
-      )}
+      );
+    })()}
     </div>
   );
 }
