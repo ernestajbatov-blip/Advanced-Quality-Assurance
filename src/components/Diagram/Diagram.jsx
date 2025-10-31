@@ -952,7 +952,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
           >
             <Pumps 
               numberOfSquares={2} 
-              width={55} 
+              width={58} 
               height={40}
               pumpStatuses={[
                 { 
@@ -967,7 +967,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
                 }
               ]}
               vertical={true}
-              gap={11}
+              gap={14}
               showLabels={true}
               fontSize={15}  // Make the labels smaller - adjust this value as needed
             />

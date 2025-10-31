@@ -356,3 +356,25 @@
     min-height: 300px;
   }
 }
+
+.clearFiltersButton {
+  padding: 12px 16px; /* Match the height of other inputs if needed */
+  background-color: #000000; /* Explicitly black background */
+  color: #ffffff; /* Explicitly white text */
+  border: 1px solid #404040; /* Optional: match other input borders */
+  border-radius: 6px; /* Match other input fields */
+  font-size: 14px; /* Match other input fields */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.clearFiltersButton:hover {
+  background-color: #333333; /* Slightly lighter black on hover */
+  color: #ffffff; /* Keep text white on hover */
+}
+
+.clearFiltersButton:focus {
+  outline: 2px solid #555555; /* Focus indicator */
+  outline-offset: 1px;
+}
