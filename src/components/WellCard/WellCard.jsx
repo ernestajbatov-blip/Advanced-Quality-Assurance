@@ -9,10 +9,10 @@ import { WellsABCContext } from "../../states/WellsABCContext";
 
 export default function WellCard({
   leftTop,
-  rightTop, // tr_oil or plan zakachka
-  middle, // THE PERCENTAGE DIFFERENCE (calculated in Grid)
-  leftBottom, // tr_fluid or nothing for injection
-  rightBottom, // tr_water or nothing for injection
+  rightTop,
+  middle, 
+  leftBottom,
+  rightBottom,
   setSelectedWell,
   maxThreshold,
   colorMax,
@@ -21,7 +21,7 @@ export default function WellCard({
   inBetweenThresholdMin,
   inBetweenColor,
   inBetweenThresholdMax,
-  realMiddle, // THE VALUE TO DISPLAY (raw measured value)
+  realMiddle,
   onWellClick,
   working,
   hideWorkingStatus = false,

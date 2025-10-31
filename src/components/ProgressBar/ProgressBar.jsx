@@ -1,9 +1,21 @@
 import React from "react";
 import styles from "./ProgressBar.module.css";
 
-export default function ProgressBar({ value, maxValue, color, width, height }) {
-  const percentage = (value / maxValue) * 100;
-
+export default function ProgressBar({ 
+  value, 
+  primaryValue, 
+  secondaryValue, 
+  maxValue, 
+  color, 
+  width, 
+  height 
+}) {
+  // Use primaryValue if provided, otherwise fall back to value
+  const displayPrimary = primaryValue !== undefined ? primaryValue : value;
+  const displaySecondary = secondaryValue !== undefined ? secondaryValue : null;
+  
+  const percentage = (displayPrimary / maxValue) * 100;
+  
   return (
     <div className={styles.container}>
       <div
@@ -19,7 +31,12 @@ export default function ProgressBar({ value, maxValue, color, width, height }) {
         className={styles.label}
         style={{ bottom: `calc(${percentage}% - 8px)`, left: `${width + 5}px` }}
       >
-        {value} см
+        <span>{displayPrimary} см</span>
+        {displaySecondary !== null && (
+          <>
+            <span>{displaySecondary} м³</span>
+          </>
+        )}
       </div>
     </div>
   );

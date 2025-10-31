@@ -1,13 +1,12 @@
-// db.js
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 let connection;
 
 function handleDisconnect() {
   connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "1234",
+    host: "192.168.1.42",
+    user: "ada_user",
+    password: "Ada12345",
     database: "ada",
     port: 3306,
     charset: "utf8mb4"
@@ -16,7 +15,7 @@ function handleDisconnect() {
   connection.connect((err) => {
     if (err) {
       console.error("Database connection failed:", err);
-      setTimeout(handleDisconnect, 2000); // Try again after 2 seconds
+      setTimeout(handleDisconnect, 2000);
     } else {
       console.log("Database connection successfully established!");
     }
@@ -35,5 +34,4 @@ function handleDisconnect() {
 
 handleDisconnect();
 
-// Export a function that returns the current connection
 module.exports = () => connection;

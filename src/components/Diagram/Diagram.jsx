@@ -935,55 +935,125 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
     { top: "45%", left: "22.5%", content: "ГПС-1" },
     { top: "53%", left: "22.5%", content: "ГПС-2" },
     { top: "60.5%", left: "22.5%", content: "ГПС-3" },
-    { top: "7.5%", left: "22.25%", content: "МФН-1" },
-    { top: "15.25%", left: "22.25%", content: "МФН-2" },
-      // МФН-1 clickable area
+    // For МФН pumps with labels instead of icons
     {
-      top: "7.5%",
-      left: "22.25%", 
+      top: "5.5%",
+      left: "21.6%",
       content: (
-        <div 
-          onClick={() => handleTableClick(
-            ["mfn_1_pump_t", "mfn_1_pump_in_pressure", "mfn_1_pump_out_pressure", "mfn_1_freq", "mfn_1_work_time", "mfn_1_power", "mfn_1_speed", "mfn_1_pump_set_pressure", "mfn_1_current", "mfn_1_rotor_speed"], 
-            "МФН-1"
-          )}
-          style={{
-            position: "absolute",
-            top: "0%",
-            left: "0%",
-            width: "60px",
-            height: "40px",
-            cursor: "pointer",
-            // backgroundColor: "rgba(255, 255, 0, 0.1)", 
-            // border: "1px solid rgba(255, 255, 0, 0.3)"
-          }}
-        />
+        <>
+          <div
+            style={{
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              position: "relative"
+            }}
+          >
+            <Pumps 
+              numberOfSquares={2} 
+              width={55} 
+              height={40}
+              pumpStatuses={[
+                { 
+                  tag: "mfn_1_status", 
+                  status: oilProgressData.find(d => d.tag_key === "mfn_1_status")?.value || 0,
+                  label: "МФН-1"
+                },
+                { 
+                  tag: "mfn_2_status", 
+                  status: oilProgressData.find(d => d.tag_key === "mfn_2_status")?.value || 0,
+                  label: "МФН-2"
+                }
+              ]}
+              vertical={true}
+              gap={11}
+              showLabels={true}
+              fontSize={15}  // Make the labels smaller - adjust this value as needed
+            />
+            {/* МФН-1 clickable area */}
+            <div
+              onClick={() => handleTableClick(
+                ["mfn_1_pump_t", "mfn_1_pump_in_pressure", "mfn_1_pump_out_pressure", "mfn_1_freq", "mfn_1_work_time", "mfn_1_power", "mfn_1_speed", "mfn_1_pump_set_pressure", "mfn_1_current", "mfn_1_rotor_speed"],
+                "МФН-1"
+              )}
+              style={{
+                position: "absolute",
+                top: "0%",
+                left: "0%",
+                width: "55px",
+                height: "47px",
+                cursor: "pointer",
+              }}
+            />
+            {/* МФН-2 clickable area */}
+            <div
+              onClick={() => handleTableClick(
+                ["mfn_2_pump_t", "mfn_2_pump_in_pressure", "mfn_2_pump_out_pressure", "mfn_2_set_freq", "mfn_2_work_time", "mfn_2_power", "mfn_2_speed", "mfn_2_pump_set_pressure", "mfn_2_current", "mfn_2_rotor_speed"],
+                "МФН-2"
+              )}
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "0%",
+                width: "55px",
+                height: "47px",
+                cursor: "pointer",
+              }}
+            />
+          </div>
+        </>
       ),
     },
+    // { top: "7.5%", left: "22.25%", content: "МФН-1" },
+    // { top: "15.25%", left: "22.25%", content: "МФН-2" },
+    //   // МФН-1 clickable area
+    // {
+    //   top: "7.5%",
+    //   left: "22.25%", 
+    //   content: (
+    //     <div 
+    //       onClick={() => handleTableClick(
+    //         ["mfn_1_pump_t", "mfn_1_pump_in_pressure", "mfn_1_pump_out_pressure", "mfn_1_freq", "mfn_1_work_time", "mfn_1_power", "mfn_1_speed", "mfn_1_pump_set_pressure", "mfn_1_current", "mfn_1_rotor_speed"], 
+    //         "МФН-1"
+    //       )}
+    //       style={{
+    //         position: "absolute",
+    //         top: "0%",
+    //         left: "0%",
+    //         width: "60px",
+    //         height: "40px",
+    //         cursor: "pointer",
+    //         // backgroundColor: "rgba(255, 255, 0, 0.1)", 
+    //         // border: "1px solid rgba(255, 255, 0, 0.3)"
+    //       }}
+    //     />
+    //   ),
+    // },
 
-    // МФН-2 clickable area
-    {
-      top: "15.25%",
-      left: "22.25%", 
-      content: (
-        <div 
-          onClick={() => handleTableClick(
-            ["mfn_2_pump_t", "mfn_2_pump_in_pressure", "mfn_2_pump_out_pressure", "mfn_2_set_freq", "mfn_2_work_time", "mfn_2_power", "mfn_2_speed", "mfn_2_pump_set_pressure", "mfn_2_current", "mfn_2_rotor_speed"], 
-            "МФН-2"
-          )}
-          style={{
-            position: "absolute",
-            top: "0%",
-            left: "0%",
-            width: "60px",
-            height: "40px",
-            cursor: "pointer",
-            // backgroundColor: "rgba(255, 0, 255, 0.1)", // Optional: visible area for testing
-            // border: "1px solid rgba(255, 0, 255, 0.3)"
-          }}
-        />
-      ),
-    },
+    // // МФН-2 clickable area
+    // {
+    //   top: "15.25%",
+    //   left: "22.25%", 
+    //   content: (
+    //     <div 
+    //       onClick={() => handleTableClick(
+    //         ["mfn_2_pump_t", "mfn_2_pump_in_pressure", "mfn_2_pump_out_pressure", "mfn_2_set_freq", "mfn_2_work_time", "mfn_2_power", "mfn_2_speed", "mfn_2_pump_set_pressure", "mfn_2_current", "mfn_2_rotor_speed"], 
+    //         "МФН-2"
+    //       )}
+    //       style={{
+    //         position: "absolute",
+    //         top: "0%",
+    //         left: "0%",
+    //         width: "60px",
+    //         height: "40px",
+    //         cursor: "pointer",
+    //         // backgroundColor: "rgba(255, 0, 255, 0.1)", // Optional: visible area for testing
+    //         // border: "1px solid rgba(255, 0, 255, 0.3)"
+    //       }}
+    //     />
+    //   ),
+    // },
     {
       top: "54%",
       left: "30.75%",
@@ -1717,7 +1787,8 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
       top: "53%",
       left: "54.75%",
       key: "rvs-1",
-      value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS1_LT")?.value || 0),
+      primaryValue: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS1_LT")?.value || 0),
+      secondaryValue: Math.round(oilProgressData.find(d => d.tag_key === "rvs_1_volume")?.value || 0),
       maxValue: 1020,
       color: "#8d730e",
       width: 12,
@@ -1731,6 +1802,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
       left: "54.75%",
       key: "rvs-2",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS2_LT")?.value || 0),
+      secondaryValue: Math.round(oilProgressData.find(d => d.tag_key === "rvs_2_volume")?.value || 0),
       maxValue: 1020,
       color: "#8d730e",
       width: 12,
@@ -1744,6 +1816,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
       left: "67.3%",
       key: "rvs-3",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS7_LT")?.value || 0),
+      secondaryValue: Math.round(oilProgressData.find(d => d.tag_key === "rvs_3_volume")?.value || 0),
       maxValue: 1020,
       color: "#8d730e",
       width: 12,
@@ -1757,6 +1830,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
       left: "67.3%",
       key: "rvs-4",
       value: Math.round(oilProgressData.find(d => d.tag_key === "ARM_ZN_RVS8_LT")?.value || 0),
+      secondaryValue: Math.round(oilProgressData.find(d => d.tag_key === "rvs_4_volume")?.value || 0),
       maxValue: 1020,
       color: "#8d730e",
       width: 12,
@@ -1899,6 +1973,8 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
               <ProgressBar
                 key={progressBar.key}
                 value={progressBar.value}
+                primaryValue={progressBar.primaryValue}
+                secondaryValue={progressBar.secondaryValue}
                 maxValue={progressBar.maxValue}
                 color={progressBar.color}
                 width={progressBar.width}
