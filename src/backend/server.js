@@ -845,7 +845,11 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     return res.status(400).json({ error: "Invalid category format" });
   }
   
-  const query = `
+  // Check if this is AGZU-4
+  const normalizedCategory = category.toLowerCase().replace(/\s+/g, '');
+  const isAgzu4 = normalizedCategory === "агзу-4" || normalizedCategory === "agzu-4";
+  
+  let query = `
     SELECT tag_key, tag_value 
     FROM n_wincctags 
     WHERE oil_field = 'BSK' 
@@ -854,17 +858,22 @@ app.get("/api/agzu/tags/:category", (req, res) => {
       tag_key LIKE ? OR 
       tag_key LIKE ? OR 
       tag_key LIKE ?
-    )
-    ORDER BY tag_key;
   `;
   
-  const params = [
+  let params = [
     `${tagPrefix}_current%`,
     `${tagPrefix}_sep_pressure%`,
     `${tagPrefix}_pass_time%`,
     `${tagPrefix}_liq_temp%`,
-    // `${tagPrefix}_last_dt%`,
   ];
+  
+  // Add AGZU-4 specific tags
+  if (isAgzu4) {
+    query += ` OR tag_key = ? OR tag_key = ?`;
+    params.push('agzu_4_skv', 'agzu_4_oil');
+  }
+  
+  query += `) ORDER BY tag_key;`;
   
   connection.query(query, params, (error, results) => {
     if (error) {
@@ -877,7 +886,7 @@ app.get("/api/agzu/tags/:category", (req, res) => {
     results.forEach(row => {
       tags[row.tag_key] = parseFloat(row.tag_value) || row.tag_value;
     });
-    
+        
     res.json({ 
       tags,
       category,

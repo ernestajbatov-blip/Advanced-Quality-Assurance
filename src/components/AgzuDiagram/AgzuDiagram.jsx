@@ -23,6 +23,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     density: 0,
     time: "0:00",
     temperature: 0,
+    agzu4Oil: null,
   });
 
   const [boxIndex, setBoxIndex] = useState(0);
@@ -66,6 +67,10 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     }
   };
 
+  const apiBaseURL = process.env.NODE_ENV === "production" 
+    ? "http://192.168.1.42:3000/api" 
+    : "http://localhost:3000/api";
+
   const fetchCategoryData = useCallback(async () => {
     try {
       if (!category) return;
@@ -73,11 +78,51 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       const response = await fetchAGZUTags(category);
       const { tags } = response.data;
 
-      const currentOtvodTag = Object.keys(tags).find((key) =>
-        key.includes("_current_otvod")
-      );
-      const currentOtvodValue = parseInt(tags[currentOtvodTag]) || 0;
-      const currentBoxIndex = currentOtvodValue > 0 ? currentOtvodValue - 1 : 0;
+      // Check if this is AGZU-4
+      const normalizedCategory = category.toLowerCase().replace(/\s+/g, '');
+      const isAgzu4 = normalizedCategory === "агзу-4" || normalizedCategory === "agzu-4";
+
+      let currentBoxIndex = 0;
+
+      if (isAgzu4) {
+        // For AGZU-4, use agzu_4_skv tag to find the well
+        const agzu4SkvTag = Object.keys(tags).find((key) =>
+          key.toLowerCase().includes("agzu_4_skv") || key === "agzu_4_skv"
+        );
+        
+        console.log("AGZU-4 detected. Available tags:", Object.keys(tags));
+        console.log("Looking for agzu_4_skv tag, found:", agzu4SkvTag);
+        
+        if (agzu4SkvTag && tags[agzu4SkvTag]) {
+          // Get the number from the tag (e.g., 201)
+          const wellNumberFromTag = parseInt(tags[agzu4SkvTag]);
+          
+          // Format it as BSK_XXXX (e.g., BSK_0201)
+          const formattedWellName = `BSK_${String(wellNumberFromTag).padStart(4, '0')}`;
+          
+          console.log("Raw well number from tag:", wellNumberFromTag);
+          console.log("Formatted well name:", formattedWellName);
+          console.log("Available wells in boxes:", filteredWells.map(w => w.well));
+          
+          // Find which box/otvod this well is in
+          const wellIndex = filteredWells.findIndex(w => w.well === formattedWellName);
+          console.log("Looking for well", formattedWellName, "found at index:", wellIndex);
+          
+          if (wellIndex !== -1) {
+            currentBoxIndex = filteredWells[wellIndex].otvod - 1;
+            console.log("Setting currentBoxIndex to:", currentBoxIndex, "for otvod:", filteredWells[wellIndex].otvod);
+          } else {
+            console.warn("Well", formattedWellName, "not found in filtered wells");
+          }
+        }
+      } else {
+        // For other AGZUs, use the current_otvod tag as before
+        const currentOtvodTag = Object.keys(tags).find((key) =>
+          key.includes("_current_otvod")
+        );
+        const currentOtvodValue = parseInt(tags[currentOtvodTag]) || 0;
+        currentBoxIndex = currentOtvodValue > 0 ? currentOtvodValue - 1 : 0;
+      }
 
       setBoxIndex(currentBoxIndex);
 
@@ -94,7 +139,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         key.includes("_current_W")
       );
       // Find the well for the current otvod and get its update_date
-      const currentWell = filteredWells.find(w => w.otvod === currentOtvodValue);
+      const currentWell = filteredWells.find(w => w.otvod === (currentBoxIndex + 1));
       const lastDate = currentWell?.update_date || null;
 
       const otvodData = {
@@ -112,34 +157,56 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         setCurrentOtvodData(otvodData);
       }
 
-      const sepPressureTag = Object.keys(tags).find((key) =>
-        key.includes("_sep_pressure")
-      );
-      const passTimeTag = Object.keys(tags).find((key) =>
-        key.includes("_pass_time")
-      );
-      const liqTempTag = Object.keys(tags).find((key) =>
-        key.includes("_liq_temp")
-      );
+      // Handle center circle data based on AGZU type
+      if (isAgzu4) {
+        // For AGZU-4, show only agzu_4_oil in the center
+        const agzu4OilTag = Object.keys(tags).find((key) =>
+          key.toLowerCase().includes("agzu_4_oil") || key === "agzu_4_oil"
+        );
+        
+        console.log("Looking for agzu_4_oil tag, found:", agzu4OilTag);
+        console.log("agzu_4_oil value:", tags[agzu4OilTag]);
+        
+        setCenterData({
+          density: null,
+          time: null,
+          temperature: null,
+          agzu4Oil: agzu4OilTag && tags[agzu4OilTag] !== undefined 
+            ? parseFloat(tags[agzu4OilTag]).toFixed(2) 
+            : "0.00",
+        });
+      } else {
+        // For other AGZUs, show the original three values
+        const sepPressureTag = Object.keys(tags).find((key) =>
+          key.includes("_sep_pressure")
+        );
+        const passTimeTag = Object.keys(tags).find((key) =>
+          key.includes("_pass_time")
+        );
+        const liqTempTag = Object.keys(tags).find((key) =>
+          key.includes("_liq_temp")
+        );
 
-      const formatTime = (timeValue) => {
-        if (!timeValue || timeValue === 0) return "0:00";
-        const hours = Math.floor(timeValue / 60);
-        const minutes = timeValue % 60;
-        return `${hours}:${minutes.toString().padStart(2, "0")}`;
-      };
+        const formatTime = (timeValue) => {
+          if (!timeValue || timeValue === 0) return "0:00";
+          const hours = Math.floor(timeValue / 60);
+          const minutes = timeValue % 60;
+          return `${hours}:${minutes.toString().padStart(2, "0")}`;
+        };
 
-      setCenterData({
-        density: sepPressureTag && tags[sepPressureTag] !== undefined 
-          ? parseFloat(tags[sepPressureTag]).toFixed(2) 
-          : "0.00",
-        time: passTimeTag && tags[passTimeTag] !== undefined 
-          ? formatTime(parseFloat(tags[passTimeTag])) 
-          : "0:00",
-        temperature: liqTempTag && tags[liqTempTag] !== undefined 
-          ? Math.floor(parseFloat(tags[liqTempTag])) 
-          : 0,
-      });
+        setCenterData({
+          density: sepPressureTag && tags[sepPressureTag] !== undefined 
+            ? parseFloat(tags[sepPressureTag]).toFixed(2) 
+            : "0.00",
+          time: passTimeTag && tags[passTimeTag] !== undefined 
+            ? formatTime(parseFloat(tags[passTimeTag])) 
+            : "0:00",
+          temperature: liqTempTag && tags[liqTempTag] !== undefined 
+            ? Math.floor(parseFloat(tags[liqTempTag])) 
+            : 0,
+          agzu4Oil: null,
+        });
+      }
 
     } catch (error) {
       console.error("Error fetching AGZU data:", error);
@@ -147,6 +214,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         density: "0.00",
         time: "0:00",
         temperature: 0,
+        agzu4Oil: "0.00",
       });
       setLocalOtvodData(null);
       setBoxIndex(0);
@@ -158,10 +226,15 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
   }, [category, filteredWells, setCurrentOtvodWell, setCurrentOtvodData]);
 
   useEffect(() => {
+    // Fetch immediately on mount
     fetchCategoryData();
+    
+    // Set up polling interval (every 2 seconds like Diagram.jsx)
     const intervalId = setInterval(() => {
       fetchCategoryData();
-    }, 30000);
+    }, 2000);
+    
+    // Cleanup: clear interval when component unmounts
     return () => {
       clearInterval(intervalId);
     };
@@ -353,42 +426,60 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
             pointerEvents: "none",
           }}
         >
-          <div
-            className={styles.circleText}
-            style={{
-              fontSize: "17px",
-              color: "white",
-              textAlign: "center",
-              lineHeight: "1.2",
-              margin: "2px 0",
-            }}
-          >
-            {centerData.density} МПа
-          </div>
-          <div
-            className={styles.circleText}
-            style={{
-              fontSize: "17px",
-              color: "white",
-              textAlign: "center",
-              lineHeight: "1.2",
-              margin: "2px 0",
-            }}
-          >
-            {centerData.time}
-          </div>
-          <div
-            className={styles.circleText}
-            style={{
-              fontSize: "17px",
-              color: "white",
-              textAlign: "center",
-              lineHeight: "1.2",
-              margin: "2px 0",
-            }}
-          >
-            {centerData.temperature} °C
-          </div>
+          {centerData.agzu4Oil !== null && centerData.agzu4Oil !== undefined ? (
+            // AGZU-4 display: single value
+            <div
+              className={styles.circleText}
+              style={{
+                fontSize: "20px",
+                color: "white",
+                textAlign: "center",
+                lineHeight: "1.2",
+              }}
+            >
+              {centerData.agzu4Oil}
+            </div>
+          ) : (
+            // Other AGZUs display: three values
+            <>
+              <div
+                className={styles.circleText}
+                style={{
+                  fontSize: "17px",
+                  color: "white",
+                  textAlign: "center",
+                  lineHeight: "1.2",
+                  margin: "2px 0",
+                }}
+              >
+                {centerData.density} МПа
+              </div>
+              <div
+                className={styles.circleText}
+                style={{
+                  fontSize: "17px",
+                  color: "white",
+                  textAlign: "center",
+                  lineHeight: "1.2",
+                  margin: "2px 0",
+                }}
+              >
+                {centerData.time}
+              </div>
+              <div
+                className={styles.circleText}
+                style={{
+                  fontSize: "17px",
+                  color: "white",
+                  textAlign: "center",
+                  lineHeight: "1.2",
+                  margin: "2px 0",
+                }}
+              >
+                {centerData.temperature} °C
+              </div>
+            </>
+          )}
         </div>
 
         <div className={styles.line} style={{ top: "62%", left: "85.7%" }}></div>
@@ -459,4 +550,4 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       )}
     </div>
   );
-} 
+}
