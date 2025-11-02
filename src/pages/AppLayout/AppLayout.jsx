@@ -1,4 +1,4 @@
-// AppLayout.jsx - Final working version
+// AppLayout.jsx
 
 import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from "react";
 import { fetchWells, fetchWellData, fetchAGZUWellData } from "../../axios/wellService";
@@ -215,8 +215,20 @@ export default function AppLayout() {
         const specificWellData = response.data;
         const wellData = Array.isArray(specificWellData) ? specificWellData[0] : specificWellData;
 
+        // Determine status text based on working value
+        let statusText = "Неизвестно";
+        if (wellData["Работа"] === 1) {
+          statusText = "В сети";
+        } else if (wellData["Работа"] === 2) {
+          statusText = "Нет данных";
+        } else if (wellData["Работа"] === 3) {
+          statusText = "Нет связи с ЧРП";
+        }
+
+        // Always show all data, but add status as second row
         const transformedData = [
           { "Параметр": "Дата замера", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
+          { "Параметр": "Статус", "Значение": statusText },
           { "Параметр": "Напряжение", "Значение": formatModalValue(wellData["Напряжение"]) },
           { "Параметр": "Мощность", "Значение": formatModalValue(wellData["Мощность"]) },
           { "Параметр": "Частота", "Значение": formatModalValue(wellData["Частота"]) },
@@ -225,10 +237,12 @@ export default function AppLayout() {
           { "Параметр": "Тип ЧРП", "Значение": formatModalValue(wellData["Тип ЧРП"]) },
           ...(wellData["Тип"] === 1 ? [{ "Параметр": "Температура устья", "Значение": formatModalValue(wellData["Температура"]) }] : [])
         ];
+        
         setWellModalData(transformedData);
         if (!silent) setWellModalLoading(false);
       }
 
+      // Rest of the AGZU data fetching code remains the same
       let otvodDataToUse = providedOtvodData;
       
       if (!otvodDataToUse && currentOtvodWell === wellNumber && currentOtvodData) {
@@ -288,7 +302,7 @@ export default function AppLayout() {
         setAgzuModalLoading(false);
       }
     }
-  }, [wells, currentOtvodWell, currentOtvodData, formatLastUpdate, formatModalValue, formatValue]);
+  }, [wells, currentOtvodWell, currentOtvodData, formatLastUpdate, formatModalValue, formatValue, formatDate]);
 
   const handleCloseWellModal = () => {
     setShowWellModal(false);

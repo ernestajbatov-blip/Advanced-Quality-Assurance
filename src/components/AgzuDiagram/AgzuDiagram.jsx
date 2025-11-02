@@ -437,7 +437,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
                 lineHeight: "1.2",
               }}
             >
-              {centerData.agzu4Oil}
+              {centerData.agzu4Oil} м³
             </div>
           ) : (
             // Other AGZUs display: three values
