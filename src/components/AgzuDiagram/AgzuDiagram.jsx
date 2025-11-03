@@ -1,5 +1,5 @@
 // AgzuDiagram.jsx:
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import styles from "./AgzuDiagram.module.css";
 import Box from "../Box/Box";
 import Modal from "../Modal/Modal";
@@ -24,14 +24,18 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     time: "0:00",
     temperature: 0,
     agzu4Oil: null,
+    lastUpdate: null,
   });
 
   const [boxIndex, setBoxIndex] = useState(0);
+  const boxIndexRef = useRef(0); // Use ref to track without causing re-renders
   const [localOtvodData, setLocalOtvodData] = useState(null);
   const [showWellModal, setShowWellModal] = useState(false);
   const [wellModalData, setWellModalData] = useState([]);
   const [wellModalTitle, setWellModalTitle] = useState("Данные скважины");
   const [wellModalLoading, setWellModalLoading] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [prevCategory, setPrevCategory] = useState(category);
 
   // Determine number of boxes based on category
   const getBoxCount = () => {
@@ -49,11 +53,49 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
   const boxCount = getBoxCount();
   const boxesPerRow = 7;
 
+  const formatDateShort = (dateString) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      // Check if date is invalid
+      if (isNaN(date.getTime())) return "N/A";
+      
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString().slice(-2);
+      
+      return `${day}.${month}.${year}`;
+    } catch (error) {
+      return "N/A";
+    }
+  };
+
+  const formatTimeShort = (dateString) => {
+    if (!dateString) return "N/A";
+    
+    try {
+      const date = new Date(dateString);
+      // Check if date is invalid
+      if (isNaN(date.getTime())) return "N/A";
+      
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      
+      return `${hours}:${minutes}`;
+    } catch (error) {
+      return "N/A";
+    }
+  };
+
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
     
     try {
       const date = new Date(dateString);
+      // Check if date is invalid
+      if (isNaN(date.getTime())) return "N/A";
+      
       const day = date.getDate().toString().padStart(2, '0');
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const year = date.getFullYear();
@@ -122,9 +164,18 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         );
         const currentOtvodValue = parseInt(tags[currentOtvodTag]) || 0;
         currentBoxIndex = currentOtvodValue > 0 ? currentOtvodValue - 1 : 0;
+        console.log("Current otvod tag:", currentOtvodTag, "value:", tags[currentOtvodTag], "calculated index:", currentBoxIndex);
       }
 
-      setBoxIndex(currentBoxIndex);
+      // Use callback form to avoid unnecessary re-renders if value hasn't changed
+      // Update ref immediately (doesn't cause re-render)
+      if (boxIndexRef.current !== currentBoxIndex) {
+        boxIndexRef.current = currentBoxIndex;
+        console.log("BoxIndexRef updated to", currentBoxIndex);
+        
+        // Only update state (which causes re-render) if value is actually different
+        setBoxIndex(currentBoxIndex);
+      }
 
       const currentLiquidTag = Object.keys(tags).find((key) =>
         key.includes("_current_liquid")
@@ -157,6 +208,14 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         setCurrentOtvodData(otvodData);
       }
 
+      // Find the most recent update date across ALL wells in this category
+      const allUpdateDates = filteredWells
+        .map(w => w.update_date)
+        .filter(date => date != null)
+        .sort((a, b) => new Date(b) - new Date(a));
+      
+      const mostRecentUpdateDate = allUpdateDates.length > 0 ? allUpdateDates[0] : null;
+
       // Handle center circle data based on AGZU type
       if (isAgzu4) {
         // For AGZU-4, show only agzu_4_oil in the center
@@ -174,6 +233,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
           agzu4Oil: agzu4OilTag && tags[agzu4OilTag] !== undefined 
             ? parseFloat(tags[agzu4OilTag]).toFixed(2) 
             : "0.00",
+          lastUpdate: mostRecentUpdateDate,
         });
       } else {
         // For other AGZUs, show the original three values
@@ -205,6 +265,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
             ? Math.floor(parseFloat(tags[liqTempTag])) 
             : 0,
           agzu4Oil: null,
+          lastUpdate: mostRecentUpdateDate,
         });
       }
 
@@ -215,6 +276,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         time: "0:00",
         temperature: 0,
         agzu4Oil: "0.00",
+        lastUpdate: null,
       });
       setLocalOtvodData(null);
       setBoxIndex(0);
@@ -226,19 +288,34 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
   }, [category, filteredWells, setCurrentOtvodWell, setCurrentOtvodData]);
 
   useEffect(() => {
-    // Fetch immediately on mount
-    fetchCategoryData();
+    // Check if category actually changed
+    if (prevCategory !== category) {
+      console.log("Category changed from", prevCategory, "to", category);
+      setIsInitialLoad(true);
+      setPrevCategory(category);
+    }
+    
+    // Fetch immediately on mount or category change
+    const initialFetch = async () => {
+      await fetchCategoryData();
+      if (isInitialLoad) {
+        // Small delay before removing initial load flag to prevent flicker
+        setTimeout(() => setIsInitialLoad(false), 500);
+      }
+    };
+    
+    initialFetch();
     
     // Set up polling interval (every 2 seconds like Diagram.jsx)
     const intervalId = setInterval(() => {
       fetchCategoryData();
     }, 2000);
     
-    // Cleanup: clear interval when component unmounts
+    // Cleanup: clear interval when component unmounts or category changes
     return () => {
       clearInterval(intervalId);
     };
-  }, [fetchCategoryData]);
+  }, [category, fetchCategoryData, isInitialLoad, prevCategory]);
 
   const boxes = Array(boxCount).fill(null);
   filteredWells.forEach((well) => {
@@ -247,16 +324,21 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     }
   });
 
-  const getPipeColor = (index, defaultColor = "#50505a") => {
+  const getPipeColor = useCallback((index, defaultColor = "#50505a") => {
+    // During initial load, don't highlight any pipe to prevent flickering
+    if (isInitialLoad) {
+      return defaultColor;
+    }
+    // Use box index for coloring
     if (index === boxIndex) {
       return "#4caf50";
     }
     return defaultColor;
-  };
+  }, [boxIndex, isInitialLoad]);
 
   const pipes = Array.from({ length: boxCount }, (_, i) => ({
     x1: 116 + (i % boxesPerRow) * 264,
-    y1: i < boxesPerRow ? 130 : 720,
+    y1: i < boxesPerRow ? 200 : 650,
     x2: 116 + (i % boxesPerRow) * 264,
     y2: i < boxesPerRow ? 305 : 563,
   }));
@@ -358,7 +440,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
 
   return (
     <div className={styles.container}>
-      <svg className="svgImage" viewBox="65 -40 1700 900" xmlns="http://www.w3.org/2000/svg">
+      <svg className="svgImage" viewBox="40 -50 1700 900" xmlns="http://www.w3.org/2000/svg">
         {pipes.map((pipe, index) => (
           <line
             key={`v${index}`}
@@ -394,7 +476,9 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
               key={index}
               boxText1={well?.well || ""}
               boxText2={boxText2}
-              top={index < boxesPerRow ? "5%" : "100%"}
+              boxText3={well?.update_date ? formatDateShort(well.update_date) : ""}
+              boxText4={well?.update_date ? formatTimeShort(well.update_date) : ""}
+              top={index < boxesPerRow ? "7%" : "90%"}
               left={`${10 + (index % boxesPerRow) * 135}px`}
               number={index + 1}
               borderColor={getPipeColor(index, "#FFFFFF")}
@@ -428,20 +512,36 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         >
           {centerData.agzu4Oil !== null && centerData.agzu4Oil !== undefined ? (
             // AGZU-4 display: single value
-            <div
-              className={styles.circleText}
-              style={{
-                fontSize: "20px",
-                color: "white",
-                textAlign: "center",
-                lineHeight: "1.2",
-              }}
-            >
-              {centerData.agzu4Oil} м³
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "4px" }}>
+              <div
+                className={styles.circleText}
+                style={{
+                  fontSize: "20px",
+                  color: "white",
+                  textAlign: "center",
+                  lineHeight: "1.2",
+                }}
+              >
+                {centerData.agzu4Oil} м³
+              </div>
+              {centerData.lastUpdate && (
+                <div
+                  style={{
+                    fontSize: "9px",
+                    color: "rgba(255, 255, 255, 0.7)",
+                    textAlign: "center",
+                    lineHeight: "1.1",
+                    marginTop: "2px",
+                  }}
+                >
+                  {formatDate(centerData.lastUpdate).split(',')[0]}<br/>
+                  {formatDate(centerData.lastUpdate).split(',')[1]?.trim()}
+                </div>
+              )}
             </div>
           ) : (
             // Other AGZUs display: three values
-            <>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0px" }}>
               <div
                 className={styles.circleText}
                 style={{
@@ -478,7 +578,21 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
               >
                 {centerData.temperature} °C
               </div>
-            </>
+              {centerData.lastUpdate && (
+                <div
+                  style={{
+                    fontSize: "9px",
+                    color: "rgba(255, 255, 255, 0.7)",
+                    textAlign: "center",
+                    lineHeight: "1.1",
+                    marginTop: "2px",
+                  }}
+                >
+                  {formatDate(centerData.lastUpdate).split(',')[0]}<br/>
+                  {formatDate(centerData.lastUpdate).split(',')[1]?.trim()}
+                </div>
+              )}
+            </div>
           )}
         </div>
 
