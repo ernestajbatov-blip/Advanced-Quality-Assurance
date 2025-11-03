@@ -242,6 +242,7 @@ export default function Diagram() {
     "gnu_1_nagn": "м3",
     "gnu_1_nakop": "м3",
     "gnu_1_consumption": "м3",
+    "gnu_1_accumulated_consumption": "м3",
     "gnu_2_freq": "Гц",
     "gnu_2_voltage": "В",
     "gnu_2_current": "А",
@@ -251,6 +252,7 @@ export default function Diagram() {
     "gnu_2_nagn": "м3",
     "gnu_2_nakop": "м3",
     "gnu_2_consumption": "м3",
+    "gnu_2_accumulated_consumption": "м3",
     "gnu_3_freq": "Гц",
     "gnu_3_voltage": "В",
     "gnu_3_current": "А",
@@ -260,6 +262,7 @@ export default function Diagram() {
     "gnu_3_nagn": "м3",
     "gnu_3_nakop": "м3",
     "gnu_3_consumption": "м3",
+    "gnu_3_accumulated_consumption": "м3",
   };
 
   // New mapping for tag descriptions
@@ -389,7 +392,7 @@ export default function Diagram() {
     "gnu_1_speed": "Скорость",
     "gnu_1_temp": "Температура",
     "gnu_1_nagn": "Мгновенный расход",
-    "gnu_1_nakop": "Накопленный расход",
+    "gnu_1_accumulated_consumption": "Накопленный расход",
     "gnu_1_consumption": "Мгновенный расход",
 
     "gnu_2_freq": "Частота",
@@ -399,7 +402,7 @@ export default function Diagram() {
     "gnu_2_speed": "Скорость",
     "gnu_2_temp": "Температура",
     "gnu_2_nagn": "Мгновенный расход",
-    "gnu_2_nakop": "Накопленный расход",
+    "gnu_2_accumulated_consumption": "Накопленный расход",
     "gnu_2_consumption": "Мгновенный расход",
 
     "gnu_3_freq": "Частота",
@@ -409,7 +412,7 @@ export default function Diagram() {
     "gnu_3_speed": "Скорость",
     "gnu_3_temp": "Температура",
     "gnu_3_nagn": "Мгновенный расход",
-    "gnu_3_nakop": "Накопленный расход",
+    "gnu_3_accumulated_consumption": "Накопленный расход",
     "gnu_3_consumption": "Мгновенный расход",
 
     // Uzel ucheta descriptions
@@ -492,7 +495,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
       const expectedEntries = [
         { "Датчик": "Температура", "Показание": "Нет данных" },
         { "Датчик": "Мгновенный расход", "Показание": "Нет данных" },
-        { "Датчик": "Накопленный расход", "Показание": "Нет данных" }
+        // { "Датчик": "Накопленный расход", "Показание": "Нет данных" }
       ];
 
       expectedEntries.forEach(expectedEntry => {
@@ -1327,7 +1330,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
             {/* БКНС Pump 1 clickable area */}
             <div
               onClick={() => handleTableClick(
-                ["gnu_1_freq", "gnu_1_voltage", "gnu_1_current", "gnu_1_power", "gnu_1_speed", "gnu_1_temp", "gnu_1_nagn", "gnu_1_nakop", "gnu_1_consumption"],
+                ["gnu_1_freq", "gnu_1_voltage", "gnu_1_current", "gnu_1_power", "gnu_1_speed", "gnu_1_temp", "gnu_1_nagn", "gnu_1_accumulated_consumption", "gnu_1_consumption"],
                 "ГНУ-1"
               )}
               style={{
@@ -1342,7 +1345,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
             {/* БКНС Pump 2 clickable area */}
             <div
               onClick={() => handleTableClick(
-                ["gnu_2_freq", "gnu_2_voltage", "gnu_2_current", "gnu_2_power", "gnu_2_speed", "gnu_2_temp", "gnu_2_nagn", "gnu_2_nakop", "gnu_2_consumption"],
+                ["gnu_2_freq", "gnu_2_voltage", "gnu_2_current", "gnu_2_power", "gnu_2_speed", "gnu_2_temp", "gnu_2_nagn", "gnu_2_accumulated_consumption", "gnu_2_consumption"],
                 "ГНУ-2"
               )}
               style={{
@@ -1357,7 +1360,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
             {/* БКНС Pump 3 clickable area */}
             <div
               onClick={() => handleTableClick(
-                ["gnu_3_freq", "gnu_3_voltage", "gnu_3_current", "gnu_3_power", "gnu_3_speed", "gnu_3_temp", "gnu_3_nagn", "gnu_3_nakop", "gnu_3_consumption"],
+                ["gnu_3_freq", "gnu_3_voltage", "gnu_3_current", "gnu_3_power", "gnu_3_speed", "gnu_3_temp", "gnu_3_nagn", "gnu_3_accumulated_consumption", "gnu_3_consumption"],
                 "ГНУ-3"
               )}
               style={{
