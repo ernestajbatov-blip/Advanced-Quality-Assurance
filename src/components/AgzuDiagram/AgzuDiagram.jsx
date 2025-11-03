@@ -670,7 +670,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
           )}
         </div>
 
-        <div className={styles.line} style={{ top: "62%", left: "85.7%" }}></div>
+        <div className={styles.line} style={{ top: "63%", left: "86.2%" }}></div>
       </div>
 
       <div
