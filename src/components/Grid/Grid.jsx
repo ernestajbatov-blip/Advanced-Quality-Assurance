@@ -21,7 +21,8 @@ export default function Grid({
   isWellStopped,
   fond,
   chrpFilter,
-  chartType
+  chartType,
+  statusFilter
 }) {
   return (
     <div className={styles.gridContainer}>
@@ -75,6 +76,7 @@ export default function Grid({
             wellStopped={wellStopped}
             fond={fond}
             chartType={chartType}
+            statusFilter={statusFilter}
           />
         );
       })}

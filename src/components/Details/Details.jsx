@@ -6,15 +6,18 @@ export default function Details({
     rightTop,
     leftBottom,
     rightBottom,
+    showStatusLegend = false,
+    showIdleInMain = false,
 }) {
-    const isVisible = leftTop || rightTop || leftBottom || rightBottom;
-
+    const isVisible = leftTop || rightTop || leftBottom || rightBottom || showStatusLegend || showIdleInMain;
+    
     if (!isVisible) {
         return null;
     }
-
+    
     return (
         <div className={styles.detailsContainer}>
+            {/* First Row */}
             {(leftTop || rightTop) && (
                 <div className={styles.row}>
                     {leftTop && (
@@ -31,7 +34,9 @@ export default function Details({
                     )}
                 </div>
             )}
-            {(leftBottom || rightBottom) && (
+            
+            {/* Second Row */}
+            {(leftBottom || rightBottom || showStatusLegend) && (
                 <div className={styles.row}>
                     {leftBottom && (
                         <div className={styles.textWithRect}>
@@ -39,12 +44,28 @@ export default function Details({
                             <p className={styles.text}>{leftBottom}</p>
                         </div>
                     )}
-                    {rightBottom && (
+                    {showStatusLegend && (
+                        <div className={styles.textWithRect}>
+                            <div className={styles.rect} style={{backgroundColor: "#919191"}}></div>
+                            <p className={styles.text}>В простое</p>
+                        </div>
+                    )}
+                    {rightBottom && !showStatusLegend && (
                         <div className={styles.textWithRect}>
                             <div className={styles.rect} style={{backgroundColor: "gray"}}></div>
                             <p className={styles.text}>{rightBottom}</p>
                         </div>
                     )}
+                </div>
+            )}
+            
+            {/* Third Row - for "В простое" in main category */}
+            {showIdleInMain && (
+                <div className={styles.row}>
+                    <div className={styles.textWithRect}>
+                        <div className={styles.rect} style={{backgroundColor: "#919191"}}></div>
+                        <p className={styles.text}>В простое</p>
+                    </div>
                 </div>
             )}
         </div>

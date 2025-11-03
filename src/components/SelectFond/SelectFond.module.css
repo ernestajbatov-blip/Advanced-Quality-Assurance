@@ -5,6 +5,10 @@
   gap: 10px;
 }
 
+.selectContainer {
+  position: relative;
+}
+
 .selectDropdown {
   padding: 6px 10px;
   font-size: 14px;
@@ -12,13 +16,21 @@
   color: white;
   border: 1px solid #666;
   border-radius: 4px;
+  cursor: pointer;
+  min-width: 250px;
+}
+
+.subcategoryOption {
+  padding-left: 20px;
+  font-size: 13px;
+  color: #ccc;
+  background-color: #2a2a2a;
 }
 
 .legend {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  /* margin-top: 1px; */
 }
 
 .legendRow {
@@ -75,11 +87,6 @@
   color: #fff;
   font-weight: 500;
 }
-
-/* .chrpCheckbox {
-  margin-top: 5px;
-  margin-bottom: 5px;
-} */
 
 .checkboxLabel {
   display: flex;

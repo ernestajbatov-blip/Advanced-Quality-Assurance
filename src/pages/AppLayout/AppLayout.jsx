@@ -40,7 +40,7 @@ export default function AppLayout() {
   
   // ЧРП filter state
   const [chrpFilter, setChrpFilter] = useState(false);
-  
+  const [statusFilter, setStatusFilter] = useState(null);
   const { user, onLogout } = useUser();
 
   useEffect(() => {
@@ -108,16 +108,25 @@ export default function AppLayout() {
     
     if (fond === 0) {
       baseFilteredWells = wells.filter((well) => well.nagn === 0);
+      
+      if (statusFilter === "В простое") {
+        baseFilteredWells = baseFilteredWells.filter((well) => well.status === "В простое");
+      } else if (statusFilter === "В бездействий") {
+        baseFilteredWells = baseFilteredWells.filter((well) => well.status === "В бездействий");
+      } else {
+        // Default: exclude "В бездействий" wells
+        baseFilteredWells = baseFilteredWells.filter((well) => well.status !== "В бездействий");
+      }
     } else {
       baseFilteredWells = wells.filter((well) => well.nagn === 1);
     }
     
-    if (chrpFilter && fond === 0) {
+    if (chrpFilter && fond === 0 && !statusFilter) {
       baseFilteredWells = baseFilteredWells.filter((well) => well.type === 1);
     }
     
     return baseFilteredWells;
-  }, [wells, fond, chrpFilter]);
+  }, [wells, fond, chrpFilter, statusFilter]);
 
   const wellsForComponents = useMemo(() => {
     if (fond === 0) {
@@ -345,13 +354,31 @@ export default function AppLayout() {
           >
             <div className={styles.legendsAndDetailsContainer}>
               {fond == 0 ? (
-                <Legends
-                  leftTop={"Номер скважины (XXX_xxxx)"}
-                  rightTop={"Тех. режим по нефти (т/сут)"}
-                  middle={"Замер по ТМ"}
-                  leftBottom={"Тех. режим по жидкости (м3/сут)"}
-                  rightBottom={"Обводненность(%)"}
-                />
+                statusFilter === "В простое" ? (
+                  <Legends
+                    leftTop={"Номер скважины (XXX_xxxx)"}
+                    rightTop={"Тех. режим по нефти (т/сут)"}
+                    middle={"В простое"}
+                    leftBottom={"Тех. режим по жидкости (м3/сут)"}
+                    rightBottom={"Обводненность(%)"}
+                  />
+                ) : statusFilter === "В бездействий" ? (
+                  <Legends
+                    leftTop={"Номер скважины (XXX_xxxx)"}
+                    rightTop={"Тех. режим по нефти (т/сут)"}
+                    middle={"В бездействий"}
+                    leftBottom={"Тех. режим по жидкости (м3/сут)"}
+                    rightBottom={"Обводненность(%)"}
+                  />
+                ) : (
+                  <Legends
+                    leftTop={"Номер скважины (XXX_xxxx)"}
+                    rightTop={"Тех. режим по нефти (т/сут)"}
+                    middle={"Замер по ТМ"}
+                    leftBottom={"Тех. режим по жидкости (м3/сут)"}
+                    rightBottom={"Обводненность(%)"}
+                  />
+                )
               ) : (
                 <Legends 
                   leftTop={"Номер скважины (XXX_xxxx)"}
@@ -362,24 +389,52 @@ export default function AppLayout() {
               
               <SelectFond 
                 setFond={setFond} 
-                wells={wells.filter(well => well.nagn === fond)}
+                // wells={wells.filter(well => well.nagn === fond)}
+                wells={wells}
                 hideWorkingStatusLegend={fond === 1}
                 chrpFilter={chrpFilter}
                 setChrpFilter={setChrpFilter}
                 fond={fond}
+                statusFilter={statusFilter}
+                setStatusFilter={setStatusFilter}
               />
               
               {fond == 0 ? (
-                <Details
-                  leftTop={"-15% откл. от ТР"}
-                  rightTop={"Скв. остановлена"}
-                  leftBottom={"более 30%"}
-                  rightBottom={"в пределах нормы"}
-                />
+                statusFilter === "В простое" ? (
+                  <Details
+                    leftTop={""}
+                    rightTop={""}
+                    leftBottom={""}
+                    rightBottom={""}
+                    showStatusLegend={true}
+                    showIdleInMain={false}
+                  />
+                ) : statusFilter === "В бездействий" ? (
+                  <Details
+                    leftTop={""}
+                    rightTop={""}
+                    leftBottom={""}
+                    rightBottom={""}
+                    showStatusLegend={false}
+                    showIdleInMain={false}
+                  />
+                ) : (
+                  <Details
+                    leftTop={"-15% откл. от ТР"}
+                    rightTop={"Скв. остановлена"}
+                    leftBottom={"более 30%"}
+                    rightBottom={"в пределах нормы"}
+                    showStatusLegend={false}
+                    showIdleInMain={true}
+                  />
+                )
               ) : (
                 <Details 
-                leftTop={"-15% откл."}
-                leftBottom={"более 30% откл."} />
+                  leftTop={"-15% откл."}
+                  leftBottom={"более 30% откл."}
+                  showStatusLegend={false}
+                  showIdleInMain={false}
+                />
               )}
             </div>
             <Grid
@@ -400,6 +455,7 @@ export default function AppLayout() {
               fond={fond}
               chrpFilter={chrpFilter}
               chartType={chartType}
+              statusFilter={statusFilter}
             />
           </div>
           <div className={styles.container}>

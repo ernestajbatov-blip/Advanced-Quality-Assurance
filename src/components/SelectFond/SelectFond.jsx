@@ -8,7 +8,14 @@ export default function SelectFond({
   hideWorkingStatusLegend = false,
   chrpFilter,
   setChrpFilter,
-  fond
+  fond,
+  statusFilter,
+  setStatusFilter,
+  // Add these as optional props if counts are passed from parent
+  totalProductionWells,
+  totalInjectionWells,
+  totalIdleWells,
+  totalInactiveWells
 }) {
   const [lastUpdate, setLastUpdate] = useState(null);
   
@@ -34,8 +41,28 @@ export default function SelectFond({
     { working: 0, noData: 0, notWorking: 0 }
   );
   
+  // Count wells by status (В работе, В простое, В бездействий)
+  // Use passed props if available, otherwise count from wells array
+  const wellStatusCounts = {
+    working: totalProductionWells !== undefined ? 
+      (totalProductionWells - (totalIdleWells || 0) - (totalInactiveWells || 0)) : 
+      wells.filter(well => well.status === "В работе").length,
+    idle: totalIdleWells !== undefined ? 
+      totalIdleWells : 
+      wells.filter(well => well.status === "В простое").length,
+    inactive: totalInactiveWells !== undefined ? 
+      totalInactiveWells : 
+      wells.filter(well => well.status === "В бездействий").length
+  };
+  
   // Count ЧРП wells
   const chrpCount = wells.filter(well => well.type === 1).length;
+  
+  // Count injection wells (нагнетательный фонд)
+  // Use passed prop if available, otherwise count from wells array
+  const injectionCount = totalInjectionWells !== undefined ? 
+    totalInjectionWells : 
+    wells.filter(well => well.nagn === 1).length;
   
   // Fetch last update timestamp
   useEffect(() => {
@@ -56,18 +83,69 @@ export default function SelectFond({
     setChrpFilter(e.target.checked);
   };
   
+  const handleSelectionChange = (value) => {
+    if (value === "0") {
+      // Main production category
+      setFond(0);
+      if (setStatusFilter) {
+        setStatusFilter(null);
+      }
+    } else if (value === "0-idle") {
+      // В простое subcategory
+      setFond(0);
+      if (setStatusFilter) {
+        setStatusFilter("В простое");
+      }
+    } else if (value === "0-inactive") {
+      // В бездействий subcategory
+      setFond(0);
+      if (setStatusFilter) {
+        setStatusFilter("В бездействий");
+      }
+    } else if (value === "1") {
+      // Injection wells
+      setFond(1);
+      if (setStatusFilter) {
+        setStatusFilter(null);
+      }
+    }
+  };
+  
+  // Determine current selection value
+  const getCurrentValue = () => {
+    if (fond === 0) {
+      if (statusFilter === "В простое") return "0-idle";
+      if (statusFilter === "В бездействий") return "0-inactive";
+      return "0";
+    }
+    return "1";
+  };
+  
   return (
     <div className={styles.container}>
-      <select
-        className={styles.selectDropdown}
-        onChange={(e) => setFond(Number(e.target.value))}
-      >
-        <option value="0">Добывающий фонд</option>
-        <option value="1">Нагнетательный фонд</option>
-      </select>
+      <div className={styles.selectContainer}>
+        <select
+          className={styles.selectDropdown}
+          onChange={(e) => handleSelectionChange(e.target.value)}
+          value={getCurrentValue()}
+        >
+          <option value="0">
+            Добывающий фонд ({wellStatusCounts.working + wellStatusCounts.idle + wellStatusCounts.inactive})
+          </option>
+          <option value="0-idle" className={styles.subcategoryOption}>
+            ⤷ В простое ({wellStatusCounts.idle})
+          </option>
+          <option value="0-inactive" className={styles.subcategoryOption}>
+            ⤷ В бездействий ({wellStatusCounts.inactive})
+          </option>
+          <option value="1">
+            Нагнетательный фонд ({injectionCount})
+          </option>
+        </select>
+      </div>
       
       {/* ЧРП Checkbox - only show for добывающий фонд (nagn = 0) */}
-      {fond === 0 && (
+      {fond === 0 && !statusFilter && (
         <div className={styles.chrpCheckbox}>
           <label className={styles.checkboxLabel}>
             <input
@@ -84,16 +162,8 @@ export default function SelectFond({
       )}
       
       {/* Only show working status legend if hideWorkingStatusLegend is false */}
-      {!hideWorkingStatusLegend && (
+      {!hideWorkingStatusLegend && !statusFilter && (
         <div className={styles.legend}>
-          {/* Last Update Display */}
-          {/* <div className={styles.lastUpdate}>
-            <span className={styles.lastUpdateLabel}>Последнее обновление:</span>
-            <span className={styles.lastUpdateValue}>
-              {lastUpdate || 'Загрузка...'}
-            </span>
-          </div> */}
-          
           {/* Working Status Legend */}
           <LegendRow color="green" label="В сети" count={statusCounts.working} />
           <LegendRow color="yellow" label="Нет данных" count={statusCounts.noData} />

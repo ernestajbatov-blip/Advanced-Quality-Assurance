@@ -28,7 +28,8 @@ export default function WellCard({
   wellStopped = false,
   fond,
   well,
-  chartType
+  chartType,
+  statusFilter
 }) {
   const location = useLocation();
   const context = location.pathname === "/abc" ? useContext(WellsABCContext) : null;
@@ -75,17 +76,10 @@ export default function WellCard({
     return numValue.toFixed(decimals);
   };
 
-  // DEBUG: Log the values
-  console.log(`Well ${leftTop}:`, {
-    fond,
-    chartType,
-    middle, // This is the PERCENTAGE difference
-    realMiddle, // This is the RAW measured value to display
-    rightTop, // tr_oil
-    leftBottom, // tr_fluid
-  });
-
   let cardColorClass = styles.grayCard;
+  
+  // Get well status
+  const wellStatus = well?.status;
 
   // Check if we're on the ABC page
   if (location.pathname === "/abc") {
@@ -112,34 +106,77 @@ export default function WellCard({
       }
     } else if (fond === 0) {
       // Production wells
-      const current = parseFloat(well?.c_current) || 0;
-      const currentMin = parseFloat(well?.c_current_min) || 0;
-      const currentMax = parseFloat(well?.c_current_max) || Infinity;
-      const percentageDiff = parseFloat(middle); // The percentage difference
+      
+      // PRIORITY 1: Handle "В бездействий" status - always show as gray with zeros
+      if (wellStatus === "В бездействий") {
+        cardColorClass = styles.grayCard;
+      }
+      // PRIORITY 2: Handle "В простое" status - show as light gray
+      else if (wellStatus === "В простое") {
+        cardColorClass = styles.lightGrayCard;
+      }
+      // PRIORITY 3: Normal well coloring logic
+      else {
+        const isChrpWell = well?.type === 1;
+        const isChrpOffline = working === 3;
+        const percentageDiff = parseFloat(middle); // The percentage difference
 
-      // Priority 1: Red conditions (using 'current')
-      if (current < 1) {
-        cardColorClass = styles.redCardStatic; // Static red for current < 1
-      } else if (current < currentMin || current > currentMax) {
-        cardColorClass = styles.redCard; // Blinking red for current out of range
-      } else if (wellStopped && working !== 3) {
-        cardColorClass = styles.redCard; // Blinking red for stopped
-      } else {
-        // If not red, check for orange: percentage < -15%
-        const orangeThreshold = -15;
+        // Only apply current-based logic for CHRP wells that are online
+        if (isChrpWell && !isChrpOffline) {
+          const current = parseFloat(well?.c_current) || 0;
+          const currentMin = parseFloat(well?.c_current_min) || 0;
+          const currentMax = parseFloat(well?.c_current_max) || Infinity;
 
-        if (!isNaN(percentageDiff) && percentageDiff < orangeThreshold) {
-          cardColorClass = styles.orangeCard; // Orange if 15% below target
-        } else if (percentageDiff > maxThreshold) {
-          cardColorClass = styles[colorMax]; // Green for good performance
+          // Priority 1: Red conditions (using 'current')
+          if (current < 1) {
+            cardColorClass = styles.redCardStatic; // Static red for current < 1
+          } else if (current < currentMin || current > currentMax) {
+            cardColorClass = styles.redCard; // Blinking red for current out of range
+          } else if (wellStopped) {
+            cardColorClass = styles.redCard; // Blinking red for stopped
+          } else {
+            // If not red, check for orange: percentage < -15%
+            const orangeThreshold = -15;
+
+            if (!isNaN(percentageDiff) && percentageDiff < orangeThreshold) {
+              cardColorClass = styles.orangeCard; // Orange if 15% below target
+            } else if (percentageDiff > maxThreshold) {
+              cardColorClass = styles[colorMax]; // Green for good performance
+            } else {
+              cardColorClass = styles.grayCard; // Default gray
+            }
+          }
         } else {
-          cardColorClass = styles.grayCard; // Default gray
+          // For non-CHRP wells or offline CHRP wells, use only percentage-based coloring
+          const orangeThreshold = -15;
+
+          if (!isNaN(percentageDiff) && percentageDiff < orangeThreshold) {
+            cardColorClass = styles.orangeCard; // Orange if 15% below target
+          } else if (percentageDiff > maxThreshold) {
+            cardColorClass = styles[colorMax]; // Green for good performance
+          } else {
+            cardColorClass = styles.grayCard; // Default gray
+          }
         }
       }
     }
   }
 
   const cardClasses = `${styles.wellCard} ${cardColorClass}`;
+  
+  // Determine display values based on status
+  let displayRightTop = rightTop;
+  let displayRealMiddle = realMiddle;
+  let displayLeftBottom = leftBottom;
+  let displayRightBottom = rightBottom;
+  
+  // For "В бездействий" wells, show all zeros
+  if (wellStatus === "В бездействий") {
+    displayRightTop = 0;
+    displayRealMiddle = 0;
+    displayLeftBottom = 0;
+    displayRightBottom = 0;
+  }
 
   return (
     <>
@@ -161,11 +198,11 @@ export default function WellCard({
 
         <div className={styles.cardRow}>
           <span>{leftTop}</span>
-          <span>{formatValue(rightTop, 2)}</span>
+          <span>{formatValue(displayRightTop, 2)}</span>
         </div>
 
         <h3 className={styles.cardHeader}>
-          {formatValue(realMiddle, 2)}
+          {formatValue(displayRealMiddle, 2)}
         </h3>
 
         <div className={styles.cardRow}>
@@ -176,8 +213,8 @@ export default function WellCard({
             </>
           ) : (
             <>
-              <span>{formatValue(leftBottom, 1)}</span>
-              <span>{formatValue(rightBottom, 1)}</span>
+              <span>{formatValue(displayLeftBottom, 1)}</span>
+              <span>{formatValue(displayRightBottom, 1)}</span>
             </>
           )}
         </div>
