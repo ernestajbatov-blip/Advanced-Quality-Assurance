@@ -9,6 +9,7 @@ function handleDisconnect() {
     password: "Ada12345",
     database: "ada",
     port: 3306,
+    timezone: '+05:00',
     charset: "utf8mb4"
   });
 

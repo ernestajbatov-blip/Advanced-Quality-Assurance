@@ -36,6 +36,10 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
   const [wellModalLoading, setWellModalLoading] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [prevCategory, setPrevCategory] = useState(category);
+  
+  // Add fetch guard to prevent concurrent fetches
+  const [isFetching, setIsFetching] = useState(false);
+  const fetchingRef = useRef(false);
 
   // Determine number of boxes based on category
   const getBoxCount = () => {
@@ -53,20 +57,22 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
   const boxCount = getBoxCount();
   const boxesPerRow = 7;
 
+  // Fixed date formatting functions
   const formatDateShort = (dateString) => {
     if (!dateString) return "N/A";
     
     try {
       const date = new Date(dateString);
-      // Check if date is invalid
       if (isNaN(date.getTime())) return "N/A";
       
+      // Use local time - the backend should send dates in correct timezone
       const day = date.getDate().toString().padStart(2, '0');
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const year = date.getFullYear().toString().slice(-2);
       
       return `${day}.${month}.${year}`;
     } catch (error) {
+      console.error("Error formatting date:", error);
       return "N/A";
     }
   };
@@ -76,14 +82,15 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     
     try {
       const date = new Date(dateString);
-      // Check if date is invalid
       if (isNaN(date.getTime())) return "N/A";
       
+      // Use local time - the backend should send dates in correct timezone
       const hours = date.getHours().toString().padStart(2, '0');
       const minutes = date.getMinutes().toString().padStart(2, '0');
       
       return `${hours}:${minutes}`;
     } catch (error) {
+      console.error("Error formatting time:", error);
       return "N/A";
     }
   };
@@ -93,9 +100,9 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     
     try {
       const date = new Date(dateString);
-      // Check if date is invalid
       if (isNaN(date.getTime())) return "N/A";
       
+      // Use local time - the backend should send dates in correct timezone
       const day = date.getDate().toString().padStart(2, '0');
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const year = date.getFullYear();
@@ -105,6 +112,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       
       return `${day}.${month}.${year}, ${hours}:${minutes}:${seconds}`;
     } catch (error) {
+      console.error("Error formatting date:", error);
       return "N/A";
     }
   };
@@ -114,6 +122,15 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     : "http://localhost:3000/api";
 
   const fetchCategoryData = useCallback(async () => {
+    // Prevent concurrent fetches
+    if (fetchingRef.current) {
+      console.log("Fetch already in progress, skipping");
+      return;
+    }
+    
+    fetchingRef.current = true;
+    setIsFetching(true);
+    
     try {
       if (!category) return;
 
@@ -167,14 +184,19 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         console.log("Current otvod tag:", currentOtvodTag, "value:", tags[currentOtvodTag], "calculated index:", currentBoxIndex);
       }
 
-      // Use callback form to avoid unnecessary re-renders if value hasn't changed
-      // Update ref immediately (doesn't cause re-render)
+      // CRITICAL FIX: Only update state if the value actually changed
+      // This prevents unnecessary re-renders and the "going ham" issue
       if (boxIndexRef.current !== currentBoxIndex) {
         boxIndexRef.current = currentBoxIndex;
         console.log("BoxIndexRef updated to", currentBoxIndex);
         
-        // Only update state (which causes re-render) if value is actually different
-        setBoxIndex(currentBoxIndex);
+        // Use functional update to ensure we're working with latest state
+        setBoxIndex(prevIndex => {
+          if (prevIndex !== currentBoxIndex) {
+            return currentBoxIndex;
+          }
+          return prevIndex;
+        });
       }
 
       const currentLiquidTag = Object.keys(tags).find((key) =>
@@ -189,6 +211,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       const currentWTag = Object.keys(tags).find((key) =>
         key.includes("_current_W")
       );
+      
       // Find the well for the current otvod and get its update_date
       const currentWell = filteredWells.find(w => w.otvod === (currentBoxIndex + 1));
       const lastDate = currentWell?.update_date || null;
@@ -201,7 +224,13 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         lastDate: lastDate,
       };
       
-      setLocalOtvodData(otvodData);
+      // Only update if data actually changed
+      setLocalOtvodData(prevData => {
+        if (JSON.stringify(prevData) !== JSON.stringify(otvodData)) {
+          return otvodData;
+        }
+        return prevData;
+      });
 
       if (currentWell && setCurrentOtvodWell && setCurrentOtvodData) {
         setCurrentOtvodWell(currentWell.well);
@@ -209,12 +238,31 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       }
 
       // Find the most recent update date across ALL wells in this category
-      const allUpdateDates = filteredWells
-        .map(w => w.update_date)
-        .filter(date => date != null)
-        .sort((a, b) => new Date(b) - new Date(a));
+      // Convert to Date objects first for proper comparison
+      const wellsWithDates = filteredWells
+        .filter(w => w.update_date != null)
+        .map(w => ({
+          well: w.well,
+          date: new Date(w.update_date),
+          rawDate: w.update_date
+        }))
+        .filter(w => !isNaN(w.date.getTime())); // Filter out invalid dates
       
-      const mostRecentUpdateDate = allUpdateDates.length > 0 ? allUpdateDates[0] : null;
+      console.log("Wells with dates in category:", category);
+      wellsWithDates.forEach(w => {
+        console.log(`  ${w.well}: ${w.rawDate} (parsed: ${w.date.toISOString()})`);
+      });
+      
+      // Sort by Date object, not string
+      wellsWithDates.sort((a, b) => b.date - a.date);
+      
+      const mostRecentUpdateDate = wellsWithDates.length > 0 ? wellsWithDates[0].rawDate : null;
+      
+      console.log("Most recent update date:", mostRecentUpdateDate);
+      if (mostRecentUpdateDate) {
+        console.log("Most recent well:", wellsWithDates[0].well);
+        console.log("Formatted:", formatDate(mostRecentUpdateDate));
+      }
 
       // Handle center circle data based on AGZU type
       if (isAgzu4) {
@@ -226,7 +274,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         console.log("Looking for agzu_4_oil tag, found:", agzu4OilTag);
         console.log("agzu_4_oil value:", tags[agzu4OilTag]);
         
-        setCenterData({
+        const newCenterData = {
           density: null,
           time: null,
           temperature: null,
@@ -234,6 +282,14 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
             ? parseFloat(tags[agzu4OilTag]).toFixed(2) 
             : "0.00",
           lastUpdate: mostRecentUpdateDate,
+        };
+        
+        // Only update if data changed
+        setCenterData(prevData => {
+          if (JSON.stringify(prevData) !== JSON.stringify(newCenterData)) {
+            return newCenterData;
+          }
+          return prevData;
         });
       } else {
         // For other AGZUs, show the original three values
@@ -254,7 +310,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
           return `${hours}:${minutes.toString().padStart(2, "0")}`;
         };
 
-        setCenterData({
+        const newCenterData = {
           density: sepPressureTag && tags[sepPressureTag] !== undefined 
             ? parseFloat(tags[sepPressureTag]).toFixed(2) 
             : "0.00",
@@ -266,17 +322,32 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
             : 0,
           agzu4Oil: null,
           lastUpdate: mostRecentUpdateDate,
+        };
+        
+        // Only update if data changed
+        setCenterData(prevData => {
+          if (JSON.stringify(prevData) !== JSON.stringify(newCenterData)) {
+            return newCenterData;
+          }
+          return prevData;
         });
       }
 
     } catch (error) {
       console.error("Error fetching AGZU data:", error);
-      setCenterData({
-        density: "0.00",
-        time: "0:00",
-        temperature: 0,
-        agzu4Oil: "0.00",
-        lastUpdate: null,
+      // Only set error state if not already in error state
+      setCenterData(prevData => {
+        const errorData = {
+          density: "0.00",
+          time: "0:00",
+          temperature: 0,
+          agzu4Oil: "0.00",
+          lastUpdate: null,
+        };
+        if (JSON.stringify(prevData) !== JSON.stringify(errorData)) {
+          return errorData;
+        }
+        return prevData;
       });
       setLocalOtvodData(null);
       setBoxIndex(0);
@@ -284,6 +355,9 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
         setCurrentOtvodWell(null);
         setCurrentOtvodData(null);
       }
+    } finally {
+      fetchingRef.current = false;
+      setIsFetching(false);
     }
   }, [category, filteredWells, setCurrentOtvodWell, setCurrentOtvodData]);
 
@@ -306,10 +380,10 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     
     initialFetch();
     
-    // Set up polling interval (every 2 seconds like Diagram.jsx)
+    // Set up polling interval (increased from 2s to 5s to reduce load and race conditions)
     const intervalId = setInterval(() => {
       fetchCategoryData();
-    }, 2000);
+    }, 5000);
     
     // Cleanup: clear interval when component unmounts or category changes
     return () => {
@@ -378,41 +452,41 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       setWellModalTitle(`Данные скважины ${wellNumber}`);
       setShowWellModal(true);
 
-    // If this is the active/highlighted well, use the current otvod data
-    if (isActiveBox && localOtvodData) {
+      // If this is the active/highlighted well, use the current otvod data
+      if (isActiveBox && localOtvodData) {
+        const transformedData = [
+          { Параметр: "Дата замера", Значение: formatDate(well.update_date) }, // First row
+          { Параметр: "Скважина", Значение: wellNumber },
+          { Параметр: "Жидкость", Значение: formatValue(localOtvodData.liquid, "м³/ч") },
+          { Параметр: "Нефть", Значение: formatValue(localOtvodData.oil, "т/сут") },
+          { Параметр: "Газ", Значение: formatValue(localOtvodData.gas, "м³/сут") },
+          { Параметр: "Обводненность", Значение: formatValue(localOtvodData.waterCut, "%") },
+        ];
+        setWellModalData(transformedData);
+        setWellModalLoading(false);
+        return;
+      }
+
+      // Otherwise, fetch the data from the API as before
+      const response = await fetchAGZUWellData(wellNumber);
+      const agzuWellData = response.data;
+      const wellData = Array.isArray(agzuWellData)
+        ? agzuWellData[0]
+        : agzuWellData;
+
       const transformedData = [
-        { Параметр: "Дата замера", Значение: formatDate(well.update_date) }, // First row
-        { Параметр: "Скважина", Значение: wellNumber },
-        { Параметр: "Жидкость", Значение: formatValue(localOtvodData.liquid, "м³/ч") },
-        { Параметр: "Нефть", Значение: formatValue(localOtvodData.oil, "т/сут") },
-        { Параметр: "Газ", Значение: formatValue(localOtvodData.gas, "м³/сут") },
-        { Параметр: "Обводненность", Значение: formatValue(localOtvodData.waterCut, "%") },
+        { Параметр: "Дата замера", Значение: formatDate(wellData["Дата и время"] || well.update_date) },
+        { Параметр: "Скважина", Значение: wellData["Скважина"] || wellNumber },
+        { Параметр: "Жидкость", Значение: formatValue(wellData["Жидкость"], "м³") },
+        { Параметр: "Нефть", Значение: formatValue(wellData["Нефть"], "т/сут") },
+        { Параметр: "Газ", Значение: formatValue(wellData["Газ"], "м³/сут") },
+        {
+          Параметр: "Обводненность",
+          Значение: formatValue(wellData["Обводненность"], "%"),
+        },
       ];
+
       setWellModalData(transformedData);
-      setWellModalLoading(false);
-      return;
-    }
-
-    // Otherwise, fetch the data from the API as before
-    const response = await fetchAGZUWellData(wellNumber);
-    const agzuWellData = response.data;
-    const wellData = Array.isArray(agzuWellData)
-      ? agzuWellData[0]
-      : agzuWellData;
-
-    const transformedData = [
-      { Параметр: "Дата замера", Значение: formatDate(wellData["Дата и время"] || well.update_date) },
-      { Параметр: "Скважина", Значение: wellData["Скважина"] || wellNumber },
-      { Параметр: "Жидкость", Значение: formatValue(wellData["Жидкость"], "м³") },
-      { Параметр: "Нефть", Значение: formatValue(wellData["Нефть"], "т/сут") },
-      { Параметр: "Газ", Значение: formatValue(wellData["Газ"], "м³/сут") },
-      {
-        Параметр: "Обводненность",
-        Значение: formatValue(wellData["Обводненность"], "%"),
-      },
-    ];
-
-    setWellModalData(transformedData);
     } catch (error) {
       const fallbackData = [
         { Параметр: "Дата замера", Значение: formatDate(well.update_date) },
@@ -440,7 +514,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
 
   return (
     <div className={styles.container}>
-      <svg className="svgImage" viewBox="40 -50 1700 900" xmlns="http://www.w3.org/2000/svg">
+      <svg className="svgImage" viewBox="60 -40 1700 900" xmlns="http://www.w3.org/2000/svg">
         {pipes.map((pipe, index) => (
           <line
             key={`v${index}`}
