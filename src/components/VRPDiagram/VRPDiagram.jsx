@@ -92,11 +92,11 @@ export default function VRPDiagram({ filteredWells, category }) {
 
   // You may need to adjust pipe positions for 5 boxes
   const pipes = [
-    { x1: 116, y1: 165, x2: 116, y2: 305 },
-    { x1: 380, y1: 165, x2: 380, y2: 305 },
-    { x1: 648, y1: 165, x2: 648, y2: 305 },
-    { x1: 918, y1: 165, x2: 918, y2: 305 },
-    { x1: 1181, y1: 165, x2: 1181, y2: 305 }, // 5th box pipe
+    { x1: 116, y1: 225, x2: 116, y2: 305 },
+    { x1: 380, y1: 225, x2: 380, y2: 305 },
+    { x1: 648, y1: 225, x2: 648, y2: 305 },
+    { x1: 918, y1: 225, x2: 918, y2: 305 },
+    { x1: 1181, y1: 225, x2: 1181, y2: 305 }, // 5th box pipe
   ];
 
   const formatValue = (value, unit = "", decimals = 2) => {
