@@ -260,11 +260,12 @@ export default function AppLayout() {
 
       if (otvodDataToUse) {
         const transformedAgzuData = [
-          { Параметр: "Дата замера", Значение: formatDate(otvodDataToUse.lastDate || selectedWell?.update_date) },
+          { Параметр: "Дата опроса", Значение: formatDate(otvodDataToUse.lastDate || selectedWell?.update_date) },
           { Параметр: "Жидкость", Значение: formatValue(otvodDataToUse.liquid, "м³/ч") },
           { Параметр: "Нефть", Значение: formatValue(otvodDataToUse.oil, "т/сут") },
           { Параметр: "Газ", Значение: formatValue(otvodDataToUse.gas, "м³/сут") },
-          { Параметр: "Обводненность", Значение: formatValue(otvodDataToUse.waterCut, "%") },
+          { Параметр: "Обводненность АГЗУ", Значение: formatValue(otvodDataToUse.waterCut, "%") },
+          { Параметр: "Обводненность влагомера", Значение: "N/A" }
         ];
         setAgzuModalData(transformedAgzuData);
         if (!silent) setAgzuModalLoading(false);
@@ -275,11 +276,12 @@ export default function AppLayout() {
           const agzuData = Array.isArray(agzuWellData) ? agzuWellData[0] : agzuWellData;
 
           const transformedAgzuData = [
-            { Параметр: "Дата замера", Значение: formatDate(agzuData["Дата и время"] || selectedWell?.update_date) },
+            { Параметр: "Дата опроса", Значение: formatDate(agzuData["Дата и время"] || selectedWell?.update_date) },
             { Параметр: "Жидкость", Значение: formatValue(agzuData["Жидкость"], "м³") },
             { Параметр: "Нефть", Значение: formatValue(agzuData["Нефть"], "т/сут") },
             { Параметр: "Газ", Значение: formatValue(agzuData["Газ"], "м³/сут") },
-            { Параметр: "Обводненность", Значение: formatValue(agzuData["Обводненность"], "%") },
+            { Параметр: "Обводненность АГЗУ", Значение: formatValue(agzuData["Обводненность"], "%") },
+            { Параметр: "Обводненность влагомера", Значение: "N/A" }
           ];
 
           setAgzuModalData(transformedAgzuData);

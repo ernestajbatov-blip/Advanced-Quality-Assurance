@@ -499,14 +499,14 @@ app.get("/api/kpi/production", (req, res) => {
       COALESCE(SUM(zamer), 0) as zamernaya_fluid,
       COALESCE(SUM(zamer_oil), 0) as zamernaya_oil,
       COALESCE(SUM(tr_fluid), 0) as tech_rezh_fluid,
-      COALESCE(SUM(tr_oil), 0) as tech_rezh_oil
+      COALESCE(SUM(tr_oil) * 0.866, 0) as tech_rezh_oil
     FROM n_well_matrix 
     WHERE nagn = 0;
   `;
   
   const parkQuery = `
     SELECT 
-      COALESCE(n_debit_last_day_nak, 0) as park_fluid,
+      COALESCE(debit_last_day_nak, 0) as park_fluid,
       COALESCE(n_debit_last_day_nak, 0) as park_oil
     FROM n_2hour 
     WHERE oil_field LIKE 'BSK%' AND time = '1:59'

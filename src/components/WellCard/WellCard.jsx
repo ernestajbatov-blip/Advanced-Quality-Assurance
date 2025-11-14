@@ -120,9 +120,13 @@ export default function WellCard({
         const isChrpWell = well?.type === 1;
         const isChrpOffline = working === 3;
         const percentageDiff = parseFloat(middle); // The percentage difference
+        
+        // Check if c_type starts with SVX (exclude from ЧРП coloring logic)
+        const cTypeValue = well?.c_type;
+        const isSVXWell = cTypeValue && String(cTypeValue).toUpperCase().startsWith('SVX');
 
-        // Only apply current-based logic for CHRP wells that are online
-        if (isChrpWell && !isChrpOffline) {
+        // Only apply current-based logic for CHRP wells that are online and NOT SVX
+        if (isChrpWell && !isChrpOffline && !isSVXWell) {
           const current = parseFloat(well?.c_current) || 0;
           const currentMin = parseFloat(well?.c_current_min) || 0;
           const currentMax = parseFloat(well?.c_current_max) || Infinity;
