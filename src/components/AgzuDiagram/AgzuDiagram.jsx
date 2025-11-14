@@ -28,7 +28,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
   });
 
   const [boxIndex, setBoxIndex] = useState(0);
-  const boxIndexRef = useRef(0); // Use ref to track without causing re-renders
+  const boxIndexRef = useRef(0);
   const [localOtvodData, setLocalOtvodData] = useState(null);
   const [showWellModal, setShowWellModal] = useState(false);
   const [wellModalData, setWellModalData] = useState([]);
@@ -61,11 +61,14 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
   const formatDateShort = (dateString) => {
     if (!dateString) return "N/A";
     
+    // Check for MySQL's zero/null date format
+    if (dateString === "0000-00-00 00:00:00" || dateString.startsWith("0000-00-00")) return "N/A";
+    
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return "N/A";
       
-      // Use local time - the backend should send dates in correct timezone
+      // Use local time
       const day = date.getDate().toString().padStart(2, '0');
       const month = (date.getMonth() + 1).toString().padStart(2, '0');
       const year = date.getFullYear().toString().slice(-2);
@@ -79,6 +82,9 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
 
   const formatTimeShort = (dateString) => {
     if (!dateString) return "N/A";
+    
+    // Check for MySQL's zero/null date format
+    if (dateString === "0000-00-00 00:00:00" || dateString.startsWith("0000-00-00")) return "N/A";
     
     try {
       const date = new Date(dateString);
@@ -97,6 +103,9 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
 
   const formatDate = (dateString) => {
     if (!dateString) return "N/A";
+    
+    // Check for MySQL's zero/null date format
+    if (dateString === "0000-00-00 00:00:00" || dateString.startsWith("0000-00-00")) return "N/A";
     
     try {
       const date = new Date(dateString);
@@ -455,7 +464,7 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
       // If this is the active/highlighted well, use the current otvod data
       if (isActiveBox && localOtvodData) {
         const transformedData = [
-          { Параметр: "Дата замера", Значение: formatDate(well.update_date) }, // First row
+          { Параметр: "Дата замера", Значение: formatDate(localOtvodData.lastDate || well.update_date) },
           { Параметр: "Скважина", Значение: wellNumber },
           { Параметр: "Жидкость", Значение: formatValue(localOtvodData.liquid, "м³/ч") },
           { Параметр: "Нефть", Значение: formatValue(localOtvodData.oil, "т/сут") },

@@ -16,7 +16,7 @@ app.use(express.json());
 app.get("/api/wells", (req, res) => {
   const connection = getConnection();
   const query = `
-    SELECT m.*, d.working, d.type, d.c_current, d.c_current_min, d.c_current_max
+    SELECT m.*, d.working, d.type, d.c_current, d.c_current_min, d.c_current_max, d.c_type
     FROM n_well_matrix m
     LEFT JOIN well_data d ON m.well = d.well
     WHERE m.well LIKE 'BSK%';
@@ -506,7 +506,7 @@ app.get("/api/kpi/production", (req, res) => {
   
   const parkQuery = `
     SELECT 
-      COALESCE(n_debit_last_day, 0) as park_fluid,
+      COALESCE(n_debit_last_day_nak, 0) as park_fluid,
       COALESCE(n_debit_last_day_nak, 0) as park_oil
     FROM n_2hour 
     WHERE oil_field LIKE 'BSK%' AND time = '1:59'
@@ -529,9 +529,12 @@ app.get("/api/kpi/production", (req, res) => {
       const matrixData = matrixResults[0] || {};
       const parkData = parkResults[0] || {};
       
-      const parkCoeff = parkData.park_oil > 0 ? 
-        (matrixData.zamernaya_oil / parkData.park_oil).toFixed(3) : 0;
-      
+      const rawCoeff = (parkData.park_oil > 0 && matrixData.zamernaya_oil > 0)
+        ? (parkData.park_oil / matrixData.zamernaya_oil)
+        : 0;
+
+      const parkCoeff = parseFloat(rawCoeff.toFixed(3));
+
       const result = {
         zamernaya_fluid: parseFloat(matrixData.zamernaya_fluid || 0).toFixed(2),
         zamernaya_oil: parseFloat(matrixData.zamernaya_oil || 0).toFixed(2),
@@ -539,8 +542,9 @@ app.get("/api/kpi/production", (req, res) => {
         park_oil: parseFloat(parkData.park_oil || 0).toFixed(2),
         tech_rezh_fluid: parseFloat(matrixData.tech_rezh_fluid || 0).toFixed(2),
         tech_rezh_oil: parseFloat(matrixData.tech_rezh_oil || 0).toFixed(2),
-        park_coefficient: parseFloat(parkCoeff)
+        park_coefficient: parkCoeff
       };
+
       
       res.json(result);
     });
@@ -815,7 +819,21 @@ app.get("/api/well/agzu-data", (req, res) => {
       console.error("Database error:", error);
       return res.status(500).json({ error: "Database query failed" });
     }
-    res.json(results || []);
+    
+    const fixedResults = results.map(row => {
+      const fixed = { ...row };
+      const dateValue = row['Дата и время'];
+      
+      if (dateValue === '0000-00-00 00:00:00' || 
+          dateValue === '0000-00-00' ||
+          (dateValue instanceof Date && dateValue.getFullYear() < 1970)) {
+        fixed['Дата и время'] = null;
+      }
+      
+      return fixed;
+    });
+    
+    res.json(fixedResults || []);
   });
 });
 

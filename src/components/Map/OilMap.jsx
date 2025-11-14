@@ -343,13 +343,13 @@ export default function OilMap({
                     click: () => handleMarkerClick(well)
                   }}
                 >
-                  {/* Always visible label */}
+                  {/* Hover-only label */}
                   <Tooltip 
                     direction="top" 
                     offset={[0, -15]} 
                     opacity={1}
-                    permanent={true}
-                    className={styles.permanentLabel}
+                    permanent={false}
+                    className={styles.hoverLabel}
                   >
                     <div className={styles.tooltipContent}>
                       {well.name || 'Unknown Well'}

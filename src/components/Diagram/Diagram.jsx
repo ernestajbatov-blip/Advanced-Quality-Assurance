@@ -847,7 +847,7 @@ const handleTableClick = (filterTags = null, buttonTitle = "Sensor Data") => {
 
     const intervalId = setInterval(() => {
       fetchVlagomerData();
-    }, 2000); // Update every 2 seconds for current data
+    }, 30000); // Update every 2 seconds for current data
 
     return () => clearInterval(intervalId);
   }, [showVlagomerChart, isVlagomerArchiveMode]);
