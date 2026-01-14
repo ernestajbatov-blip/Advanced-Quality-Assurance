@@ -4,9 +4,9 @@ let connection;
 
 function handleDisconnect() {
   connection = mysql.createConnection({
-    host: "192.168.1.42",
-    user: "ada_user",
-    password: "Ada12345",
+    host: "localhost",
+    user: "root",
+    password: "1234",
     database: "ada",
     port: 3306,
     timezone: '+05:00',

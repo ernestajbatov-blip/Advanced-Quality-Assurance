@@ -45,6 +45,9 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
   const chartWidth = width - margin.left - margin.right;
   const chartHeight = height - margin.top - margin.bottom;
 
+  // Determine unit based on chart type
+  const unit = type === "oil" ? " т" : " м³";
+
   // Get the appropriate data keys based on type and accumulation mode
   const getDataKey = (baseKey) => {
     if (isNak) {
@@ -479,7 +482,7 @@ const CustomChart = ({ data, width = 800, height = 350, isNak, type, chartDate, 
                 fontSize: '14px',
                 marginLeft: '8px'
               }}>
-                {entry.value.toLocaleString("ru-RU")}
+                {entry.value.toLocaleString("ru-RU")}{unit}
               </div>
             </div>
           ))}

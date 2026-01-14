@@ -234,17 +234,22 @@ export default function AppLayout() {
           statusText = "Нет связи с ЧРП";
         }
 
+        // Determine power unit based on ЧРП type
+        const chrpType = wellData["Тип ЧРП"];
+        const isShneider = chrpType && chrpType.toString().startsWith("Шнайдер");
+        const powerUnit = isShneider ? "%" : "кВт/ч";
+
         // Always show all data, but add status as second row
         const transformedData = [
-          { "Параметр": "Дата замера", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
+          { "Параметр": "Дата опроса", "Значение": formatLastUpdate(wellData["Последнее обновление"]) },
           { "Параметр": "Статус", "Значение": statusText },
-          { "Параметр": "Напряжение", "Значение": formatModalValue(wellData["Напряжение"]) },
-          { "Параметр": "Мощность", "Значение": formatModalValue(wellData["Мощность"]) },
-          { "Параметр": "Частота", "Значение": formatModalValue(wellData["Частота"]) },
-          { "Параметр": "Ток", "Значение": formatModalValue(wellData["Ток"]) },
-          { "Параметр": "Обороты ротора", "Значение": formatModalValue(wellData["Скорость двигателя"]) },
+          { "Параметр": "Напряжение", "Значение": formatValue(wellData["Напряжение"], "В", 2) },
+          { "Параметр": "Мощность", "Значение": formatValue(wellData["Мощность"], powerUnit, 2) },
+          { "Параметр": "Частота", "Значение": formatValue(wellData["Частота"], "Гц", 2) },
+          { "Параметр": "Ток", "Значение": formatValue(wellData["Ток"], "А", 2) },
+          { "Параметр": "Обороты ротора", "Значение": formatValue(wellData["Скорость двигателя"], "об/мин", 0) },
           { "Параметр": "Тип ЧРП", "Значение": formatModalValue(wellData["Тип ЧРП"]) },
-          ...(wellData["Тип"] === 1 ? [{ "Параметр": "Температура устья", "Значение": formatModalValue(wellData["Температура"]) }] : [])
+          ...(wellData["Тип"] === 1 ? [{ "Параметр": "Температура устья", "Значение": formatValue(wellData["Температура"], "°C", 1) }] : [])
         ];
         
         setWellModalData(transformedData);
@@ -260,7 +265,7 @@ export default function AppLayout() {
 
       if (otvodDataToUse) {
         const transformedAgzuData = [
-          { Параметр: "Дата опроса", Значение: formatDate(otvodDataToUse.lastDate || selectedWell?.update_date) },
+          { Параметр: "Дата замера", Значение: formatDate(otvodDataToUse.lastDate || selectedWell?.update_date) },
           { Параметр: "Жидкость", Значение: formatValue(otvodDataToUse.liquid, "м³/ч") },
           { Параметр: "Нефть", Значение: formatValue(otvodDataToUse.oil, "т/сут") },
           { Параметр: "Газ", Значение: formatValue(otvodDataToUse.gas, "м³/сут") },
@@ -276,7 +281,7 @@ export default function AppLayout() {
           const agzuData = Array.isArray(agzuWellData) ? agzuWellData[0] : agzuWellData;
 
           const transformedAgzuData = [
-            { Параметр: "Дата опроса", Значение: formatDate(agzuData["Дата и время"] || selectedWell?.update_date) },
+            { Параметр: "Дата замера", Значение: formatDate(agzuData["Дата и время"] || selectedWell?.update_date) },
             { Параметр: "Жидкость", Значение: formatValue(agzuData["Жидкость"], "м³") },
             { Параметр: "Нефть", Значение: formatValue(agzuData["Нефть"], "т/сут") },
             { Параметр: "Газ", Значение: formatValue(agzuData["Газ"], "м³/сут") },
