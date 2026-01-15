@@ -1,9 +1,15 @@
 import axios from "axios";
 
+// Dynamically get the base URL from the current window location
+const getBaseURL = () => {
+  const protocol = window.location.protocol;
+  const hostname = window.location.hostname;
+  const port = window.location.port ? `:${window.location.port}` : "";
+  return `${protocol}//${hostname}${port}/api`;
+};
+
 const api = axios.create({
-  baseURL: process.env.NODE_ENV === "production" 
-    ? "http://188.0.132.80:3000/api" 
-    : "http://localhost:3000/api",
+  baseURL: getBaseURL(),
   headers: {
     "Content-Type": "application/json",
   },
