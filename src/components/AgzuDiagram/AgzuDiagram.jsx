@@ -126,9 +126,12 @@ export default function AgzuDiagram({ filteredWells, category, handleWellClick, 
     }
   };
 
-  const apiBaseURL = process.env.NODE_ENV === "production" 
-    ? "http://188.0.132.80:3000/api" 
-    : "http://localhost:3000/api";
+  const apiBaseURL = (() => {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const port = window.location.port ? `:${window.location.port}` : "";
+    return `${protocol}//${hostname}${port}/api`;
+  })();
 
   const fetchCategoryData = useCallback(async () => {
     // Prevent concurrent fetches

@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from "react";
 import styles from "./SelectFond.module.css";
-import { fetchLastUpdate } from "../../axios/wellService";
+import { fetchLastUpdate, fetchChrpArchiveReport } from "../../axios/wellService";
+import Modal from "../Modal/Modal";
+import * as XLSX from "xlsx";
 
 export default function SelectFond({
   setFond,
@@ -18,6 +20,11 @@ export default function SelectFond({
   totalInactiveWells
 }) {
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [reportStartDate, setReportStartDate] = useState("");
+  const [reportEndDate, setReportEndDate] = useState("");
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportError, setReportError] = useState(null);
+  const [showReportModal, setShowReportModal] = useState(false);
   
   // Filter wells based on ЧРП filter when applicable
   const filteredWells = useMemo(() => {
@@ -81,6 +88,73 @@ export default function SelectFond({
   
   const handleChrpChange = (e) => {
     setChrpFilter(e.target.checked);
+  };
+
+  const handleReportDownload = async () => {
+    if (!reportStartDate || !reportEndDate) {
+      setReportError("Выберите период отчета");
+      return;
+    }
+
+    setReportError(null);
+    setReportLoading(true);
+
+    try {
+      const response = await fetchChrpArchiveReport({
+        startDate: reportStartDate,
+        endDate: reportEndDate
+      });
+
+      const rows = Array.isArray(response.data) ? response.data : [];
+
+      if (!rows.length) {
+        setReportError("Нет данных за выбранный период");
+        return;
+      }
+
+      const headers = [
+        "Скважина",
+        "Дата опроса",
+        "Напряжение",
+        "Мощность",
+        "Частота",
+        "Ток",
+        "Обороты ротора",
+        "Температура устья"
+      ];
+
+      const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+      worksheet["!cols"] = [
+        { wch: 12 },
+        { wch: 20 },
+        { wch: 14 },
+        { wch: 14 },
+        { wch: 12 },
+        { wch: 10 },
+        { wch: 18 },
+        { wch: 18 }
+      ];
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Отчет ЧРП");
+
+      const fileName = `chrp_report_${reportStartDate}_${reportEndDate}.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+      console.error("Error downloading CHRP report:", error);
+      setReportError("Не удалось скачать отчет");
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
+  const handleOpenReportModal = () => {
+    setReportError(null);
+    setShowReportModal(true);
+  };
+
+  const handleCloseReportModal = () => {
+    setShowReportModal(false);
   };
   
   const handleSelectionChange = (value) => {
@@ -147,18 +221,82 @@ export default function SelectFond({
       {/* ЧРП Checkbox - only show for добывающий фонд (nagn = 0) */}
       {fond === 0 && !statusFilter && (
         <div className={styles.chrpCheckbox}>
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              checked={chrpFilter}
-              onChange={handleChrpChange}
-              className={styles.checkbox}
-            />
-            <span className={styles.checkboxText}>
-              ЧРП ({chrpCount})
-            </span>
-          </label>
+          <div className={styles.chrpRow}>
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                checked={chrpFilter}
+                onChange={handleChrpChange}
+                className={styles.checkbox}
+              />
+              <span className={styles.checkboxText}>
+                ЧРП ({chrpCount})
+              </span>
+            </label>
+            <button
+              type="button"
+              className={styles.downloadButton}
+              onClick={handleOpenReportModal}
+            >
+              Отчет ЧРП
+            </button>
+          </div>
         </div>
+      )}
+
+      {showReportModal && (
+        <Modal onClose={handleCloseReportModal}>
+          <div className={styles.reportModalContent}>
+            <h3 className={styles.reportModalTitle}>Отчет ЧРП</h3>
+            <div className={styles.reportControls}>
+              <label className={styles.reportLabel}>
+                Дата начала
+                <input
+                  type="date"
+                  value={reportStartDate}
+                  onChange={(e) => {
+                    setReportStartDate(e.target.value);
+                    setReportError(null);
+                  }}
+                  className={styles.dateInput}
+                />
+              </label>
+              <label className={styles.reportLabel}>
+                Дата окончания
+                <input
+                  type="date"
+                  value={reportEndDate}
+                  min={reportStartDate || undefined}
+                  onChange={(e) => {
+                    setReportEndDate(e.target.value);
+                    setReportError(null);
+                  }}
+                  className={styles.dateInput}
+                />
+              </label>
+            </div>
+            {reportError && (
+              <div className={styles.reportError}>{reportError}</div>
+            )}
+            <div className={styles.reportActions}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={handleCloseReportModal}
+              >
+                Закрыть
+              </button>
+              <button
+                type="button"
+                className={styles.downloadButton}
+                onClick={handleReportDownload}
+                disabled={reportLoading || !reportStartDate || !reportEndDate}
+              >
+                {reportLoading ? "Экспорт..." : "Скачать отчет"}
+              </button>
+            </div>
+          </div>
+        </Modal>
       )}
       
       {/* Only show working status legend if hideWorkingStatusLegend is false */}

@@ -1,3 +1,0 @@
-INSERT INTO ada_oil.n_last10
-(id, oil_field, well, start_date, end_date, `type`, `work`, foreign_id)
-VALUES(0, '', '', NULL, NULL, NULL, NULL, 0);

@@ -190,6 +190,41 @@ app.get("/api/well/data", (req, res) => {
   });
 });
 
+app.get("/api/chrp/archive/report", (req, res) => {
+  const connection = getConnection();
+  const { startDate, endDate } = req.query;
+
+  if (!startDate || !endDate) {
+    return res.status(400).json({ error: "startDate and endDate are required" });
+  }
+
+  const startDateTime = `${startDate} 00:00:00`;
+  const endDateTime = `${endDate} 23:59:59`;
+
+  const query = `
+    SELECT
+      well_name AS 'Скважина',
+      DATE_FORMAT(date_time, '%Y-%m-%d') AS 'Дата опроса',
+      c_voltage AS 'Напряжение',
+      c_power AS 'Мощность',
+      c_freq AS 'Частота',
+      c_current AS 'Ток',
+      c_speed AS 'Обороты ротора',
+      c_temp AS 'Температура устья'
+    FROM chrp_archive
+    WHERE date_time BETWEEN ? AND ?
+    ORDER BY date_time DESC, well_name;
+  `;
+
+  connection.query(query, [startDateTime, endDateTime], (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
 app.get("/api/wells/last-update", (req, res) => {
   const connection = getConnection();
   const query = `

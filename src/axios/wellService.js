@@ -57,6 +57,15 @@ export const fetchLastUpdate = () => {
   return api.get("/wells/last-update");
 };
 
+export const fetchChrpArchiveReport = ({ startDate, endDate }) => {
+  return api.get("/chrp/archive/report", {
+    params: {
+      startDate,
+      endDate
+    }
+  });
+};
+
 export const getAvailableVlagomerDates = () => {
   return api.get("/vlagomer-history/dates");
 };

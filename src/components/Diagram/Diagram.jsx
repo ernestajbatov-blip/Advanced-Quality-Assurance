@@ -57,9 +57,12 @@ export default function Diagram() {
   const [vlagomerAverage, setVlagomerAverage] = useState(0);
   const [currentTableFilterTags, setCurrentTableFilterTags] = useState(null);
 
-  const apiBaseURL = process.env.NODE_ENV === "production" 
-    ? "http://192.168.1.42:3000/api" 
-    : "http://localhost:3000/api";
+  const apiBaseURL = (() => {
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const port = window.location.port ? `:${window.location.port}` : "";
+    return `${protocol}//${hostname}${port}/api`;
+  })();
 
   const fetchOilProgressData = useCallback(() => {
     axios.get(`${apiBaseURL}/progress-oil`)
@@ -222,7 +225,7 @@ export default function Diagram() {
     "gas_1_consumption": "м3",
     "gas_1_acc_cons": "м3",
     "gas_1_abs_pressure": "атм",
-    "PNK1_TEMPERATURA": "°C",
+    "gas_1_temp": "°C",
     "gas_2_consumption": "м3",
     "gas_2_acc_cons": "м3",
     "gas_2_abs_pressure": "атм",
