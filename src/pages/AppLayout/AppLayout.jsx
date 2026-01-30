@@ -1,7 +1,7 @@
 // AppLayout.jsx
 
 import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from "react";
-import { fetchWells, fetchWellData, fetchAGZUWellData } from "../../axios/wellService";
+import { fetchWells, fetchWellData, fetchAGZUWellData, fetchChrpArchiveReport } from "../../axios/wellService";
 import styles from "./AppLayout.module.css";
 import Chart from "../../components/Chart/Chart";
 import Grid from "../../components/Grid/Grid";
@@ -16,6 +16,7 @@ import Modal from "../../components/Modal/Modal";
 import ResponsiveTable from "../../components/ResponsiveTable/ResponsiveTable";
 import { WellsContext } from "../../states/WellsContext";
 import { useUser } from "../../states/UserContext";
+import * as XLSX from "xlsx";
 
 export default function AppLayout() {
   const { fond, setFond, wells, setWells } = useContext(WellsContext);
@@ -28,6 +29,12 @@ export default function AppLayout() {
   const [wellModalLoading, setWellModalLoading] = useState(false);
   const [agzuModalLoading, setAgzuModalLoading] = useState(false);
   const [chartType, setChartType] = useState("liquid");
+  const [showChrpReportModal, setShowChrpReportModal] = useState(false);
+  const [chrpReportStartDate, setChrpReportStartDate] = useState("");
+  const [chrpReportEndDate, setChrpReportEndDate] = useState("");
+  const [chrpReportLoading, setChrpReportLoading] = useState(false);
+  const [chrpReportError, setChrpReportError] = useState(null);
+  const [chrpReportWell, setChrpReportWell] = useState("");
   
   // Shared state for current otvod well - updated by AGZU component
   const [currentOtvodWell, setCurrentOtvodWell] = useState(null);
@@ -330,6 +337,81 @@ export default function AppLayout() {
     currentProvidedOtvodDataRef.current = null;
   };
 
+  const handleOpenChrpReportModal = () => {
+    if (!currentWellNumber) return;
+    setChrpReportWell(currentWellNumber);
+    setChrpReportError(null);
+    setShowChrpReportModal(true);
+  };
+
+  const handleCloseChrpReportModal = () => {
+    setShowChrpReportModal(false);
+  };
+
+  const handleDownloadChrpReport = async () => {
+    if (!chrpReportStartDate || !chrpReportEndDate) {
+      setChrpReportError("Выберите период отчета");
+      return;
+    }
+
+    if (!chrpReportWell) {
+      setChrpReportError("Не выбрана скважина");
+      return;
+    }
+
+    setChrpReportError(null);
+    setChrpReportLoading(true);
+
+    try {
+      const response = await fetchChrpArchiveReport({
+        startDate: chrpReportStartDate,
+        endDate: chrpReportEndDate,
+        well: chrpReportWell
+      });
+
+      const rows = Array.isArray(response.data) ? response.data : [];
+
+      if (!rows.length) {
+        setChrpReportError("Нет данных за выбранный период");
+        return;
+      }
+
+      const headers = [
+        "Скважина",
+        "Дата опроса",
+        "Напряжение",
+        "Мощность",
+        "Частота",
+        "Ток",
+        "Обороты ротора",
+        "Температура устья"
+      ];
+
+      const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+      worksheet["!cols"] = [
+        { wch: 12 },
+        { wch: 12 },
+        { wch: 14 },
+        { wch: 14 },
+        { wch: 12 },
+        { wch: 10 },
+        { wch: 18 },
+        { wch: 18 }
+      ];
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Отчет ЧРП");
+
+      const fileName = `chrp_report_${chrpReportWell}_${chrpReportStartDate}_${chrpReportEndDate}.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+      console.error("Error downloading CHRP report:", error);
+      setChrpReportError("Не удалось скачать отчет");
+    } finally {
+      setChrpReportLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!showWellModal || !currentWellNumber) return;
 
@@ -504,14 +586,25 @@ export default function AppLayout() {
                 return isChrpWell;
               })() && (
                 <div style={{ flex: '1', minWidth: '300px' }}>
-                  <h3 style={{ 
-                    color: 'white', 
-                    marginTop: 0, 
-                    marginBottom: '15px',
-                    fontSize: '18px'
-                  }}>
-                    Данные ЧРП
-                  </h3>
+                  <div className={styles.chrpHeaderRow}>
+                    <h3 style={{ 
+                      color: 'white', 
+                      marginTop: 0, 
+                      marginBottom: 0,
+                      fontSize: '18px'
+                    }}>
+                      Данные ЧРП
+                    </h3>
+                    <button
+                      type="button"
+                      className={styles.iconButton}
+                      onClick={handleOpenChrpReportModal}
+                      aria-label="Скачать отчет ЧРП"
+                      title="Скачать отчет ЧРП"
+                    >
+                      ⬇
+                    </button>
+                  </div>
                   {wellModalLoading ? (
                     <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
                       Загрузка данных скважины...
@@ -560,6 +653,64 @@ export default function AppLayout() {
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {showChrpReportModal && (
+        <Modal onClose={handleCloseChrpReportModal}>
+          <div className={styles.reportModalContent}>
+            <h3 className={styles.reportModalTitle}>Отчет ЧРП</h3>
+            <div className={styles.reportWellInfo}>
+              Скважина: <strong>{chrpReportWell}</strong>
+            </div>
+            <div className={styles.reportControls}>
+              <label className={styles.reportLabel}>
+                Дата начала
+                <input
+                  type="date"
+                  value={chrpReportStartDate}
+                  onChange={(e) => {
+                    setChrpReportStartDate(e.target.value);
+                    setChrpReportError(null);
+                  }}
+                  className={styles.dateInput}
+                />
+              </label>
+              <label className={styles.reportLabel}>
+                Дата окончания
+                <input
+                  type="date"
+                  value={chrpReportEndDate}
+                  min={chrpReportStartDate || undefined}
+                  onChange={(e) => {
+                    setChrpReportEndDate(e.target.value);
+                    setChrpReportError(null);
+                  }}
+                  className={styles.dateInput}
+                />
+              </label>
+            </div>
+            {chrpReportError && (
+              <div className={styles.reportError}>{chrpReportError}</div>
+            )}
+            <div className={styles.reportActions}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={handleCloseChrpReportModal}
+              >
+                Закрыть
+              </button>
+              <button
+                type="button"
+                className={styles.downloadButton}
+                onClick={handleDownloadChrpReport}
+                disabled={chrpReportLoading || !chrpReportStartDate || !chrpReportEndDate}
+              >
+                {chrpReportLoading ? "Экспорт..." : "Скачать отчет"}
+              </button>
             </div>
           </div>
         </Modal>

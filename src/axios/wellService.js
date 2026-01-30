@@ -57,11 +57,12 @@ export const fetchLastUpdate = () => {
   return api.get("/wells/last-update");
 };
 
-export const fetchChrpArchiveReport = ({ startDate, endDate }) => {
+export const fetchChrpArchiveReport = ({ startDate, endDate, well }) => {
   return api.get("/chrp/archive/report", {
     params: {
       startDate,
-      endDate
+      endDate,
+      well
     }
   });
 };

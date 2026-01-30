@@ -192,7 +192,7 @@ app.get("/api/well/data", (req, res) => {
 
 app.get("/api/chrp/archive/report", (req, res) => {
   const connection = getConnection();
-  const { startDate, endDate } = req.query;
+  const { startDate, endDate, well } = req.query;
 
   if (!startDate || !endDate) {
     return res.status(400).json({ error: "startDate and endDate are required" });
@@ -200,11 +200,18 @@ app.get("/api/chrp/archive/report", (req, res) => {
 
   const startDateTime = `${startDate} 00:00:00`;
   const endDateTime = `${endDate} 23:59:59`;
+  const params = [startDateTime, endDateTime];
+
+  let whereClause = "date_time BETWEEN ? AND ?";
+  if (well) {
+    whereClause += " AND well_name = ?";
+    params.push(well);
+  }
 
   const query = `
     SELECT
       well_name AS 'Скважина',
-      DATE_FORMAT(date_time, '%Y-%m-%d') AS 'Дата опроса',
+      DATE_FORMAT(date_time, '%Y-%m-%d %H:%i:%s') AS 'Дата опроса',
       c_voltage AS 'Напряжение',
       c_power AS 'Мощность',
       c_freq AS 'Частота',
@@ -212,11 +219,11 @@ app.get("/api/chrp/archive/report", (req, res) => {
       c_speed AS 'Обороты ротора',
       c_temp AS 'Температура устья'
     FROM chrp_archive
-    WHERE date_time BETWEEN ? AND ?
+    WHERE ${whereClause}
     ORDER BY date_time DESC, well_name;
   `;
 
-  connection.query(query, [startDateTime, endDateTime], (error, results) => {
+  connection.query(query, params, (error, results) => {
     if (error) {
       console.error("Database error:", error);
       return res.status(500).json({ error: "Database query failed" });
