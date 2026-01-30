@@ -232,6 +232,43 @@ app.get("/api/chrp/archive/report", (req, res) => {
   });
 });
 
+app.get("/api/agzu/archive/report", (req, res) => {
+  const connection = getConnection();
+  const { startDate, endDate, well } = req.query;
+
+  if (!startDate || !endDate) {
+    return res.status(400).json({ error: "startDate and endDate are required" });
+  }
+
+  const params = [startDate, endDate];
+  let whereClause = "date BETWEEN ? AND ?";
+
+  if (well) {
+    whereClause += " AND well = ?";
+    params.push(well);
+  }
+
+  const query = `
+    SELECT
+      well AS 'Скважина',
+      DATE_FORMAT(date, '%Y-%m-%d') AS 'Дата',
+      tm_fluid AS 'Жидкость',
+      tm_oil AS 'Нефть',
+      tm_water AS 'Обводненность'
+    FROM abc_data
+    WHERE ${whereClause}
+    ORDER BY date DESC, well;
+  `;
+
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error("Database error:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
 app.get("/api/wells/last-update", (req, res) => {
   const connection = getConnection();
   const query = `

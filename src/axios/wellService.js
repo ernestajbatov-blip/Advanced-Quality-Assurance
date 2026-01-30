@@ -67,6 +67,16 @@ export const fetchChrpArchiveReport = ({ startDate, endDate, well }) => {
   });
 };
 
+export const fetchAgzuArchiveReport = ({ startDate, endDate, well }) => {
+  return api.get("/agzu/archive/report", {
+    params: {
+      startDate,
+      endDate,
+      well
+    }
+  });
+};
+
 export const getAvailableVlagomerDates = () => {
   return api.get("/vlagomer-history/dates");
 };

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import styles from "./SelectFond.module.css";
-import { fetchLastUpdate, fetchChrpArchiveReport } from "../../axios/wellService";
+import { fetchLastUpdate, fetchChrpArchiveReport, fetchAgzuArchiveReport } from "../../axios/wellService";
 import Modal from "../Modal/Modal";
 import * as XLSX from "xlsx";
 
@@ -19,12 +19,30 @@ export default function SelectFond({
   totalIdleWells,
   totalInactiveWells
 }) {
+  const formatDateInput = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const getLastWeekRange = () => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - 7);
+    return {
+      start: formatDateInput(start),
+      end: formatDateInput(end)
+    };
+  };
+
   const [lastUpdate, setLastUpdate] = useState(null);
   const [reportStartDate, setReportStartDate] = useState("");
   const [reportEndDate, setReportEndDate] = useState("");
   const [reportLoading, setReportLoading] = useState(false);
   const [reportError, setReportError] = useState(null);
   const [showReportModal, setShowReportModal] = useState(false);
+  const [reportType, setReportType] = useState("chrp");
   
   // Filter wells based on ЧРП filter when applicable
   const filteredWells = useMemo(() => {
@@ -100,10 +118,15 @@ export default function SelectFond({
     setReportLoading(true);
 
     try {
-      const response = await fetchChrpArchiveReport({
-        startDate: reportStartDate,
-        endDate: reportEndDate
-      });
+      const response = reportType === "chrp"
+        ? await fetchChrpArchiveReport({
+            startDate: reportStartDate,
+            endDate: reportEndDate
+          })
+        : await fetchAgzuArchiveReport({
+            startDate: reportStartDate,
+            endDate: reportEndDate
+          });
 
       const rows = Array.isArray(response.data) ? response.data : [];
 
@@ -112,36 +135,55 @@ export default function SelectFond({
         return;
       }
 
-      const headers = [
-        "Скважина",
-        "Дата опроса",
-        "Напряжение",
-        "Мощность",
-        "Частота",
-        "Ток",
-        "Обороты ротора",
-        "Температура устья"
-      ];
+      const headers = reportType === "chrp"
+        ? [
+            "Скважина",
+            "Дата опроса",
+            "Напряжение",
+            "Мощность",
+            "Частота",
+            "Ток",
+            "Обороты ротора",
+            "Температура устья"
+          ]
+        : [
+            "Скважина",
+            "Дата",
+            "Жидкость",
+            "Нефть",
+            "Обводненность"
+          ];
 
       const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
-      worksheet["!cols"] = [
-        { wch: 12 },
-        { wch: 20 },
-        { wch: 14 },
-        { wch: 14 },
-        { wch: 12 },
-        { wch: 10 },
-        { wch: 18 },
-        { wch: 18 }
-      ];
+      worksheet["!cols"] = reportType === "chrp"
+        ? [
+            { wch: 12 },
+            { wch: 20 },
+            { wch: 14 },
+            { wch: 14 },
+            { wch: 12 },
+            { wch: 10 },
+            { wch: 18 },
+            { wch: 18 }
+          ]
+        : [
+            { wch: 12 },
+            { wch: 12 },
+            { wch: 14 },
+            { wch: 14 },
+            { wch: 18 }
+          ];
 
       const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Отчет ЧРП");
+      const sheetName = reportType === "chrp" ? "Отчет ЧРП" : "Отчет АГЗУ";
+      XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
 
-      const fileName = `chrp_report_${reportStartDate}_${reportEndDate}.xlsx`;
+      const fileName = reportType === "chrp"
+        ? `chrp_report_${reportStartDate}_${reportEndDate}.xlsx`
+        : `agzu_report_${reportStartDate}_${reportEndDate}.xlsx`;
       XLSX.writeFile(workbook, fileName);
     } catch (error) {
-      console.error("Error downloading CHRP report:", error);
+      console.error("Error downloading report:", error);
       setReportError("Не удалось скачать отчет");
     } finally {
       setReportLoading(false);
@@ -149,6 +191,9 @@ export default function SelectFond({
   };
 
   const handleOpenReportModal = () => {
+    const range = getLastWeekRange();
+    setReportStartDate(range.start);
+    setReportEndDate(range.end);
     setReportError(null);
     setShowReportModal(true);
   };
@@ -235,10 +280,12 @@ export default function SelectFond({
             </label>
             <button
               type="button"
-              className={styles.downloadButton}
+              className={styles.iconButton}
               onClick={handleOpenReportModal}
+              aria-label="Скачать общий отчет"
+              title="Скачать общий отчет"
             >
-              Отчет ЧРП
+              ⬇
             </button>
           </div>
         </div>
@@ -247,7 +294,25 @@ export default function SelectFond({
       {showReportModal && (
         <Modal onClose={handleCloseReportModal}>
           <div className={styles.reportModalContent}>
-            <h3 className={styles.reportModalTitle}>Отчет ЧРП</h3>
+            <h3 className={styles.reportModalTitle}>
+              {reportType === "chrp" ? "Отчет ЧРП" : "Отчет АГЗУ"}
+            </h3>
+            <div className={styles.reportControls}>
+              <label className={styles.reportLabel}>
+                Тип отчета
+                <select
+                  value={reportType}
+                  onChange={(e) => {
+                    setReportType(e.target.value);
+                    setReportError(null);
+                  }}
+                  className={styles.reportSelect}
+                >
+                  <option value="chrp">ЧРП</option>
+                  <option value="agzu">АГЗУ</option>
+                </select>
+              </label>
+            </div>
             <div className={styles.reportControls}>
               <label className={styles.reportLabel}>
                 Дата начала

@@ -1,7 +1,7 @@
 // AppLayout.jsx
 
 import React, { useState, useEffect, useContext, useMemo, useCallback, useRef } from "react";
-import { fetchWells, fetchWellData, fetchAGZUWellData, fetchChrpArchiveReport } from "../../axios/wellService";
+import { fetchWells, fetchWellData, fetchAGZUWellData, fetchChrpArchiveReport, fetchAgzuArchiveReport } from "../../axios/wellService";
 import styles from "./AppLayout.module.css";
 import Chart from "../../components/Chart/Chart";
 import Grid from "../../components/Grid/Grid";
@@ -20,6 +20,23 @@ import * as XLSX from "xlsx";
 
 export default function AppLayout() {
   const { fond, setFond, wells, setWells } = useContext(WellsContext);
+
+  const formatDateInput = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const getLastWeekRange = () => {
+    const end = new Date();
+    const start = new Date();
+    start.setDate(end.getDate() - 7);
+    return {
+      start: formatDateInput(start),
+      end: formatDateInput(end)
+    };
+  };
   
   // Modal state management
   const [showWellModal, setShowWellModal] = useState(false);
@@ -35,6 +52,12 @@ export default function AppLayout() {
   const [chrpReportLoading, setChrpReportLoading] = useState(false);
   const [chrpReportError, setChrpReportError] = useState(null);
   const [chrpReportWell, setChrpReportWell] = useState("");
+  const [showAgzuReportModal, setShowAgzuReportModal] = useState(false);
+  const [agzuReportStartDate, setAgzuReportStartDate] = useState("");
+  const [agzuReportEndDate, setAgzuReportEndDate] = useState("");
+  const [agzuReportLoading, setAgzuReportLoading] = useState(false);
+  const [agzuReportError, setAgzuReportError] = useState(null);
+  const [agzuReportWell, setAgzuReportWell] = useState("");
   
   // Shared state for current otvod well - updated by AGZU component
   const [currentOtvodWell, setCurrentOtvodWell] = useState(null);
@@ -339,6 +362,9 @@ export default function AppLayout() {
 
   const handleOpenChrpReportModal = () => {
     if (!currentWellNumber) return;
+    const range = getLastWeekRange();
+    setChrpReportStartDate(range.start);
+    setChrpReportEndDate(range.end);
     setChrpReportWell(currentWellNumber);
     setChrpReportError(null);
     setShowChrpReportModal(true);
@@ -346,6 +372,20 @@ export default function AppLayout() {
 
   const handleCloseChrpReportModal = () => {
     setShowChrpReportModal(false);
+  };
+
+  const handleOpenAgzuReportModal = () => {
+    if (!currentWellNumber) return;
+    const range = getLastWeekRange();
+    setAgzuReportStartDate(range.start);
+    setAgzuReportEndDate(range.end);
+    setAgzuReportWell(currentWellNumber);
+    setAgzuReportError(null);
+    setShowAgzuReportModal(true);
+  };
+
+  const handleCloseAgzuReportModal = () => {
+    setShowAgzuReportModal(false);
   };
 
   const handleDownloadChrpReport = async () => {
@@ -409,6 +449,64 @@ export default function AppLayout() {
       setChrpReportError("Не удалось скачать отчет");
     } finally {
       setChrpReportLoading(false);
+    }
+  };
+
+  const handleDownloadAgzuReport = async () => {
+    if (!agzuReportStartDate || !agzuReportEndDate) {
+      setAgzuReportError("Выберите период отчета");
+      return;
+    }
+
+    if (!agzuReportWell) {
+      setAgzuReportError("Не выбрана скважина");
+      return;
+    }
+
+    setAgzuReportError(null);
+    setAgzuReportLoading(true);
+
+    try {
+      const response = await fetchAgzuArchiveReport({
+        startDate: agzuReportStartDate,
+        endDate: agzuReportEndDate,
+        well: agzuReportWell
+      });
+
+      const rows = Array.isArray(response.data) ? response.data : [];
+
+      if (!rows.length) {
+        setAgzuReportError("Нет данных за выбранный период");
+        return;
+      }
+
+      const headers = [
+        "Скважина",
+        "Дата",
+        "Жидкость",
+        "Нефть",
+        "Обводненность"
+      ];
+
+      const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+      worksheet["!cols"] = [
+        { wch: 12 },
+        { wch: 12 },
+        { wch: 14 },
+        { wch: 14 },
+        { wch: 18 }
+      ];
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Отчет АГЗУ");
+
+      const fileName = `agzu_report_${agzuReportWell}_${agzuReportStartDate}_${agzuReportEndDate}.xlsx`;
+      XLSX.writeFile(workbook, fileName);
+    } catch (error) {
+      console.error("Error downloading AGZU report:", error);
+      setAgzuReportError("Не удалось скачать отчет");
+    } finally {
+      setAgzuReportLoading(false);
     }
   };
 
@@ -623,14 +721,25 @@ export default function AppLayout() {
               )}
 
               <div style={{ flex: '1', minWidth: '300px' }}>
-                <h3 style={{ 
-                  color: 'white', 
-                  marginTop: 0, 
-                  marginBottom: '15px',
-                  fontSize: '18px'
-                }}>
-                  Данные АГЗУ
-                </h3>
+                <div className={styles.chrpHeaderRow}>
+                  <h3 style={{ 
+                    color: 'white', 
+                    marginTop: 0, 
+                    marginBottom: 0,
+                    fontSize: '18px'
+                  }}>
+                    Данные АГЗУ
+                  </h3>
+                  <button
+                    type="button"
+                    className={styles.iconButton}
+                    onClick={handleOpenAgzuReportModal}
+                    aria-label="Скачать отчет АГЗУ"
+                    title="Скачать отчет АГЗУ"
+                  >
+                    ⬇
+                  </button>
+                </div>
                 {agzuModalLoading ? (
                   <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
                     Загрузка данных АГЗУ...
@@ -710,6 +819,64 @@ export default function AppLayout() {
                 disabled={chrpReportLoading || !chrpReportStartDate || !chrpReportEndDate}
               >
                 {chrpReportLoading ? "Экспорт..." : "Скачать отчет"}
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {showAgzuReportModal && (
+        <Modal onClose={handleCloseAgzuReportModal}>
+          <div className={styles.reportModalContent}>
+            <h3 className={styles.reportModalTitle}>Отчет АГЗУ</h3>
+            <div className={styles.reportWellInfo}>
+              Скважина: <strong>{agzuReportWell}</strong>
+            </div>
+            <div className={styles.reportControls}>
+              <label className={styles.reportLabel}>
+                Дата начала
+                <input
+                  type="date"
+                  value={agzuReportStartDate}
+                  onChange={(e) => {
+                    setAgzuReportStartDate(e.target.value);
+                    setAgzuReportError(null);
+                  }}
+                  className={styles.dateInput}
+                />
+              </label>
+              <label className={styles.reportLabel}>
+                Дата окончания
+                <input
+                  type="date"
+                  value={agzuReportEndDate}
+                  min={agzuReportStartDate || undefined}
+                  onChange={(e) => {
+                    setAgzuReportEndDate(e.target.value);
+                    setAgzuReportError(null);
+                  }}
+                  className={styles.dateInput}
+                />
+              </label>
+            </div>
+            {agzuReportError && (
+              <div className={styles.reportError}>{agzuReportError}</div>
+            )}
+            <div className={styles.reportActions}>
+              <button
+                type="button"
+                className={styles.secondaryButton}
+                onClick={handleCloseAgzuReportModal}
+              >
+                Закрыть
+              </button>
+              <button
+                type="button"
+                className={styles.downloadButton}
+                onClick={handleDownloadAgzuReport}
+                disabled={agzuReportLoading || !agzuReportStartDate || !agzuReportEndDate}
+              >
+                {agzuReportLoading ? "Экспорт..." : "Скачать отчет"}
               </button>
             </div>
           </div>
