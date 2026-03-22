@@ -37,7 +37,7 @@ export async function waitForAPIResponse(page, urlPattern, timeout = 5000) {
 export async function loginToApp(page, username, password) {
   const usernameField = page.locator('input[type="text"]').first();
   const passwordField = page.locator('input[type="password"]');
-  const submitButton = page.locator('button[type="submit"]');
+  const submitButton = page.locator('button').filter({ hasText: 'Войти' });
   
   await usernameField.fill(username);
   await passwordField.fill(password);

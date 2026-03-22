@@ -20,7 +20,7 @@ test.describe('Authentication Tests (Priority 1 - Critical)', () => {
     // Find login form
     const usernameField = page.locator('input[type="text"]').first();
     const passwordField = page.locator('input[type="password"]');
-    const submitButton = page.locator('button[type="submit"]');
+    const submitButton = page.locator('button').filter({ hasText: 'Войти' });
     
     // Fill in credentials
     await usernameField.fill('user_test');
@@ -44,7 +44,7 @@ test.describe('Authentication Tests (Priority 1 - Critical)', () => {
     
     const usernameField = page.locator('input[type="text"]').first();
     const passwordField = page.locator('input[type="password"]');
-    const submitButton = page.locator('button[type="submit"]');
+    const submitButton = page.locator('button').filter({ hasText: 'Войти' });
     
     // Enter invalid credentials
     await usernameField.fill('invalid_user');
@@ -68,7 +68,7 @@ test.describe('Authentication Tests (Priority 1 - Critical)', () => {
     // First, login
     const usernameField = page.locator('input[type="text"]').first();
     const passwordField = page.locator('input[type="password"]');
-    const submitButton = page.locator('button[type="submit"]');
+    const submitButton = page.locator('button').filter({ hasText: 'Войти' });
     
     await usernameField.fill('user_test');
     await passwordField.fill('password456');
@@ -97,7 +97,7 @@ test.describe('Authentication Tests (Priority 1 - Critical)', () => {
     // Login first
     const usernameField = page.locator('input[type="text"]').first();
     const passwordField = page.locator('input[type="password"]');
-    const submitButton = page.locator('button[type="submit"]');
+    const submitButton = page.locator('button').filter({ hasText: 'Войти' });
     
     await usernameField.fill('user_test');
     await passwordField.fill('password456');

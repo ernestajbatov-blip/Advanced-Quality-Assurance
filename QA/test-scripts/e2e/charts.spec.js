@@ -20,7 +20,7 @@ test.describe('Chart & Data Visualization Tests (Priority 2 - High)', () => {
     if (await loginForm.isVisible({ timeout: 2000 }).catch(() => false)) {
       await loginForm.fill('user_test');
       await page.locator('input[type="password"]').fill('password456');
-      await page.locator('button[type="submit"]').click();
+      await page.locator('button').filter({ hasText: 'Войти' }).click();
       await page.waitForURL('http://localhost:3000/', { timeout: 10000 });
     }
   });
