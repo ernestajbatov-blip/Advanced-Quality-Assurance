@@ -51,8 +51,8 @@ test.describe('Authentication Tests (Priority 1 - Critical)', () => {
     await passwordField.fill('wrong_password');
     await submitButton.click();
     
-    // Should see error message (look for error element or toast notification)
-    const errorElement = page.locator('.error, .error-message, [role="alert"]');
+    // Should see error message - look for div containing error text
+    const errorElement = page.locator('div:has-text("Неверный логин")').first();
     await expect(errorElement).toBeVisible({ timeout: 5000 });
     
     // Should still be on login page
