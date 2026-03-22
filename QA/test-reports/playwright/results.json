@@ -1,0 +1,2450 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\Admin\\Documents\\work\\ada_oil_app-main\\playwright.config.js",
+    "rootDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/QA/test-scripts/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "C:/Users/Admin/Documents/work/ada_oil_app-main/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "QA/test-reports/playwright",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "QA/test-reports/playwright/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "QA/test-reports/playwright/results.xml"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run dev",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 120000
+    }
+  },
+  "suites": [
+    {
+      "title": "api-integration.spec.js",
+      "file": "api-integration.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "API Integration Tests (Priority 1 - Critical)",
+          "file": "api-integration.spec.js",
+          "line": 9,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-API-001: should fetch well list successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4344,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Integration tests setup\n"
+                        },
+                        {
+                          "text": "Starting: Fetch well list test\n"
+                        },
+                        {
+                          "text": "✓ Received 91 wells from API\n"
+                        },
+                        {
+                          "text": "✓ Well data structure valid\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Well list fetched\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:16:49.046Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-f2a827fb4a78cd34ccb9",
+              "file": "api-integration.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "TS-API-002: should fetch individual well details",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5308,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Fetch well details test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Well details fetched\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:16:53.893Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-4d8b3a5ad9e32814e2b9",
+              "file": "api-integration.spec.js",
+              "line": 73,
+              "column": 3
+            },
+            {
+              "title": "TS-API-003: should fetch real-time data without errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4787,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Real-time data fetch test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Real-time data handling\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:16:59.265Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-0b977c4320a0805f5565",
+              "file": "api-integration.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "TS-API-004: should fetch archive data for specified date range",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3590,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Archive data fetch test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Archive data fetch\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:04.085Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-44cdf2a54040eae7e8af",
+              "file": "api-integration.spec.js",
+              "line": 134,
+              "column": 3
+            },
+            {
+              "title": "TS-API-005: should handle API errors gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5275,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: API error handling test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Error handling validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:07.708Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-e7ea94c66434928fcaa4",
+              "file": "api-integration.spec.js",
+              "line": 168,
+              "column": 3
+            },
+            {
+              "title": "TS-API-001: should fetch well list successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8969,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Integration tests setup\n"
+                        },
+                        {
+                          "text": "Starting: Fetch well list test\n"
+                        },
+                        {
+                          "text": "⚠ Received redirect response (304) - API authentication might be required\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Well list fetched\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:55.228Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-82c4e9b0ee7cce0ec1db",
+              "file": "api-integration.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "TS-API-002: should fetch individual well details",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6437,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Fetch well details test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Well details fetched\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:05.664Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-42630f5df58e84f05719",
+              "file": "api-integration.spec.js",
+              "line": 73,
+              "column": 3
+            },
+            {
+              "title": "TS-API-003: should fetch real-time data without errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5938,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Real-time data fetch test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Real-time data handling\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:12.143Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-cfa69c0c58d9c70e8d0c",
+              "file": "api-integration.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "TS-API-004: should fetch archive data for specified date range",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4694,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Archive data fetch test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Archive data fetch\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:18.121Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-d8080c5c398edc1325f5",
+              "file": "api-integration.spec.js",
+              "line": 134,
+              "column": 3
+            },
+            {
+              "title": "TS-API-005: should handle API errors gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6245,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: API error handling test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Error handling validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:22.856Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-fbe74d9598cce4dc771e",
+              "file": "api-integration.spec.js",
+              "line": 168,
+              "column": 3
+            },
+            {
+              "title": "TS-API-001: should fetch well list successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4951,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Integration tests setup\n"
+                        },
+                        {
+                          "text": "Starting: Fetch well list test\n"
+                        },
+                        {
+                          "text": "✓ Received 91 wells from API\n"
+                        },
+                        {
+                          "text": "✓ Well data structure valid\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Well list fetched\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:21.885Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-cae2880f2a33c535d303",
+              "file": "api-integration.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "TS-API-002: should fetch individual well details",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5843,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Fetch well details test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Well details fetched\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:27.107Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-bc94ff18528b793260d5",
+              "file": "api-integration.spec.js",
+              "line": 73,
+              "column": 3
+            },
+            {
+              "title": "TS-API-003: should fetch real-time data without errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5705,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Real-time data fetch test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Real-time data handling\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:33.012Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-39fcc37ab7161601d66c",
+              "file": "api-integration.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "TS-API-004: should fetch archive data for specified date range",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5164,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Archive data fetch test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Archive data fetch\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:38.761Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-9d5f0d65872162c1512c",
+              "file": "api-integration.spec.js",
+              "line": 134,
+              "column": 3
+            },
+            {
+              "title": "TS-API-005: should handle API errors gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5502,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: API error handling test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Error handling validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:43.952Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-7f1fa25df0ffd3698d1e",
+              "file": "api-integration.spec.js",
+              "line": 168,
+              "column": 3
+            },
+            {
+              "title": "TS-API-001: should fetch well list successfully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4083,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "API Integration tests setup\n"
+                        },
+                        {
+                          "text": "Starting: Fetch well list test\n"
+                        },
+                        {
+                          "text": "✓ Received 91 wells from API\n"
+                        },
+                        {
+                          "text": "✓ Well data structure valid\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Well list fetched\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:43.651Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-380deb43c80b7bad748d",
+              "file": "api-integration.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "TS-API-002: should fetch individual well details",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5102,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Fetch well details test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Well details fetched\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:48.157Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-6895917503acc5028c69",
+              "file": "api-integration.spec.js",
+              "line": 73,
+              "column": 3
+            },
+            {
+              "title": "TS-API-003: should fetch real-time data without errors",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5136,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Real-time data fetch test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Real-time data handling\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:53.302Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-5087032d73b90da85440",
+              "file": "api-integration.spec.js",
+              "line": 103,
+              "column": 3
+            },
+            {
+              "title": "TS-API-004: should fetch archive data for specified date range",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3707,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Archive data fetch test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Archive data fetch\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:58.491Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-af8fd187f46ca188b04f",
+              "file": "api-integration.spec.js",
+              "line": 134,
+              "column": 3
+            },
+            {
+              "title": "TS-API-005: should handle API errors gracefully",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4572,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: API error handling test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Error handling validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:02.227Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-20019862f72d72f2b5de",
+              "file": "api-integration.spec.js",
+              "line": 168,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "auth.spec.js",
+      "file": "auth.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication Tests (Priority 1 - Critical)",
+          "file": "auth.spec.js",
+          "line": 9,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-Auth-001: should login with valid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1435,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Valid login test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Valid login successful\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:13.060Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-6010de3a87ff7988a0e0",
+              "file": "auth.spec.js",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-002: should reject invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1541,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Invalid credentials test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Invalid credentials properly rejected\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:14.525Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-987b68ced666b06aa286",
+              "file": "auth.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-003: should maintain session on page refresh",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7293,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Session persistence test\n"
+                        },
+                        {
+                          "text": "Logout button not found, continuing test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Session persisted after refresh\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:16.102Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-18607d69fc8bea5e35d8",
+              "file": "auth.spec.js",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-004: should logout and clear session",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1453,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Logout test\n"
+                        },
+                        {
+                          "text": "Logout button not found via text selector, trying alternative\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Logout completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:23.437Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-b8de5a364f9a7ca86363",
+              "file": "auth.spec.js",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-001: should login with valid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3237,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Valid login test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Valid login successful\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:29.296Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-ca5defb7b5552678a7d6",
+              "file": "auth.spec.js",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-002: should reject invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2554,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Invalid credentials test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Invalid credentials properly rejected\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:32.618Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-10596fb9797b2ee19ca1",
+              "file": "auth.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-003: should maintain session on page refresh",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9499,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Session persistence test\n"
+                        },
+                        {
+                          "text": "Logout button not found, continuing test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Session persisted after refresh\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:35.206Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-5b7d0e77312d36308f2c",
+              "file": "auth.spec.js",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-004: should logout and clear session",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2902,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Logout test\n"
+                        },
+                        {
+                          "text": "Logout button not found via text selector, trying alternative\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Logout completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:44.742Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-625bf086ed6d61706518",
+              "file": "auth.spec.js",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-001: should login with valid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3769,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Valid login test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Valid login successful\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:49.527Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-1f5888431513adb36d5b",
+              "file": "auth.spec.js",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-002: should reject invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2876,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Invalid credentials test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Invalid credentials properly rejected\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:53.339Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-7e414064e80ea0839db8",
+              "file": "auth.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-003: should maintain session on page refresh",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 9303,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Session persistence test\n"
+                        },
+                        {
+                          "text": "Logout button not found, continuing test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Session persisted after refresh\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:56.251Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-c1c77e8cdcee4740c877",
+              "file": "auth.spec.js",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-004: should logout and clear session",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3041,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Logout test\n"
+                        },
+                        {
+                          "text": "Logout button not found via text selector, trying alternative\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Logout completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:05.589Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-0aab321c04ece161685e",
+              "file": "auth.spec.js",
+              "line": 94,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-001: should login with valid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1599,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Valid login test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Valid login successful\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:06.883Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-32da8dc10b70f6efcb88",
+              "file": "auth.spec.js",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-002: should reject invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1548,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Invalid credentials test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Invalid credentials properly rejected\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:08.517Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-b17e734ad20f09a189e4",
+              "file": "auth.spec.js",
+              "line": 42,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-003: should maintain session on page refresh",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8628,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Session persistence test\n"
+                        },
+                        {
+                          "text": "Logout button not found, continuing test\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Session persisted after refresh\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:10.168Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-46739a2b6ca86b0a1d77",
+              "file": "auth.spec.js",
+              "line": 65,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-004: should logout and clear session",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 1736,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Logout test\n"
+                        },
+                        {
+                          "text": "Logout button not found via text selector, trying alternative\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Logout completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:18.838Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-efb17ca628343830ad7d",
+              "file": "auth.spec.js",
+              "line": 94,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "charts.spec.js",
+      "file": "charts.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Chart & Data Visualization Tests (Priority 2 - High)",
+          "file": "charts.spec.js",
+          "line": 9,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-Chart-001: should render charts with loaded data",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10202,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart rendering test\n"
+                        },
+                        {
+                          "text": "⚠ Chart container may not be visible, checking for loading state\n"
+                        },
+                        {
+                          "text": "⚠ No chart elements found - chart may not have rendered\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Chart rendering validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:24.960Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-b12bb247fe69ef15d287",
+              "file": "charts.spec.js",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-002: should display accurate data in charts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5134,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart data accuracy test\n"
+                        },
+                        {
+                          "text": "Found 0 data values in chart\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Data accuracy check completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:35.206Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-787fccd6af066fd4b89f",
+              "file": "charts.spec.js",
+              "line": 61,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-003: should switch between chart modes correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4805,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart mode switching test\n"
+                        },
+                        {
+                          "text": "Found 1 potential toggle elements\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Chart mode switching validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:40.394Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-4ac82eea21533cc1e9a8",
+              "file": "charts.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-004: should load archive data for selected date ranges",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4914,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Date range selection test\n"
+                        },
+                        {
+                          "text": "Found 0 date picker elements\n"
+                        },
+                        {
+                          "text": "⚠ No date picker found on page\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Date range selection validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:17:45.236Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-895a750409f0e0ffc901",
+              "file": "charts.spec.js",
+              "line": 129,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-001: should render charts with loaded data",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 10637,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart rendering test\n"
+                        },
+                        {
+                          "text": "⚠ Chart container may not be visible, checking for loading state\n"
+                        },
+                        {
+                          "text": "⚠ No chart elements found - chart may not have rendered\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Chart rendering validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:47.772Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-2a5fb347e37eb144591d",
+              "file": "charts.spec.js",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-002: should display accurate data in charts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6402,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart data accuracy test\n"
+                        },
+                        {
+                          "text": "Found 0 data values in chart\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Data accuracy check completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:18:58.448Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-048300b4d358105edf8b",
+              "file": "charts.spec.js",
+              "line": 61,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-003: should switch between chart modes correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5189,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart mode switching test\n"
+                        },
+                        {
+                          "text": "Found 1 potential toggle elements\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Chart mode switching validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:04.884Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-a5f4400419f547515e33",
+              "file": "charts.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-004: should load archive data for selected date ranges",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "firefox",
+                  "projectName": "firefox",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5300,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Date range selection test\n"
+                        },
+                        {
+                          "text": "Found 0 date picker elements\n"
+                        },
+                        {
+                          "text": "⚠ No date picker found on page\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Date range selection validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:19:10.104Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-380115ac23c94e6ca8fa",
+              "file": "charts.spec.js",
+              "line": 129,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-001: should render charts with loaded data",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11881,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart rendering test\n"
+                        },
+                        {
+                          "text": "⚠ Chart container may not be visible, checking for loading state\n"
+                        },
+                        {
+                          "text": "⚠ No chart elements found - chart may not have rendered\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Chart rendering validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:08.711Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-535f4fa78c3222221d2d",
+              "file": "charts.spec.js",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-002: should display accurate data in charts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6626,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart data accuracy test\n"
+                        },
+                        {
+                          "text": "Found 0 data values in chart\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Data accuracy check completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:20.625Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-3aeb076b12f3648ffb0a",
+              "file": "charts.spec.js",
+              "line": 61,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-003: should switch between chart modes correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6190,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart mode switching test\n"
+                        },
+                        {
+                          "text": "Found 1 potential toggle elements\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Chart mode switching validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:27.286Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-6bd20e5cdf4d82bb3e55",
+              "file": "charts.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-004: should load archive data for selected date ranges",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "webkit",
+                  "projectName": "webkit",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5743,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Date range selection test\n"
+                        },
+                        {
+                          "text": "Found 0 date picker elements\n"
+                        },
+                        {
+                          "text": "⚠ No date picker found on page\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Date range selection validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:20:33.515Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-a23f85d76121ff05714f",
+              "file": "charts.spec.js",
+              "line": 129,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-001: should render charts with loaded data",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 11222,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart rendering test\n"
+                        },
+                        {
+                          "text": "⚠ Chart container may not be visible, checking for loading state\n"
+                        },
+                        {
+                          "text": "⚠ No chart elements found - chart may not have rendered\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Chart rendering validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:20.639Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-b7dca7569d074708f34e",
+              "file": "charts.spec.js",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-002: should display accurate data in charts",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4918,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart data accuracy test\n"
+                        },
+                        {
+                          "text": "Found 0 data values in chart\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Data accuracy check completed\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:31.895Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-d76cf89dcff91e7f1ca9",
+              "file": "charts.spec.js",
+              "line": 61,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-003: should switch between chart modes correctly",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 5041,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Chart mode switching test\n"
+                        },
+                        {
+                          "text": "Found 1 potential toggle elements\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Chart mode switching validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:36.872Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-d71fde3a56c3d1f862d0",
+              "file": "charts.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-004: should load archive data for selected date ranges",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "Mobile Chrome",
+                  "projectName": "Mobile Chrome",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4598,
+                      "errors": [],
+                      "stdout": [
+                        {
+                          "text": "Starting: Date range selection test\n"
+                        },
+                        {
+                          "text": "Found 0 date picker elements\n"
+                        },
+                        {
+                          "text": "⚠ No date picker found on page\n"
+                        },
+                        {
+                          "text": "✓ Test passed: Date range selection validated\n"
+                        }
+                      ],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-03-22T15:21:41.950Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-2f8631a1dadf5226cd01",
+              "file": "charts.spec.js",
+              "line": 129,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-03-22T15:16:44.441Z",
+    "duration": 302528.74100000004,
+    "expected": 52,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

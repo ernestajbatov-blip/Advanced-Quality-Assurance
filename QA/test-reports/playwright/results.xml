@@ -1,0 +1,433 @@
+<testsuites id="" name="" tests="52" failures="0" skipped="0" errors="0" time="302.528741">
+<testsuite name="api-integration.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="chromium" tests="5" failures="0" skipped="0" time="23.304" errors="0">
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-001: should fetch well list successfully" classname="api-integration.spec.js" time="4.344">
+<system-out>
+<![CDATA[API Integration tests setup
+Starting: Fetch well list test
+✓ Received 91 wells from API
+✓ Well data structure valid
+✓ Test passed: Well list fetched
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-002: should fetch individual well details" classname="api-integration.spec.js" time="5.308">
+<system-out>
+<![CDATA[Starting: Fetch well details test
+✓ Test passed: Well details fetched
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-003: should fetch real-time data without errors" classname="api-integration.spec.js" time="4.787">
+<system-out>
+<![CDATA[Starting: Real-time data fetch test
+✓ Test passed: Real-time data handling
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-004: should fetch archive data for specified date range" classname="api-integration.spec.js" time="3.59">
+<system-out>
+<![CDATA[Starting: Archive data fetch test
+✓ Test passed: Archive data fetch
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-005: should handle API errors gracefully" classname="api-integration.spec.js" time="5.275">
+<system-out>
+<![CDATA[Starting: API error handling test
+✓ Test passed: Error handling validated
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="chromium" tests="4" failures="0" skipped="0" time="11.722" errors="0">
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-001: should login with valid credentials" classname="auth.spec.js" time="1.435">
+<system-out>
+<![CDATA[Starting: Valid login test
+✓ Test passed: Valid login successful
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-002: should reject invalid credentials" classname="auth.spec.js" time="1.541">
+<system-out>
+<![CDATA[Starting: Invalid credentials test
+✓ Test passed: Invalid credentials properly rejected
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-003: should maintain session on page refresh" classname="auth.spec.js" time="7.293">
+<system-out>
+<![CDATA[Starting: Session persistence test
+Logout button not found, continuing test
+✓ Test passed: Session persisted after refresh
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-004: should logout and clear session" classname="auth.spec.js" time="1.453">
+<system-out>
+<![CDATA[Starting: Logout test
+Logout button not found via text selector, trying alternative
+✓ Test passed: Logout completed
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="charts.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="chromium" tests="4" failures="0" skipped="0" time="25.055" errors="0">
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-001: should render charts with loaded data" classname="charts.spec.js" time="10.202">
+<system-out>
+<![CDATA[Starting: Chart rendering test
+⚠ Chart container may not be visible, checking for loading state
+⚠ No chart elements found - chart may not have rendered
+✓ Test passed: Chart rendering validated
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-002: should display accurate data in charts" classname="charts.spec.js" time="5.134">
+<system-out>
+<![CDATA[Starting: Chart data accuracy test
+Found 0 data values in chart
+✓ Test passed: Data accuracy check completed
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-003: should switch between chart modes correctly" classname="charts.spec.js" time="4.805">
+<system-out>
+<![CDATA[Starting: Chart mode switching test
+Found 1 potential toggle elements
+✓ Test passed: Chart mode switching validated
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-004: should load archive data for selected date ranges" classname="charts.spec.js" time="4.914">
+<system-out>
+<![CDATA[Starting: Date range selection test
+Found 0 date picker elements
+⚠ No date picker found on page
+✓ Test passed: Date range selection validated
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="api-integration.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="firefox" tests="5" failures="0" skipped="0" time="32.283" errors="0">
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-001: should fetch well list successfully" classname="api-integration.spec.js" time="8.969">
+<system-out>
+<![CDATA[API Integration tests setup
+Starting: Fetch well list test
+⚠ Received redirect response (304) - API authentication might be required
+✓ Test passed: Well list fetched
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-002: should fetch individual well details" classname="api-integration.spec.js" time="6.437">
+<system-out>
+<![CDATA[Starting: Fetch well details test
+✓ Test passed: Well details fetched
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-003: should fetch real-time data without errors" classname="api-integration.spec.js" time="5.938">
+<system-out>
+<![CDATA[Starting: Real-time data fetch test
+✓ Test passed: Real-time data handling
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-004: should fetch archive data for specified date range" classname="api-integration.spec.js" time="4.694">
+<system-out>
+<![CDATA[Starting: Archive data fetch test
+✓ Test passed: Archive data fetch
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-005: should handle API errors gracefully" classname="api-integration.spec.js" time="6.245">
+<system-out>
+<![CDATA[Starting: API error handling test
+✓ Test passed: Error handling validated
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="firefox" tests="4" failures="0" skipped="0" time="18.192" errors="0">
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-001: should login with valid credentials" classname="auth.spec.js" time="3.237">
+<system-out>
+<![CDATA[Starting: Valid login test
+✓ Test passed: Valid login successful
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-002: should reject invalid credentials" classname="auth.spec.js" time="2.554">
+<system-out>
+<![CDATA[Starting: Invalid credentials test
+✓ Test passed: Invalid credentials properly rejected
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-003: should maintain session on page refresh" classname="auth.spec.js" time="9.499">
+<system-out>
+<![CDATA[Starting: Session persistence test
+Logout button not found, continuing test
+✓ Test passed: Session persisted after refresh
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-004: should logout and clear session" classname="auth.spec.js" time="2.902">
+<system-out>
+<![CDATA[Starting: Logout test
+Logout button not found via text selector, trying alternative
+✓ Test passed: Logout completed
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="charts.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="firefox" tests="4" failures="0" skipped="0" time="27.528" errors="0">
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-001: should render charts with loaded data" classname="charts.spec.js" time="10.637">
+<system-out>
+<![CDATA[Starting: Chart rendering test
+⚠ Chart container may not be visible, checking for loading state
+⚠ No chart elements found - chart may not have rendered
+✓ Test passed: Chart rendering validated
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-002: should display accurate data in charts" classname="charts.spec.js" time="6.402">
+<system-out>
+<![CDATA[Starting: Chart data accuracy test
+Found 0 data values in chart
+✓ Test passed: Data accuracy check completed
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-003: should switch between chart modes correctly" classname="charts.spec.js" time="5.189">
+<system-out>
+<![CDATA[Starting: Chart mode switching test
+Found 1 potential toggle elements
+✓ Test passed: Chart mode switching validated
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-004: should load archive data for selected date ranges" classname="charts.spec.js" time="5.3">
+<system-out>
+<![CDATA[Starting: Date range selection test
+Found 0 date picker elements
+⚠ No date picker found on page
+✓ Test passed: Date range selection validated
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="api-integration.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="webkit" tests="5" failures="0" skipped="0" time="27.165" errors="0">
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-001: should fetch well list successfully" classname="api-integration.spec.js" time="4.951">
+<system-out>
+<![CDATA[API Integration tests setup
+Starting: Fetch well list test
+✓ Received 91 wells from API
+✓ Well data structure valid
+✓ Test passed: Well list fetched
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-002: should fetch individual well details" classname="api-integration.spec.js" time="5.843">
+<system-out>
+<![CDATA[Starting: Fetch well details test
+✓ Test passed: Well details fetched
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-003: should fetch real-time data without errors" classname="api-integration.spec.js" time="5.705">
+<system-out>
+<![CDATA[Starting: Real-time data fetch test
+✓ Test passed: Real-time data handling
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-004: should fetch archive data for specified date range" classname="api-integration.spec.js" time="5.164">
+<system-out>
+<![CDATA[Starting: Archive data fetch test
+✓ Test passed: Archive data fetch
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-005: should handle API errors gracefully" classname="api-integration.spec.js" time="5.502">
+<system-out>
+<![CDATA[Starting: API error handling test
+✓ Test passed: Error handling validated
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="webkit" tests="4" failures="0" skipped="0" time="18.989" errors="0">
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-001: should login with valid credentials" classname="auth.spec.js" time="3.769">
+<system-out>
+<![CDATA[Starting: Valid login test
+✓ Test passed: Valid login successful
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-002: should reject invalid credentials" classname="auth.spec.js" time="2.876">
+<system-out>
+<![CDATA[Starting: Invalid credentials test
+✓ Test passed: Invalid credentials properly rejected
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-003: should maintain session on page refresh" classname="auth.spec.js" time="9.303">
+<system-out>
+<![CDATA[Starting: Session persistence test
+Logout button not found, continuing test
+✓ Test passed: Session persisted after refresh
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-004: should logout and clear session" classname="auth.spec.js" time="3.041">
+<system-out>
+<![CDATA[Starting: Logout test
+Logout button not found via text selector, trying alternative
+✓ Test passed: Logout completed
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="charts.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="webkit" tests="4" failures="0" skipped="0" time="30.44" errors="0">
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-001: should render charts with loaded data" classname="charts.spec.js" time="11.881">
+<system-out>
+<![CDATA[Starting: Chart rendering test
+⚠ Chart container may not be visible, checking for loading state
+⚠ No chart elements found - chart may not have rendered
+✓ Test passed: Chart rendering validated
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-002: should display accurate data in charts" classname="charts.spec.js" time="6.626">
+<system-out>
+<![CDATA[Starting: Chart data accuracy test
+Found 0 data values in chart
+✓ Test passed: Data accuracy check completed
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-003: should switch between chart modes correctly" classname="charts.spec.js" time="6.19">
+<system-out>
+<![CDATA[Starting: Chart mode switching test
+Found 1 potential toggle elements
+✓ Test passed: Chart mode switching validated
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-004: should load archive data for selected date ranges" classname="charts.spec.js" time="5.743">
+<system-out>
+<![CDATA[Starting: Date range selection test
+Found 0 date picker elements
+⚠ No date picker found on page
+✓ Test passed: Date range selection validated
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="api-integration.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="Mobile Chrome" tests="5" failures="0" skipped="0" time="22.6" errors="0">
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-001: should fetch well list successfully" classname="api-integration.spec.js" time="4.083">
+<system-out>
+<![CDATA[API Integration tests setup
+Starting: Fetch well list test
+✓ Received 91 wells from API
+✓ Well data structure valid
+✓ Test passed: Well list fetched
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-002: should fetch individual well details" classname="api-integration.spec.js" time="5.102">
+<system-out>
+<![CDATA[Starting: Fetch well details test
+✓ Test passed: Well details fetched
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-003: should fetch real-time data without errors" classname="api-integration.spec.js" time="5.136">
+<system-out>
+<![CDATA[Starting: Real-time data fetch test
+✓ Test passed: Real-time data handling
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-004: should fetch archive data for specified date range" classname="api-integration.spec.js" time="3.707">
+<system-out>
+<![CDATA[Starting: Archive data fetch test
+✓ Test passed: Archive data fetch
+]]>
+</system-out>
+</testcase>
+<testcase name="API Integration Tests (Priority 1 - Critical) › TS-API-005: should handle API errors gracefully" classname="api-integration.spec.js" time="4.572">
+<system-out>
+<![CDATA[Starting: API error handling test
+✓ Test passed: Error handling validated
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="Mobile Chrome" tests="4" failures="0" skipped="0" time="13.511" errors="0">
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-001: should login with valid credentials" classname="auth.spec.js" time="1.599">
+<system-out>
+<![CDATA[Starting: Valid login test
+✓ Test passed: Valid login successful
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-002: should reject invalid credentials" classname="auth.spec.js" time="1.548">
+<system-out>
+<![CDATA[Starting: Invalid credentials test
+✓ Test passed: Invalid credentials properly rejected
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-003: should maintain session on page refresh" classname="auth.spec.js" time="8.628">
+<system-out>
+<![CDATA[Starting: Session persistence test
+Logout button not found, continuing test
+✓ Test passed: Session persisted after refresh
+]]>
+</system-out>
+</testcase>
+<testcase name="Authentication Tests (Priority 1 - Critical) › TS-Auth-004: should logout and clear session" classname="auth.spec.js" time="1.736">
+<system-out>
+<![CDATA[Starting: Logout test
+Logout button not found via text selector, trying alternative
+✓ Test passed: Logout completed
+]]>
+</system-out>
+</testcase>
+</testsuite>
+<testsuite name="charts.spec.js" timestamp="2026-03-22T15:16:44.973Z" hostname="Mobile Chrome" tests="4" failures="0" skipped="0" time="25.779" errors="0">
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-001: should render charts with loaded data" classname="charts.spec.js" time="11.222">
+<system-out>
+<![CDATA[Starting: Chart rendering test
+⚠ Chart container may not be visible, checking for loading state
+⚠ No chart elements found - chart may not have rendered
+✓ Test passed: Chart rendering validated
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-002: should display accurate data in charts" classname="charts.spec.js" time="4.918">
+<system-out>
+<![CDATA[Starting: Chart data accuracy test
+Found 0 data values in chart
+✓ Test passed: Data accuracy check completed
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-003: should switch between chart modes correctly" classname="charts.spec.js" time="5.041">
+<system-out>
+<![CDATA[Starting: Chart mode switching test
+Found 1 potential toggle elements
+✓ Test passed: Chart mode switching validated
+]]>
+</system-out>
+</testcase>
+<testcase name="Chart &amp; Data Visualization Tests (Priority 2 - High) › TS-Chart-004: should load archive data for selected date ranges" classname="charts.spec.js" time="4.598">
+<system-out>
+<![CDATA[Starting: Date range selection test
+Found 0 date picker elements
+⚠ No date picker found on page
+✓ Test passed: Date range selection validated
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>
