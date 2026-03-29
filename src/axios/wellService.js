@@ -176,3 +176,7 @@ export const checkWellStatus = () => {
 export const createNotification = (notificationData) => {
   return axiosInstance.post('/notifications/create', notificationData);
 };
+
+export const updateNotificationStatus = (notificationId, status) => {
+  return api.put(`/notifications/${notificationId}/status`, { status });
+};

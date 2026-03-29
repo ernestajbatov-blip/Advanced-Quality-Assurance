@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import Modal from "../Modal/Modal";
-import { fetchNotifications } from "../../axios/wellService";
+import { fetchNotifications, updateNotificationStatus } from "../../axios/wellService";
 import styles from "./Notifications.module.css";
 
 const Notifications = ({ isOpen, onClose, onNewNotification }) => {
@@ -108,6 +108,18 @@ const Notifications = ({ isOpen, onClose, onNewNotification }) => {
     });
   };
 
+  const handleUpdateStatus = async (notificationId, newStatus) => {
+    try {
+      await updateNotificationStatus(notificationId, newStatus);
+      console.log(`Notification ${notificationId} updated to ${newStatus}`);
+      // Refresh notifications after update
+      loadNotifications();
+    } catch (error) {
+      console.error("Failed to update notification status:", error);
+      alert("Ошибка при обновлении статуса уведомления");
+    }
+  };
+
   const handleFilterChange = (key, value) => {
     setFilter(prev => ({
       ...prev,
@@ -172,10 +184,10 @@ const Notifications = ({ isOpen, onClose, onNewNotification }) => {
                     <th>Событие</th>
                     <th>АГЗУ</th>
                     <th>Скважина</th>
-                    <th>Дельта</th>
                     <th>Открыто</th>
                     <th>Статус</th>
                     <th>Комментарий</th>
+                    <th>Действие</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -194,9 +206,6 @@ const Notifications = ({ isOpen, onClose, onNewNotification }) => {
                       </td>
                       <td>{notification.agzu}</td>
                       <td>{notification.well}</td>
-                      <td className={styles.deltaCell}>
-                        {notification.delta ? `${parseFloat(notification.delta).toFixed(2)}` : "-"}
-                      </td>
                       <td className={styles.dateCell}>{formatDate(notification.opened)}</td>
                       <td>
                         <span 
@@ -211,6 +220,25 @@ const Notifications = ({ isOpen, onClose, onNewNotification }) => {
                         {notification.comment && notification.comment !== 'Без комментариев' 
                           ? notification.comment 
                           : "-"}
+                      </td>
+                      <td className={styles.actionCell}>
+                        {notification.status === 'open' ? (
+                          <button
+                            className={`${styles.actionButton} ${styles.closeButton}`}
+                            onClick={() => handleUpdateStatus(notification.id, 'closed')}
+                            title="Закрыть уведомление"
+                          >
+                            ✓ Закрыть
+                          </button>
+                        ) : (
+                          <button
+                            className={`${styles.actionButton} ${styles.reopenButton}`}
+                            onClick={() => handleUpdateStatus(notification.id, 'open')}
+                            title="Открыть уведомление"
+                          >
+                            ↺ Открыть
+                          </button>
+                        )}
                       </td>
                     </tr>
                   ))}

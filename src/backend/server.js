@@ -3,13 +3,86 @@ const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
 const getConnection = require("./db");
-const port = 3000;
+const port = Number(process.env.PORT || 3000);
 const app = express();
 const crypto = require("crypto");
 const axios = require('axios');
+const disableWellStopScheduler = process.env.DISABLE_WELLSTOP_SCHEDULER === "1";
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
+});
+
+// ---- Background Well Stop Detector (runs every 2 seconds) ----
+const checkWellStopsSchedule = () => {
+  const connection = getConnection();
+  const query = `
+    SELECT 
+      well,
+      c_current,
+      c_last_update,
+      working
+    FROM well_data 
+    WHERE well LIKE 'BSK%' 
+    AND (c_current < 1 OR c_current IS NULL)
+    AND working = 1
+    ORDER BY c_last_update DESC;
+  `;
+  
+  connection.query(query, (error, results) => {
+    if (error) {
+      console.error("[WellStop] Database error:", error);
+      return;
+    }
+    
+    const stoppedWells = results || [];
+    
+    if (stoppedWells.length > 0) {
+      const wellNames = stoppedWells.map(w => w.well);
+      const checkExistingQuery = `
+        SELECT well, MAX(opened) as last_notification
+        FROM n_lenta 
+        WHERE well IN (${wellNames.map(() => '?').join(',')})
+        AND event LIKE '%останов%'
+        AND opened > DATE_SUB(NOW(), INTERVAL 1 HOUR)
+        GROUP BY well;
+      `;
+      
+      connection.query(checkExistingQuery, wellNames, (error2, existingResults) => {
+        if (error2) {
+          console.error("[WellStop] Database error checking existing:", error2);
+          return;
+        }
+        
+        const existingNotifications = new Set(
+          (existingResults || []).map(r => r.well)
+        );
+        
+        // Filter out wells that already have recent notifications
+        const newStoppedWells = stoppedWells.filter(
+          well => !existingNotifications.has(well.well)
+        );
+        
+        // Create notifications for newly stopped wells
+        if (newStoppedWells.length > 0) {
+          console.log(`[WellStop] Creating ${newStoppedWells.length} new notifications`);
+          createWellStopNotifications(newStoppedWells, connection);
+        }
+      });
+    }
+  });
+};
+
+// Start the scheduler - runs every 2 seconds (matches frontend well polling)
+if (!disableWellStopScheduler) {
+  setInterval(checkWellStopsSchedule, 2000);
+  console.log('[WellStop] Scheduler started (checks every 2 seconds)');
+} else {
+  console.log('[WellStop] Scheduler disabled by DISABLE_WELLSTOP_SCHEDULER=1');
+}
 
 // ---- API Routes ----
 
@@ -371,7 +444,7 @@ app.get("/api/oil-loss", (req, res) => {
       return res.status(500).json({ error: "Database query failed" });
     }
     
-    console.log(`✅ Oil Loss API returned ${results.length} records`);
+    console.log(`[OilLoss] API returned ${results.length} records`);
     if (well && well !== 'all') {
       console.log(`   Well: ${well}, Date range: ${startDate} to ${endDate}`);
       if (results.length > 0) {
@@ -1070,6 +1143,37 @@ app.get("/api/notifications/count", (req, res) => {
   });
 });
 
+// Get recent well-stop notifications (last 30 seconds) - for frontend polling
+app.get("/api/notifications/recent-well-stops", (req, res) => {
+  const connection = getConnection();
+  const { oil_field = 'BSK' } = req.query;
+  
+  const query = `
+    SELECT 
+      id,
+      criticality,
+      event,
+      well,
+      agzu,
+      delta,
+      opened
+    FROM n_lenta
+    WHERE oil_field = ?
+    AND status = 'open'
+    AND event LIKE '%останов%'
+    AND opened > DATE_SUB(NOW(), INTERVAL 30 SECOND)
+    ORDER BY opened DESC
+  `;
+  
+  connection.query(query, [oil_field], (error, results) => {
+    if (error) {
+      console.error("Database error fetching recent well stops:", error);
+      return res.status(500).json({ error: "Database query failed" });
+    }
+    res.json(results || []);
+  });
+});
+
 // Check for wells with low current (stopped wells)
 app.get("/api/wells/check-status", (req, res) => {
   const connection = getConnection();
@@ -1168,13 +1272,15 @@ function createWellStopNotifications(stoppedWells, connection) {
         `Автоматическое уведомление: ток ${currentValue.toFixed(2)} А < 1 А`
       ];
       
-      console.log(`📝 Creating notification for well: ${well.well}`);
+      console.log(`[Notification] Creating for well: ${well.well}`);
       
       connection.query(insertQuery, values, (error, results) => {
         if (error) {
-          console.error(`❌ Database error creating notification for well ${well.well}:`, error);
+          console.error(`[Notification] Database error for well ${well.well}:`, error);
         } else {
-          console.log(`✅ Successfully created stop notification for well ${well.well} with ID: ${results.insertId}`);
+          console.log(`[Notification] Created for well ${well.well} with ID: ${results.insertId}`);
+          
+          // Notification written to database - frontend will poll it via API
         }
       });
     });
@@ -1202,7 +1308,7 @@ app.post("/api/notifications/create", (req, res) => {
     return res.status(400).json({ error: "Event and well are required" });
   }
 
-  console.log(`📝 Creating notification for well: ${well}`);
+  console.log(`[Notification] Creating for well: ${well}`);
 
   // First check if a similar notification already exists in the last 2 hours
   const checkExistingQuery = `
@@ -1266,11 +1372,11 @@ app.post("/api/notifications/create", (req, res) => {
       
       connection.query(insertQuery, values, (error, results) => {
         if (error) {
-          console.error("❌ Database error creating notification:", error);
+          console.error("[Notification] Database error creating:", error);
           return res.status(500).json({ error: "Failed to create notification" });
         }
         
-        console.log(`✅ Successfully created notification with ID: ${results.insertId} for well: ${well}`);
+        console.log(`[Notification] Created with ID: ${results.insertId} for well: ${well}`);
         
         res.json({ 
           id: results.insertId,
@@ -1279,6 +1385,45 @@ app.post("/api/notifications/create", (req, res) => {
           criticality: criticality
         });
       });
+    });
+  });
+});
+
+// Update notification status
+app.put("/api/notifications/:id/status", (req, res) => {
+  const connection = getConnection();
+  const { id } = req.params;
+  const { status } = req.body;
+
+  if (!id || !status) {
+    return res.status(400).json({ error: "Missing id or status" });
+  }
+
+  if (!['open', 'closed'].includes(status)) {
+    return res.status(400).json({ error: "Invalid status. Must be 'open' or 'closed'" });
+  }
+
+  const updateQuery = `
+    UPDATE n_lenta 
+    SET status = ?
+    WHERE id = ?
+  `;
+
+  connection.query(updateQuery, [status, id], (error, results) => {
+    if (error) {
+      console.error("[Notification] Database error updating status:", error);
+      return res.status(500).json({ error: "Failed to update notification" });
+    }
+
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ error: "Notification not found" });
+    }
+
+    console.log(`[Notification] Updated ID ${id} status to '${status}'`);
+    res.json({ 
+      id: id,
+      message: "Notification status updated successfully",
+      status: status
     });
   });
 });
@@ -1342,6 +1487,6 @@ app.get("*", (req, res) => {
 });
 
 app.listen(port, "0.0.0.0", () => {
-  console.log(`Server running on http://192.168.1.42:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
   console.log(`Looking for frontend files in: ${distPath}`);
 });

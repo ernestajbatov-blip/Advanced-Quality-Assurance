@@ -2,16 +2,18 @@ const mysql = require("mysql2");
 
 let connection;
 
+const DB_CONFIG = {
+  host: process.env.DB_HOST || "localhost",
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD || "1234",
+  database: process.env.DB_NAME || "ada",
+  port: Number(process.env.DB_PORT || 3306),
+  timezone: process.env.DB_TIMEZONE || "+05:00",
+  charset: process.env.DB_CHARSET || "utf8mb4",
+};
+
 function handleDisconnect() {
-  connection = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "1234",
-    database: "ada",
-    port: 3306,
-    timezone: '+05:00',
-    charset: "utf8mb4"
-  });
+  connection = mysql.createConnection(DB_CONFIG);
 
   connection.connect((err) => {
     if (err) {
