@@ -1,0 +1,48 @@
+<testsuites id="" name="" tests="19" failures="0" skipped="0" errors="0" time="45.445859">
+<testsuite name="api-integration.spec.js" timestamp="2026-04-04T09:55:24.432Z" hostname="chromium" tests="5" failures="0" skipped="0" time="0.17" errors="0">
+<testcase name="API Integration › TS-API-001 @smoke: health endpoint returns ok" classname="api-integration.spec.js" time="0.046">
+</testcase>
+<testcase name="API Integration › TS-API-002 @smoke: login succeeds with valid credentials" classname="api-integration.spec.js" time="0.045">
+</testcase>
+<testcase name="API Integration › TS-API-003: login fails with invalid credentials" classname="api-integration.spec.js" time="0.016">
+</testcase>
+<testcase name="API Integration › TS-API-004: wells endpoint returns seeded BSK wells" classname="api-integration.spec.js" time="0.023">
+</testcase>
+<testcase name="API Integration › TS-API-005: 2-hour current and archive endpoints return data" classname="api-integration.spec.js" time="0.04">
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.js" timestamp="2026-04-04T09:55:24.432Z" hostname="chromium" tests="4" failures="0" skipped="0" time="5.17" errors="0">
+<testcase name="Authentication › TS-Auth-001 @smoke: login form is visible and usable" classname="auth.spec.js" time="1.278">
+</testcase>
+<testcase name="Authentication › TS-Auth-002: invalid credentials are rejected" classname="auth.spec.js" time="1.103">
+</testcase>
+<testcase name="Authentication › TS-Auth-003 @smoke: valid login persists user in localStorage" classname="auth.spec.js" time="1.445">
+</testcase>
+<testcase name="Authentication › TS-Auth-004: logout clears authenticated state" classname="auth.spec.js" time="1.344">
+</testcase>
+</testsuite>
+<testsuite name="charts.spec.js" timestamp="2026-04-04T09:55:24.432Z" hostname="chromium" tests="4" failures="0" skipped="0" time="5.483" errors="0">
+<testcase name="Chart And Visualization › TS-Chart-001 @smoke: chart renders and loads 2-hour data" classname="charts.spec.js" time="1.294">
+</testcase>
+<testcase name="Chart And Visualization › TS-Chart-002: switching liquid and oil modes updates control state" classname="charts.spec.js" time="1.432">
+</testcase>
+<testcase name="Chart And Visualization › TS-Chart-003: accumulation toggle is interactive and preserves chart visibility" classname="charts.spec.js" time="1.414">
+</testcase>
+<testcase name="Chart And Visualization › TS-Chart-004: archive dates endpoint is reachable from chart view" classname="charts.spec.js" time="1.343">
+</testcase>
+</testsuite>
+<testsuite name="high-risk.spec.js" timestamp="2026-04-04T09:55:24.432Z" hostname="chromium" tests="6" failures="0" skipped="0" time="0.287" errors="0">
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-001: oil-loss wells endpoint returns well list" classname="high-risk.spec.js" time="0.032">
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-002: oil-loss endpoint returns dataset with required fields" classname="high-risk.spec.js" time="0.041">
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-003: oil-loss analysis validates payload and rejects empty input" classname="high-risk.spec.js" time="0.007">
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-004: oil-loss endpoint supports date-range filtering contract" classname="high-risk.spec.js" time="0.15">
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Export-001: CHRP archive report endpoint returns export-ready rows" classname="high-risk.spec.js" time="0.011">
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Export-002: AGZU archive report endpoint returns export-ready rows" classname="high-risk.spec.js" time="0.046">
+</testcase>
+</testsuite>
+</testsuites>
