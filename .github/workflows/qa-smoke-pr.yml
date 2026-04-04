@@ -1,9 +1,14 @@
 name: QA Smoke PR
 
 on:
+  push:
+    branches:
+      - main
+      - qa/assignment-1-testing
   pull_request:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   smoke:

@@ -1,6 +1,10 @@
 name: QA Nightly Full
 
 on:
+  push:
+    branches:
+      - main
+      - qa/assignment-1-testing
   schedule:
     - cron: '0 2 * * *'
   workflow_dispatch:
