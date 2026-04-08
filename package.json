@@ -13,7 +13,9 @@
     "test:e2e:full": "playwright test",
     "test:e2e:assignment2": "playwright test --project=chromium QA/test-scripts/e2e/auth.spec.js QA/test-scripts/e2e/api-integration.spec.js QA/test-scripts/e2e/charts.spec.js QA/test-scripts/e2e/high-risk.spec.js",
     "mutation:test": "stryker run",
-    "mutation:test:report": "open QA/test-reports/mutation/index.html || start QA\\test-reports\\mutation\\index.html"
+    "mutation:test:report": "open QA/test-reports/mutation/index.html || start QA\\test-reports\\mutation\\index.html",
+    "apfd:measure": "node QA/test-scripts/run-apfd.js",
+    "apfd:report": "open QA/test-reports/mutation/apfd-curves.html || start QA\\test-reports\\mutation\\apfd-curves.html"
   },
   "dependencies": {
     "@amcharts/amcharts5": "^5.11.1",
