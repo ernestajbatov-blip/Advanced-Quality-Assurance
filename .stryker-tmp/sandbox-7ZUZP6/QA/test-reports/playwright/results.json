@@ -1,0 +1,707 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-7ZUZP6\\playwright.config.js",
+    "rootDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/QA/test-scripts/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-7ZUZP6/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "QA/test-reports/playwright",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "QA/test-reports/playwright/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "QA/test-reports/playwright/results.xml"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run build && npm run backend:start",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 180000
+    }
+  },
+  "suites": [
+    {
+      "title": "api-integration.spec.js",
+      "file": "api-integration.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "API Integration",
+          "file": "api-integration.spec.js",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-API-001 @smoke: health endpoint returns ok",
+              "ok": true,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 262,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:11:23.682Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-6bece4c94341b0567057",
+              "file": "api-integration.spec.js",
+              "line": 9,
+              "column": 3
+            },
+            {
+              "title": "TS-API-002 @smoke: login succeeds with valid credentials",
+              "ok": true,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 115,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:11:24.165Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-aaad3f5ced20c42251b4",
+              "file": "api-integration.spec.js",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "TS-API-003: login fails with invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 87,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:11:24.399Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-8a35518aa27e249c6217",
+              "file": "api-integration.spec.js",
+              "line": 44,
+              "column": 3
+            },
+            {
+              "title": "TS-API-004: wells endpoint returns seeded BSK wells",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 165,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:11:24.580Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-5be24d3dfc2b0699a54e",
+              "file": "api-integration.spec.js",
+              "line": 58,
+              "column": 3
+            },
+            {
+              "title": "TS-API-005: 2-hour current and archive endpoints return data",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 337,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:11:24.842Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-c728aa2f4277a252061b",
+              "file": "api-integration.spec.js",
+              "line": 73,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "auth.spec.js",
+      "file": "auth.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication",
+          "file": "auth.spec.js",
+          "line": 12,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-Auth-001 @smoke: login form is visible and usable",
+              "ok": true,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "interrupted",
+                      "duration": 4982,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n\n    at gotoLogin (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-7ZUZP6\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:121:50)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-7ZUZP6\\QA\\test-scripts\\e2e\\auth.spec.js:20:5",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-7ZUZP6\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                          "column": 50,
+                          "line": 121
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mutils\\test-helpers.js:121\n\n\u001b[0m \u001b[90m 119 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m gotoLogin(page) {\n \u001b[90m 120 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 121 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByText(\u001b[32m'Вход в систему'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                  \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 122 |\u001b[39m }\n \u001b[90m 123 |\u001b[39m\n \u001b[90m 124 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToApp(page\u001b[33m,\u001b[39m credentials \u001b[33m=\u001b[39m \u001b[33mTEST_USERS\u001b[39m\u001b[33m.\u001b[39mregular) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-7ZUZP6\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                            "column": 50,
+                            "line": 121
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n\n\n   at utils\\test-helpers.js:121\n\n  119 | export async function gotoLogin(page) {\n  120 |   await page.goto('/');\n> 121 |   await expect(page.getByText('Вход в систему')).toBeVisible();\n      |                                                  ^\n  122 | }\n  123 |\n  124 | export async function loginToApp(page, credentials = TEST_USERS.regular) {\n    at gotoLogin (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-7ZUZP6\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:121:50)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-7ZUZP6\\QA\\test-scripts\\e2e\\auth.spec.js:20:5"
+                        },
+                        {
+                          "message": "Error: browserContext.close: Target page, context or browser has been closed"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:11:26.158Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-7ZUZP6\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                        "column": 50,
+                        "line": 121
+                      }
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-7b0f247017f7a3fd1f1a",
+              "file": "auth.spec.js",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-002: invalid credentials are rejected",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-1e65504621e924a387f0",
+              "file": "auth.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-003 @smoke: valid login persists user in localStorage",
+              "ok": true,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-ecb25dece9b3c79a8ad2",
+              "file": "auth.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-004: logout clears authenticated state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-e9b923dde39bad9a574b",
+              "file": "auth.spec.js",
+              "line": 48,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "charts.spec.js",
+      "file": "charts.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Chart And Visualization",
+          "file": "charts.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-Chart-001 @smoke: chart renders and loads 2-hour data",
+              "ok": true,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-22b7c68c83aa14d0f3df",
+              "file": "charts.spec.js",
+              "line": 10,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-002: switching liquid and oil modes updates control state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-7eca6ddbb04f7d348ba9",
+              "file": "charts.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-003: accumulation toggle is interactive and preserves chart visibility",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-73a043dd32436c30beda",
+              "file": "charts.spec.js",
+              "line": 45,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-004: archive dates endpoint is reachable from chart view",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-0603598e67c24b3bcfe7",
+              "file": "charts.spec.js",
+              "line": 59,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "high-risk.spec.js",
+      "file": "high-risk.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "High-Risk Coverage: Oil Loss and Excel Export",
+          "file": "high-risk.spec.js",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-Oil-001: oil-loss wells endpoint returns well list",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-13bdb5566d51ac681b35",
+              "file": "high-risk.spec.js",
+              "line": 8,
+              "column": 3
+            },
+            {
+              "title": "TS-Oil-002: oil-loss endpoint returns dataset with required fields",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-657c70ffbc46f5cc972d",
+              "file": "high-risk.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "TS-Oil-003: oil-loss analysis validates payload and rejects empty input",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-4906ea7ca0456ae09f97",
+              "file": "high-risk.spec.js",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "TS-Oil-004: oil-loss endpoint supports date-range filtering contract",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-335ad5a9bb7c539d82c0",
+              "file": "high-risk.spec.js",
+              "line": 77,
+              "column": 3
+            },
+            {
+              "title": "TS-Export-001: CHRP archive report endpoint returns export-ready rows",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-008bfccbd256d65fba2b",
+              "file": "high-risk.spec.js",
+              "line": 109,
+              "column": 3
+            },
+            {
+              "title": "TS-Export-002: AGZU archive report endpoint returns export-ready rows",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-181aedd840c35c32682c",
+              "file": "high-risk.spec.js",
+              "line": 138,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-04-11T10:10:52.752Z",
+    "duration": 41877.628,
+    "expected": 5,
+    "skipped": 14,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

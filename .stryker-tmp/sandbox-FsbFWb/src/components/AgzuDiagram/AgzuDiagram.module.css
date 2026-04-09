@@ -1,0 +1,47 @@
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 1000px; /* Set a max-width if needed */
+  height: auto;
+  margin: 0 auto;
+}
+
+.svgImage {
+  width: 80%;  /* Adjusted width */
+  height: auto; /* Maintains aspect ratio */
+  max-height: 6000px; /* Prevents overflow */
+  display: block;
+  margin: 0 auto;
+}
+
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 605px;
+  height: 400px;
+}
+
+.circle {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white !important;
+}
+
+.circleText {
+  font-size: 18px;
+  font-weight: bold;
+  align-items: center;
+}
+
+.line {
+  position: absolute;
+  width: 300px;
+  height: 2px;
+  background-color: orange;
+}

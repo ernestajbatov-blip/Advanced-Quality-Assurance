@@ -1,0 +1,24 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-js/master/packages/api/schema/mutation-testing-elements.json",
+  "mutate": [
+    "src/axios/**/*.js",
+    "src/components/*/[!i][!n][!d][!e][!x].jsx",
+    "src/pages/**/*.jsx"
+  ],
+  "testRunner": "command",
+  "commandRunner": {
+    "command": "npm run test:e2e:assignment2"
+  },
+  "reporters": [
+    "html",
+    "json",
+    "clear-text"
+  ],
+  "htmlReporter": {
+    "fileName": "QA/test-reports/mutation/index.html"
+  },
+  "timeoutMS": 60000,
+  "plugins": [
+    "@stryker-mutator/typescript-checker"
+  ]
+}

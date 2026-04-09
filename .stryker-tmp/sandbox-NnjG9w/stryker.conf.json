@@ -1,0 +1,36 @@
+{
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-js/master/packages/api/schema/mutation-testing-elements.json",
+  "mutate": [
+    "src/axios/**/*.js",
+    "src/components/*/[!i][!n][!d][!e][!x].jsx",
+    "src/pages/**/*.jsx",
+    "!src/**/*.test.js",
+    "!src/**/*.spec.js"
+  ],
+  "testRunner": "command",
+  "testCommand": "npm run test:e2e:assignment2",
+  "reporters": [
+    "html",
+    "json",
+    "text",
+    "progress"
+  ],
+  "reportFileName": "mutation-report",
+  "htmlReporter": {
+    "baseDir": "QA/test-reports/mutation"
+  },
+  "mutationThresholds": {
+    "high": 80,
+    "medium": 60,
+    "low": 0
+  },
+  "cleanTempDir": true,
+  "maxTestRunnerReuses": 1,
+  "timeoutMS": 60000,
+  "coverageAnalysis": "all",
+  "ignoreStatic": false,
+  "plugins": [
+    "@stryker-mutator/typescript-checker"
+  ],
+  "description": "Mutation testing configuration for Ada Oil App high-risk modules. Validates test effectiveness across authentication, API integration, charts, and oil-loss analysis."
+}

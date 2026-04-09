@@ -1,0 +1,93 @@
+/* WellCard.module.css */
+
+@keyframes flicker {
+    0%,
+    100% {
+      background-color: #ff0000;
+    }
+    50% {
+      background-color: #50505a;
+    }
+  }
+  
+.redCard {
+  animation: flicker 2s infinite;
+}
+
+.orangeCard {
+  background-color: orange;
+}
+
+.grayCard {
+  background-color: #50505a;
+}
+
+.greenCard {
+  background-color: #339f1b;
+  color: white; 
+}
+
+.wellCard {
+  /* background-color: #50505a; */
+  /* width: 100px; */
+  /* height: 60px; */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3px;
+  box-sizing: border-box;
+}
+
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  font-size: 10px;
+}
+
+.cardHeader {
+  font-size: 12px;
+  margin: 2px 0;
+}
+
+.statusCircle {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid #444;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+}
+
+
+.green {
+  background-color: #00ff00;
+}
+
+.yellow {
+  background-color: #ffff00;
+}
+
+.red {
+  background-color: #ff0000;
+}
+
+.redCardStatic {
+  background-color: #ff0000;
+}
+
+
+.lightGrayCard {
+  background-color: #919191;
+  border: 1px solid #666666;
+}
+
+/* You can also add a subtle animation if desired */
+.lightGrayCard:hover {
+  background-color: #9e9e9e;
+}

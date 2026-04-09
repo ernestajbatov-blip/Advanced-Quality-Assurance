@@ -1,0 +1,634 @@
+/* OilMap.module.css - Updated for horizontal layout */
+
+.oilMapContainer {
+  width: 100%;
+  /* background-color: #2d2d32; */
+  /* color: #ffffff; */
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  position: relative;
+  /* padding: 20px; */
+  /* border-radius: 5px; */
+  /* box-sizing: border-box; */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading and Error States */
+.loadingContainer,
+.errorContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 500px;
+  background: #2d2d32;
+  border-radius: 5px;
+}
+
+.loadingText {
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.errorText {
+  font-size: 18px;
+  color: #ef4444;
+}
+
+/* Network Status Indicators */
+.onlineIndicator,
+.offlineIndicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 1000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.onlineIndicator {
+  background: rgba(34, 197, 94, 0.9);
+  color: white;
+}
+
+.offlineIndicator {
+  background: rgba(239, 68, 68, 0.9);
+  color: white;
+}
+
+.chartLegend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+  justify-content: center;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.legendColor {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legendText {
+  white-space: nowrap;
+}
+
+/* Top Navigation Bar */
+.topNavigation {
+  background: #2d2d32;
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
+  border-radius: 5px;
+  padding: 20px;
+  /* margin-bottom: 20px; */
+  position: relative;
+}
+
+.navSection {
+  margin-bottom: 16px;
+}
+
+.navTitle {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* Replace the existing .controlsRow rule with this: */
+.controlsRow {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  flex-direction: column; /* Stack vertically */
+}
+
+/* Add this new rule for the top row: */
+.topRow {
+  display: flex;
+  gap: 20px;
+  align-items: flex-end;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Update these existing rules: */
+.searchContainer {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.filterContainer {
+  flex: 0 0 200px;
+  min-width: 200px;
+}
+
+/* Update the button container: */
+.buttonContainer {
+  width: 100%; /* Full width for the bottom row */
+  /* margin-top: 16px;  */
+  /* margin-bottom: 0px; */
+}
+
+.clearFiltersButton {
+  width: 200px;
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Search Container */
+.searchContainer {
+  flex: 1;
+  min-width: 250px;
+  position: relative;
+}
+
+.searchLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 10px 12px;
+  background: rgba(45, 45, 50, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+
+.searchInput:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.searchInput::placeholder {
+  color: #999;
+}
+
+/* Filter Container */
+.filterContainer {
+  flex: 0 0 200px;
+  min-width: 200px;
+}
+
+.filterLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.filterSelect {
+  width: 100%;
+  padding: 10px 12px;
+  background: #2d2d32;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 14px;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.filterSelect option {
+  background: #2d2d32;
+  color: #ffffff;
+}
+
+/* Button Container */
+.buttonContainer {
+  flex: 0 0 150px;
+}
+
+.clearFiltersButton {
+  width: 100%;
+  padding: 10px 16px;
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  height: 42px; /* Match input height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clearFiltersButton:hover {
+  background: #2563eb;
+}
+
+.clearFiltersButton:active {
+  transform: translateY(1px);
+}
+
+/* Stats Section */
+.statsSection {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 16px;
+}
+
+.headerStats {
+  display: flex;
+  gap: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  flex-wrap: wrap;
+}
+
+.statActive {
+  color: #22c55e;
+}
+
+.statMaintenance {
+  color: #f97316;
+}
+
+.statInactive {
+  color: #ef4444;
+}
+
+.statTotal {
+  color: #ffffff;
+}
+
+/* Search Dropdown */
+.searchDropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #2d2d32;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-top: 2px;
+}
+
+.searchResultItem {
+  padding: 10px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.searchResultItem:hover,
+.searchResultItemSelected {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.searchResultItem:last-child {
+  border-bottom: none;
+}
+
+.searchResultName {
+  font-weight: 500;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.searchResultStatus {
+  color: #ccc;
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.noResultsMessage {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #2d2d32;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  padding: 12px;
+  font-size: 14px;
+  color: #ccc;
+  z-index: 1000;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  margin-top: 2px;
+}
+
+/* Map Container */
+.mapContainer {
+  /* flex: 1; */
+  height: 500px;
+  /* border-radius: 5px; */
+  /* overflow: hidden; */
+  /* border: 1px solid rgba(255, 255, 255, 0.1); */
+  /* min-height: 400px; */
+}
+
+.noDataContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  background: #2d2d32;
+  color: #ccc;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* Tooltip Styles */
+.tooltipContent {
+  font-size: 12px;
+  font-weight: 500;
+  color: #1a1a1a;
+  padding: 2px 0;
+}
+
+/* Hover Label Styles */
+.hoverLabel :global(.leaflet-tooltip) {
+  background-color: rgba(45, 45, 50, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.hoverLabel :global(.leaflet-tooltip-top):before {
+  border-top-color: rgba(45, 45, 50, 0.95);
+}
+
+/* Custom Popup Styles */
+.customPopup :global(.leaflet-popup-content-wrapper) {
+  background: #2d2d32;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.customPopup :global(.leaflet-popup-content) {
+  margin: 0;
+  padding: 0;
+  color: white;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-width: 280px;
+  max-width: 320px;
+}
+
+.customPopup :global(.leaflet-popup-tip) {
+  background: #2d2d32;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.customPopup :global(.leaflet-popup-close-button) {
+  color: #ccc;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.customPopup :global(.leaflet-popup-close-button):hover {
+  color: #ffffff;
+  background: rgba(239, 68, 68, 0.2);
+  border-radius: 3px;
+}
+
+/* Enhanced Popup Content */
+.enhancedPopup {
+  background: transparent;
+  color: #ffffff;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.popupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(45, 45, 50, 0.9);
+}
+
+.popupTitle {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+  flex: 1;
+  margin-right: 12px;
+}
+
+.popupStatus {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.mainContent {
+  padding: 0px;
+  gap: 0px;
+  margin-bottom: 5px;
+  overflow: hidden;
+}
+
+.statusActive {
+  background: rgba(34, 197, 94, 0.2);
+  color: #22c55e;
+  border: 1px solid #22c55e;
+}
+
+.statusInactive {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.statusMaintenance {
+  background: rgba(249, 115, 22, 0.2);
+  color: #f97316;
+  border: 1px solid #f97316;
+}
+
+.popupBody {
+  padding: 16px;
+}
+
+.popupSection {
+  margin-bottom: 16px;
+}
+
+.popupSection:last-child {
+  margin-bottom: 0;
+}
+
+.sectionHeader {
+  padding: 16px 0;
+  border-bottom: 1px solid #404040;
+  margin-bottom: 16px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sectionTitle {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  line-height: 1;
+  text-align: center;
+}
+
+.metricsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.metricItem {
+  background: rgba(45, 45, 50, 0.8);
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background-color 0.2s ease;
+}
+
+.metricItem:hover {
+  background: rgba(45, 45, 50, 1);
+}
+
+.metricLabel {
+  font-size: 11px;
+  color: #ccc;
+  margin-bottom: 2px;
+  font-weight: 500;
+}
+
+.metricValue {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  line-height: 1.2;
+}
+
+.coordinates {
+  font-size: 13px;
+  color: #ffffff;
+  background: rgba(45, 45, 50, 0.8);
+  padding: 8px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Courier New', monospace;
+  word-break: break-all;
+}
+
+/* Animation for status indicators */
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.onlineIndicator,
+.offlineIndicator {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+/* Scrollbar styling for search dropdown */
+.searchDropdown::-webkit-scrollbar {
+  width: 6px;
+}
+
+.searchDropdown::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+
+.searchDropdown::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.searchDropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Focus states for accessibility */
+.searchInput:focus,
+.filterSelect:focus,
+.clearFiltersButton:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .searchResultItem,
+  .clearFiltersButton,
+  .metricItem {
+    transition: none;
+  }
+  
+  .onlineIndicator,
+  .offlineIndicator {
+    animation: none;
+  }
+}
