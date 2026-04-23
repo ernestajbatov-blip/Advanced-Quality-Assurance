@@ -110,10 +110,16 @@ export default function AChart({ selectedWell }) {
                 width={860}
                 height={350}
                 data={selectedData}
-                margin={{ top: 20, right: 20, left: 20, bottom: 5 }}
+                margin={{ top: 20, right: 20, left: 20 }}
             >
                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                <XAxis dataKey="date" tick={{ fill: "#ffffff" }} />
+                <XAxis 
+                    dataKey="date" 
+                    tick={{ fill: "#ffffff", fontSize: 12 }} 
+                    angle={-30}
+                    textAnchor="end"
+                    height={80}
+                />
                 <YAxis tick={{ fill: "#ffffff" }} />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />

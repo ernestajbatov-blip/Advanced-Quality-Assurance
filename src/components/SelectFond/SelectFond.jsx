@@ -13,7 +13,6 @@ export default function SelectFond({
   fond,
   statusFilter,
   setStatusFilter,
-  // Add these as optional props if counts are passed from parent
   totalProductionWells,
   totalInjectionWells,
   totalIdleWells,
@@ -139,8 +138,6 @@ export default function SelectFond({
         ? [
             "Скважина",
             "Дата опроса",
-            "Напряжение",
-            "Мощность",
             "Частота",
             "Ток",
             "Обороты ротора",

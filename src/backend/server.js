@@ -212,8 +212,6 @@ app.get("/api/chrp/archive/report", (req, res) => {
     SELECT
       well_name AS 'Скважина',
       DATE_FORMAT(date_time, '%Y-%m-%d %H:%i:%s') AS 'Дата опроса',
-      c_voltage AS 'Напряжение',
-      c_power AS 'Мощность',
       c_freq AS 'Частота',
       c_current AS 'Ток',
       c_speed AS 'Обороты ротора',
