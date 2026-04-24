@@ -1,0 +1,63 @@
+/* ResponsiveTable.module.css */
+.tableContainer {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto; /* Allows columns to size based on content, important with word-wrap */
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border: 1px solid #ddd;
+  text-align: left;
+  font-size: 0.9rem;
+
+  /* --- Word Wrapping Rules --- */
+  white-space: normal;      /* Allow line breaks */
+  word-wrap: break-word;    /* Break long words if necessary */
+  word-break: break-word;   /* Alternative/Additional break rule */
+  /* overflow-wrap: break-word; */ /* Another name for word-wrap, sometimes more reliable */
+  /* --- End Word Wrapping Rules --- */
+
+  /* Optional: Set a max-width to force wrapping earlier */
+  /* max-width: 150px; Adjust as needed */
+  /* width: 1%; */ /* Sometimes helps force width distribution with table-layout: auto */
+}
+
+th {
+  background-color: #f4f4f4;
+  /* Optionally, you might want to wrap headers too if they are long */
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Optional: Set a max-width for cells to force wrapping earlier */
+/*
+th,
+td {
+  max-width: 200px; /* Adjust as needed */
+/*  overflow-wrap: break-word; /* Alternative to word-wrap */
+/*}
+*/
+
+@media (max-width: 768px) {
+  th,
+  td {
+    padding: 8px;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  th,
+  td {
+    padding: 6px;
+    font-size: 0.7rem;
+  }
+}

@@ -12,7 +12,7 @@ on:
 jobs:
   full-regression:
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 180
 
     services:
       mysql:
@@ -43,6 +43,9 @@ jobs:
 
       - name: Install backend dependencies
         run: npm --prefix src/backend ci
+
+      - name: Install MySQL client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
@@ -87,6 +90,25 @@ jobs:
           PW_NO_WEBSERVER: 1
         run: npm run test:e2e:full
 
+      - name: Run performance tests
+        env:
+          PERF_BASE_URL: http://localhost:3000
+        run: npm run performance:test
+
+      - name: Run chaos tests
+        env:
+          CHAOS_BASE_URL: http://localhost:3000
+        run: npm run chaos:test
+
+      - name: Run mutation tests
+        env:
+          CI: true
+          PW_NO_WEBSERVER: 1
+        run: npm run mutation:test
+
+      - name: Measure APFD
+        run: npm run apfd:measure
+
       - name: Upload full regression artifacts
         if: always()
         uses: actions/upload-artifact@v4
@@ -94,5 +116,6 @@ jobs:
           name: nightly-playwright-report
           path: |
             QA/test-reports
+            reports
             playwright-report
           if-no-files-found: warn

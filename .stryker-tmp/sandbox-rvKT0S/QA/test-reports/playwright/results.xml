@@ -1,0 +1,369 @@
+<testsuites id="" name="" tests="19" failures="9" skipped="3" errors="0" time="161.64601">
+<testsuite name="api-integration.spec.js" timestamp="2026-04-11T10:57:17.186Z" hostname="chromium" tests="5" failures="0" skipped="0" time="0.455" errors="0">
+<testcase name="API Integration › TS-API-001 @smoke: health endpoint returns ok" classname="api-integration.spec.js" time="0.206">
+</testcase>
+<testcase name="API Integration › TS-API-002 @smoke: login succeeds with valid credentials" classname="api-integration.spec.js" time="0.045">
+</testcase>
+<testcase name="API Integration › TS-API-003: login fails with invalid credentials" classname="api-integration.spec.js" time="0.026">
+</testcase>
+<testcase name="API Integration › TS-API-004: wells endpoint returns seeded BSK wells" classname="api-integration.spec.js" time="0.039">
+</testcase>
+<testcase name="API Integration › TS-API-005: 2-hour current and archive endpoints return data" classname="api-integration.spec.js" time="0.139">
+</testcase>
+</testsuite>
+<testsuite name="auth.spec.js" timestamp="2026-04-11T10:57:17.186Z" hostname="chromium" tests="4" failures="3" skipped="0" time="29.279" errors="0">
+<testcase name="Authentication › TS-Auth-001 @smoke: login form is visible and usable" classname="auth.spec.js" time="8.338">
+<failure message="auth.spec.js:19:3 TS-Auth-001 @smoke: login form is visible and usable" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.js:19:3 › Authentication › TS-Auth-001 @smoke: login form is visible and usable 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Вход в систему')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Вход в систему')
+
+
+       at utils\test-helpers.js:121
+
+      119 | export async function gotoLogin(page) {
+      120 |   await page.goto('/');
+    > 121 |   await expect(page.getByText('Вход в систему')).toBeVisible();
+          |                                                  ^
+      122 | }
+      123 |
+      124 | export async function loginToApp(page, credentials = TEST_USERS.regular) {
+        at gotoLogin (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:121:50)
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\auth.spec.js:20:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\error-context.md
+]]>
+</failure>
+<system-err>
+<![CDATA[
+Warning: attachment ..\..\..\test-results\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\test-failed-1.png is missing
+Warning: attachment ..\..\..\test-results\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\video.webm is missing
+Warning: attachment ..\..\..\test-results\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\error-context.md is missing]]>
+</system-err>
+</testcase>
+<testcase name="Authentication › TS-Auth-002: invalid credentials are rejected" classname="auth.spec.js" time="6.401">
+<failure message="auth.spec.js:27:3 TS-Auth-002: invalid credentials are rejected" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.js:27:3 › Authentication › TS-Auth-002: invalid credentials are rejected ──
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Вход в систему')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Вход в систему')
+
+
+       at utils\test-helpers.js:121
+
+      119 | export async function gotoLogin(page) {
+      120 |   await page.goto('/');
+    > 121 |   await expect(page.getByText('Вход в систему')).toBeVisible();
+          |                                                  ^
+      122 | }
+      123 |
+      124 | export async function loginToApp(page, credentials = TEST_USERS.regular) {
+        at gotoLogin (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:121:50)
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\auth.spec.js:28:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\error-context.md
+]]>
+</failure>
+<system-err>
+<![CDATA[
+Warning: attachment ..\..\..\test-results\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\test-failed-1.png is missing
+Warning: attachment ..\..\..\test-results\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\video.webm is missing
+Warning: attachment ..\..\..\test-results\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\error-context.md is missing]]>
+</system-err>
+</testcase>
+<testcase name="Authentication › TS-Auth-003 @smoke: valid login persists user in localStorage" classname="auth.spec.js" time="7.683">
+<failure message="auth.spec.js:38:3 TS-Auth-003 @smoke: valid login persists user in localStorage" type="FAILURE">
+<![CDATA[  [chromium] › auth.spec.js:38:3 › Authentication › TS-Auth-003 @smoke: valid login persists user in localStorage 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Вход в систему')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Вход в систему')
+
+
+       at utils\test-helpers.js:121
+
+      119 | export async function gotoLogin(page) {
+      120 |   await page.goto('/');
+    > 121 |   await expect(page.getByText('Вход в систему')).toBeVisible();
+          |                                                  ^
+      122 | }
+      123 |
+      124 | export async function loginToApp(page, credentials = TEST_USERS.regular) {
+        at gotoLogin (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:121:50)
+        at loginToApp (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:126:3)
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\auth.spec.js:39:5
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-TS-Aut-a7688-rsists-user-in-localStorage-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\auth-Authentication-TS-Aut-a7688-rsists-user-in-localStorage-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-err>
+<![CDATA[
+Warning: attachment ..\..\..\test-results\auth-Authentication-TS-Aut-a7688-rsists-user-in-localStorage-chromium\test-failed-1.png is missing
+Warning: attachment ..\..\..\test-results\auth-Authentication-TS-Aut-a7688-rsists-user-in-localStorage-chromium\video.webm is missing]]>
+</system-err>
+</testcase>
+<testcase name="Authentication › TS-Auth-004: logout clears authenticated state" classname="auth.spec.js" time="6.857">
+</testcase>
+</testsuite>
+<testsuite name="charts.spec.js" timestamp="2026-04-11T10:57:17.186Z" hostname="chromium" tests="4" failures="3" skipped="0" time="31.148" errors="0">
+<testcase name="Chart And Visualization › TS-Chart-001 @smoke: chart renders and loads 2-hour data" classname="charts.spec.js" time="26.87">
+</testcase>
+<testcase name="Chart And Visualization › TS-Chart-002: switching liquid and oil modes updates control state" classname="charts.spec.js" time="1.53">
+<failure message="charts.spec.js:27:3 TS-Chart-002: switching liquid and oil modes updates control state" type="FAILURE">
+<![CDATA[  [chromium] › charts.spec.js:27:3 › Chart And Visualization › TS-Chart-002: switching liquid and oil modes updates control state 
+
+    Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000
+    Call log:
+      - → POST http://localhost:3000/api/auth/login
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+        - content-type: application/json
+        - content-length: 46
+
+
+       at utils\test-helpers.js:24
+
+      22 |
+      23 | export async function ensureUserCredentials(apiContext, credentials = TEST_USERS.regular) {
+    > 24 |   const loginResponse = await apiContext.post('/api/auth/login', {
+         |                                          ^
+      25 |     data: {
+      26 |       login: credentials.login,
+      27 |       password: credentials.password,
+        at ensureUserCredentials (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:24:42)
+        at loginToApp (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:125:9)
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\charts.spec.js:7:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\charts-Chart-And-Visualiza-e6ab7-modes-updates-control-state-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\charts-Chart-And-Visualiza-e6ab7-modes-updates-control-state-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-err>
+<![CDATA[
+Warning: attachment ..\..\..\test-results\charts-Chart-And-Visualiza-e6ab7-modes-updates-control-state-chromium\test-failed-1.png is missing
+Warning: attachment ..\..\..\test-results\charts-Chart-And-Visualiza-e6ab7-modes-updates-control-state-chromium\video.webm is missing]]>
+</system-err>
+</testcase>
+<testcase name="Chart And Visualization › TS-Chart-003: accumulation toggle is interactive and preserves chart visibility" classname="charts.spec.js" time="1.33">
+<failure message="charts.spec.js:45:3 TS-Chart-003: accumulation toggle is interactive and preserves chart visibility" type="FAILURE">
+<![CDATA[  [chromium] › charts.spec.js:45:3 › Chart And Visualization › TS-Chart-003: accumulation toggle is interactive and preserves chart visibility 
+
+    Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000
+    Call log:
+      - → POST http://localhost:3000/api/auth/login
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+        - content-type: application/json
+        - content-length: 46
+
+
+       at utils\test-helpers.js:24
+
+      22 |
+      23 | export async function ensureUserCredentials(apiContext, credentials = TEST_USERS.regular) {
+    > 24 |   const loginResponse = await apiContext.post('/api/auth/login', {
+         |                                          ^
+      25 |     data: {
+      26 |       login: credentials.login,
+      27 |       password: credentials.password,
+        at ensureUserCredentials (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:24:42)
+        at loginToApp (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:125:9)
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\charts.spec.js:7:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\charts-Chart-And-Visualiza-2bb50--preserves-chart-visibility-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\charts-Chart-And-Visualiza-2bb50--preserves-chart-visibility-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-err>
+<![CDATA[
+Warning: attachment ..\..\..\test-results\charts-Chart-And-Visualiza-2bb50--preserves-chart-visibility-chromium\test-failed-1.png is missing
+Warning: attachment ..\..\..\test-results\charts-Chart-And-Visualiza-2bb50--preserves-chart-visibility-chromium\video.webm is missing]]>
+</system-err>
+</testcase>
+<testcase name="Chart And Visualization › TS-Chart-004: archive dates endpoint is reachable from chart view" classname="charts.spec.js" time="1.418">
+<failure message="charts.spec.js:59:3 TS-Chart-004: archive dates endpoint is reachable from chart view" type="FAILURE">
+<![CDATA[  [chromium] › charts.spec.js:59:3 › Chart And Visualization › TS-Chart-004: archive dates endpoint is reachable from chart view 
+
+    Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000
+    Call log:
+      - → POST http://localhost:3000/api/auth/login
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+        - content-type: application/json
+        - content-length: 46
+
+
+       at utils\test-helpers.js:24
+
+      22 |
+      23 | export async function ensureUserCredentials(apiContext, credentials = TEST_USERS.regular) {
+    > 24 |   const loginResponse = await apiContext.post('/api/auth/login', {
+         |                                          ^
+      25 |     data: {
+      26 |       login: credentials.login,
+      27 |       password: credentials.password,
+        at ensureUserCredentials (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:24:42)
+        at loginToApp (C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\utils\test-helpers.js:125:9)
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\charts.spec.js:7:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\charts-Chart-And-Visualiza-b0bb0-s-reachable-from-chart-view-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\charts-Chart-And-Visualiza-b0bb0-s-reachable-from-chart-view-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-err>
+<![CDATA[
+Warning: attachment ..\..\..\test-results\charts-Chart-And-Visualiza-b0bb0-s-reachable-from-chart-view-chromium\test-failed-1.png is missing
+Warning: attachment ..\..\..\test-results\charts-Chart-And-Visualiza-b0bb0-s-reachable-from-chart-view-chromium\video.webm is missing]]>
+</system-err>
+</testcase>
+</testsuite>
+<testsuite name="high-risk.spec.js" timestamp="2026-04-11T10:57:17.186Z" hostname="chromium" tests="6" failures="3" skipped="3" time="1.412" errors="0">
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-001: oil-loss wells endpoint returns well list" classname="high-risk.spec.js" time="0.397">
+<failure message="high-risk.spec.js:8:3 TS-Oil-001: oil-loss wells endpoint returns well list" type="FAILURE">
+<![CDATA[  [chromium] › high-risk.spec.js:8:3 › High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-001: oil-loss wells endpoint returns well list 
+
+    Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000
+    Call log:
+      - → GET http://localhost:3000/api/oil-loss/wells
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+
+
+       7 | test.describe('High-Risk Coverage: Oil Loss and Excel Export', () => {
+       8 |   test('TS-Oil-001: oil-loss wells endpoint returns well list', async ({ request }) => {
+    >  9 |     const response = await request.get(`${API}/oil-loss/wells`);
+         |                                    ^
+      10 |     expect(response.ok()).toBeTruthy();
+      11 |
+      12 |     const body = await response.json();
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\high-risk.spec.js:9:36
+]]>
+</failure>
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-002: oil-loss endpoint returns dataset with required fields" classname="high-risk.spec.js" time="0.378">
+<failure message="high-risk.spec.js:27:3 TS-Oil-002: oil-loss endpoint returns dataset with required fields" type="FAILURE">
+<![CDATA[  [chromium] › high-risk.spec.js:27:3 › High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-002: oil-loss endpoint returns dataset with required fields 
+
+    Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000
+    Call log:
+      - → GET http://localhost:3000/api/oil-loss/wells
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+
+
+      26 |
+      27 |   test('TS-Oil-002: oil-loss endpoint returns dataset with required fields', async ({ request }) => {
+    > 28 |     const wellsResponse = await request.get(`${API}/oil-loss/wells`);
+         |                                         ^
+      29 |     expect(wellsResponse.ok()).toBeTruthy();
+      30 |     const wellsBody = await wellsResponse.json();
+      31 |
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\high-risk.spec.js:28:41
+]]>
+</failure>
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-003: oil-loss analysis validates payload and rejects empty input" classname="high-risk.spec.js" time="0.377">
+<failure message="high-risk.spec.js:63:3 TS-Oil-003: oil-loss analysis validates payload and rejects empty input" type="FAILURE">
+<![CDATA[  [chromium] › high-risk.spec.js:63:3 › High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-003: oil-loss analysis validates payload and rejects empty input 
+
+    Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000
+    Call log:
+      - → POST http://localhost:3000/api/oil-loss/analysis
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+        - content-type: application/json
+        - content-length: 2
+
+
+      62 |
+      63 |   test('TS-Oil-003: oil-loss analysis validates payload and rejects empty input', async ({ request }) => {
+    > 64 |     const response = await request.post(`${API}/oil-loss/analysis`, {
+         |                                    ^
+      65 |       data: {},
+      66 |     });
+      67 |
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\.stryker-tmp\sandbox-rvKT0S\QA\test-scripts\e2e\high-risk.spec.js:64:36
+]]>
+</failure>
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-004: oil-loss endpoint supports date-range filtering contract" classname="high-risk.spec.js" time="0.26">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Export-001: CHRP archive report endpoint returns export-ready rows" classname="high-risk.spec.js" time="0">
+<skipped>
+</skipped>
+</testcase>
+<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Export-002: AGZU archive report endpoint returns export-ready rows" classname="high-risk.spec.js" time="0">
+<skipped>
+</skipped>
+</testcase>
+</testsuite>
+</testsuites>

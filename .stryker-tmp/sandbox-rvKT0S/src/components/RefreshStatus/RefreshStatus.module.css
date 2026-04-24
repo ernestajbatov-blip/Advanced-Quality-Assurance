@@ -1,0 +1,12 @@
+.status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    font-size: 0.9rem;
+    color: #ffffff;
+}
+
+.refreshing {
+    color: #4CAF50;
+}

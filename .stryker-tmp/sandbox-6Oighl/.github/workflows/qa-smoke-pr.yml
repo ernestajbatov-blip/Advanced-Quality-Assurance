@@ -1,0 +1,99 @@
+name: QA Smoke PR
+
+on:
+  push:
+    branches:
+      - main
+      - qa/assignment-1-testing
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: ada_oil_test
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Install backend dependencies
+        run: npm --prefix src/backend ci
+
+      - name: Install Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Wait for MySQL and seed database
+        run: |
+          for i in {1..30}; do
+            mysqladmin ping -h127.0.0.1 -uroot -proot --silent && break
+            sleep 2
+          done
+          mysql -h127.0.0.1 -uroot -proot ada_oil_test < QA/ci/schema.sql
+          mysql -h127.0.0.1 -uroot -proot ada_oil_test < QA/ci/seed.sql
+
+      - name: Build frontend assets
+        run: npm run build
+
+      - name: Start backend server
+        env:
+          PORT: 3000
+          DB_HOST: 127.0.0.1
+          DB_PORT: 3306
+          DB_USER: root
+          DB_PASSWORD: root
+          DB_NAME: ada_oil_test
+          DISABLE_WELLSTOP_SCHEDULER: 1
+        run: |
+          mkdir -p QA/test-reports
+          nohup npm run backend:start > QA/test-reports/backend.log 2>&1 &
+
+      - name: Wait for backend readiness
+        run: |
+          for i in {1..60}; do
+            curl -sf http://localhost:3000/api/health && break
+            sleep 2
+          done
+          curl -sf http://localhost:3000/api/health
+          curl -sf http://localhost:3000 > /dev/null
+
+      - name: Run smoke E2E tests
+        env:
+          CI: true
+          PW_NO_WEBSERVER: 1
+        run: npm run test:e2e:smoke
+
+      - name: Upload smoke artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-playwright-report
+          path: |
+            QA/test-reports
+            playwright-report
+          if-no-files-found: warn

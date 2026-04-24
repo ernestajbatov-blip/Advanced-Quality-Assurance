@@ -126,92 +126,768 @@
   },
   "suites": [
     {
-      "title": "api-integration.spec.js",
-      "file": "api-integration.spec.js",
+      "title": "expanded-tests.spec.js",
+      "file": "expanded-tests.spec.js",
       "column": 0,
       "line": 0,
-      "specs": [],
+      "specs": [
+        {
+          "title": "TC-AUTH-FAILURE-01: Verify system rejects expired JWT tokens with 401",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-AUTH-FAILURE-01"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 415,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m401\u001b[39m\nReceived: \u001b[31m200\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m401\u001b[39m\nReceived: \u001b[31m200\u001b[39m\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:55:29",
+                    "location": {
+                      "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                      "column": 29,
+                      "line": 55
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 53 |\u001b[39m\n \u001b[90m 54 |\u001b[39m   \u001b[90m// Assertions\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m   expect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m401\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m   expect(body\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoContain(\u001b[32m'Token expired'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 58 |\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 29,
+                        "line": 55
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m401\u001b[39m\nReceived: \u001b[31m200\u001b[39m\n\n\u001b[0m \u001b[90m 53 |\u001b[39m\n \u001b[90m 54 |\u001b[39m   \u001b[90m// Assertions\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 55 |\u001b[39m   expect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m401\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 56 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 57 |\u001b[39m   expect(body\u001b[33m.\u001b[39mmessage)\u001b[33m.\u001b[39mtoContain(\u001b[32m'Token expired'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 58 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:55:29\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:36:52.799Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-AUTH-FAILURE-01"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-AUTH-FAI-13870-expired-JWT-tokens-with-401-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-AUTH-FAI-13870-expired-JWT-tokens-with-401-chromium\\video.webm"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                    "column": 29,
+                    "line": 55
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-4f74d217fab7b4d424d3",
+          "file": "expanded-tests.spec.js",
+          "line": 37,
+          "column": 1
+        },
+        {
+          "title": "TC-API-FAILURE-01: Verify system handles API 500 errors gracefully",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-API-FAILURE-01"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 12053,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Unable to load well data')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Unable to load well data')\u001b[22m\n",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Unable to load well data')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Unable to load well data')\u001b[22m\n\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:85:30",
+                    "location": {
+                      "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                      "column": 30,
+                      "line": 85
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 83 |\u001b[39m   \u001b[90m// Wait for error notification\u001b[39m\n \u001b[90m 84 |\u001b[39m   \u001b[36mconst\u001b[39m errorMessage \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'text=Unable to load well data'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 85 |\u001b[39m   \u001b[36mawait\u001b[39m expect(errorMessage)\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[33mTIMEOUT\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m   \u001b[90m// Verify retry logic is triggered\u001b[39m\n \u001b[90m 88 |\u001b[39m   \u001b[36mconst\u001b[39m retryButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"Retry\")'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 30,
+                        "line": 85
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('text=Unable to load well data')\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('text=Unable to load well data')\u001b[22m\n\n\n\u001b[0m \u001b[90m 83 |\u001b[39m   \u001b[90m// Wait for error notification\u001b[39m\n \u001b[90m 84 |\u001b[39m   \u001b[36mconst\u001b[39m errorMessage \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'text=Unable to load well data'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 85 |\u001b[39m   \u001b[36mawait\u001b[39m expect(errorMessage)\u001b[33m.\u001b[39mtoBeVisible({ timeout\u001b[33m:\u001b[39m \u001b[33mTIMEOUT\u001b[39m })\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 86 |\u001b[39m\n \u001b[90m 87 |\u001b[39m   \u001b[90m// Verify retry logic is triggered\u001b[39m\n \u001b[90m 88 |\u001b[39m   \u001b[36mconst\u001b[39m retryButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"Retry\")'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:85:30\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:36:55.872Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-API-FAILURE-01"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\\video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\\error-context.md"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                    "column": 30,
+                    "line": 85
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-1d61620b7fb08dd4099a",
+          "file": "expanded-tests.spec.js",
+          "line": 68,
+          "column": 1
+        },
+        {
+          "title": "TC-API-FAILURE-02: Verify system rejects invalid date range (end before start)",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-API-FAILURE-02"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 2,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 184,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m400\u001b[39m\nReceived: \u001b[31m200\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m400\u001b[39m\nReceived: \u001b[31m200\u001b[39m\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:114:29",
+                    "location": {
+                      "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                      "column": 29,
+                      "line": 114
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 112 |\u001b[39m\n \u001b[90m 113 |\u001b[39m   \u001b[90m// Assert 400 Bad Request\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 114 |\u001b[39m   expect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m400\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 115 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 116 |\u001b[39m   expect(body\u001b[33m.\u001b[39merror)\u001b[33m.\u001b[39mtoContain(\u001b[32m'End date must be after start date'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 117 |\u001b[39m   expect(body\u001b[33m.\u001b[39merror)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoContain(\u001b[32m'undefined'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 29,
+                        "line": 114
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m400\u001b[39m\nReceived: \u001b[31m200\u001b[39m\n\n\u001b[0m \u001b[90m 112 |\u001b[39m\n \u001b[90m 113 |\u001b[39m   \u001b[90m// Assert 400 Bad Request\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 114 |\u001b[39m   expect(response\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m400\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                             \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 115 |\u001b[39m   \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 116 |\u001b[39m   expect(body\u001b[33m.\u001b[39merror)\u001b[33m.\u001b[39mtoContain(\u001b[32m'End date must be after start date'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 117 |\u001b[39m   expect(body\u001b[33m.\u001b[39merror)\u001b[33m.\u001b[39mnot\u001b[33m.\u001b[39mtoContain(\u001b[32m'undefined'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:114:29\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:37:10.680Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-API-FAILURE-02"
+                    }
+                  ],
+                  "attachments": [],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                    "column": 29,
+                    "line": 114
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-b870baa29ffd3f45716a",
+          "file": "expanded-tests.spec.js",
+          "line": 99,
+          "column": 1
+        },
+        {
+          "title": "TC-CHART-EDGE-01: Verify chart renders with empty dataset",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-CHART-EDGE-01"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 3,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 56453,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 24,
+                        "line": 141
+                      },
+                      "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[placeholder=\"Start Date\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 139 |\u001b[39m   \u001b[36mconst\u001b[39m endDateInput \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'input[placeholder=\"End Date\"]'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 140 |\u001b[39m   \n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 141 |\u001b[39m   \u001b[36mawait\u001b[39m startDateInput\u001b[33m.\u001b[39mfill(\u001b[32m'2025-01-01'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                        \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 142 |\u001b[39m   \u001b[36mawait\u001b[39m endDateInput\u001b[33m.\u001b[39mfill(\u001b[32m'2025-01-02'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 143 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"Apply Filter\")'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 144 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:141:24\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:37:14.402Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-CHART-EDGE-01"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\\video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\\error-context.md"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-42f1d4131aef96448272",
+          "file": "expanded-tests.spec.js",
+          "line": 123,
+          "column": 1
+        },
+        {
+          "title": "TC-CHART-EDGE-02: Verify chart handles 10k+ data points without crashing",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-CHART-EDGE-02"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 4,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 42741,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 54,
+                        "line": 194
+                      },
+                      "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('button:has-text(\"Load Data\")')\u001b[22m\n\n\n\u001b[0m \u001b[90m 192 |\u001b[39m   \u001b[90m// Trigger chart load\u001b[39m\n \u001b[90m 193 |\u001b[39m   \u001b[36mconst\u001b[39m startTime \u001b[33m=\u001b[39m performance\u001b[33m.\u001b[39mnow()\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 194 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"Load Data\")'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                      \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 195 |\u001b[39m   \n \u001b[90m 196 |\u001b[39m   \u001b[90m// Wait for chart to render\u001b[39m\n \u001b[90m 197 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'[class*=\"chart-canvas\"]'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m5000\u001b[39m })\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:194:54\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:38:42.385Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-CHART-EDGE-02"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\\video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\\error-context.md"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-89030e7560d4828e68a1",
+          "file": "expanded-tests.spec.js",
+          "line": 168,
+          "column": 1
+        },
+        {
+          "title": "TC-OILLOSS-CONCURRENT-01: Verify system handles concurrent filter changes without data corruption",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-OILLOSS-CONCURRENT-01"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 5,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 38726,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 23,
+                        "line": 257
+                      },
+                      "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[name=\"dateFrom\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 255 |\u001b[39m   \u001b[36mconst\u001b[39m wellSelect \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'select[name=\"wellId\"]'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 256 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 257 |\u001b[39m   \u001b[36mawait\u001b[39m dateFromInput\u001b[33m.\u001b[39mfill(\u001b[32m'2026-01-01'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                       \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 258 |\u001b[39m   \u001b[36mawait\u001b[39m dateToInput\u001b[33m.\u001b[39mfill(\u001b[32m'2026-01-31'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 259 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"Filter\")'\u001b[39m)\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 260 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:257:23\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:39:55.311Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-OILLOSS-CONCURRENT-01"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\\video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\\error-context.md"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-341229495fdddba7df85",
+          "file": "expanded-tests.spec.js",
+          "line": 230,
+          "column": 1
+        },
+        {
+          "title": "TC-AUTH-INVALID-BEHAVIOR-01: Verify system handles rapid logout→login without race condition",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-AUTH-INVALID-BEHAVIOR-01"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 6,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 37079,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 20,
+                        "line": 300
+                      },
+                      "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('input[type=\"email\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 298 |\u001b[39m   \u001b[36mconst\u001b[39m loginButton \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'button:has-text(\"Login\")'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 299 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 300 |\u001b[39m   \u001b[36mawait\u001b[39m emailInput\u001b[33m.\u001b[39mfill(\u001b[32m'test@example.com'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 301 |\u001b[39m   \u001b[36mawait\u001b[39m passwordInput\u001b[33m.\u001b[39mfill(\u001b[32m'password123'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m 302 |\u001b[39m   \u001b[36mawait\u001b[39m loginButton\u001b[33m.\u001b[39mclick()\u001b[33m;\u001b[39m\n \u001b[90m 303 |\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:300:20\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:40:48.024Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-AUTH-INVALID-BEHAVIOR-01"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\\video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\\error-context.md"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-862408d7e6c0d3840875",
+          "file": "expanded-tests.spec.js",
+          "line": 288,
+          "column": 1
+        },
+        {
+          "title": "TC-EXPORT-EDGE-01: Verify export handles well names with special characters",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-EXPORT-EDGE-01"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 7,
+                  "parallelIndex": 0,
+                  "status": "timedOut",
+                  "duration": 35976,
+                  "error": {
+                    "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                    "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                  },
+                  "errors": [
+                    {
+                      "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                    },
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 51,
+                        "line": 364
+                      },
+                      "message": "Error: locator.selectOption: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('select[name=\"feedFormat\"]')\u001b[22m\n\n\n\u001b[0m \u001b[90m 362 |\u001b[39m\n \u001b[90m 363 |\u001b[39m   \u001b[90m// Select CHRP feed format\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 364 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'select[name=\"feedFormat\"]'\u001b[39m)\u001b[33m.\u001b[39mselectOption(\u001b[32m'CHRP'\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                   \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 365 |\u001b[39m\n \u001b[90m 366 |\u001b[39m   \u001b[90m// Intercept download\u001b[39m\n \u001b[90m 367 |\u001b[39m   \u001b[36mconst\u001b[39m downloadPromise \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mwaitForEvent(\u001b[32m'download'\u001b[39m)\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:364:51\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:41:38.068Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-EXPORT-EDGE-01"
+                    }
+                  ],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\\test-failed-1.png"
+                    },
+                    {
+                      "name": "video",
+                      "contentType": "video/webm",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\\video.webm"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\test-results\\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\\error-context.md"
+                    }
+                  ]
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-3d906787a32c553e45ee",
+          "file": "expanded-tests.spec.js",
+          "line": 341,
+          "column": 1
+        },
+        {
+          "title": "TC-OIL-EDGE-01: Verify oil loss calculations handle boundary values (0 and max)",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [
+                {
+                  "type": "test-id",
+                  "description": "TC-OIL-EDGE-01"
+                }
+              ],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 8,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 240,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m404\u001b[39m",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m404\u001b[39m\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:412:30",
+                    "location": {
+                      "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                      "column": 30,
+                      "line": 412
+                    },
+                    "snippet": "\u001b[0m \u001b[90m 410 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 411 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 412 |\u001b[39m   expect(response1\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 413 |\u001b[39m   \u001b[36mconst\u001b[39m result1 \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response1\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 414 |\u001b[39m   expect(result1\u001b[33m.\u001b[39mloss)\u001b[33m.\u001b[39mtoBe(\u001b[35m0\u001b[39m)\u001b[33m;\u001b[39m \u001b[90m// 0 * any rate = 0\u001b[39m\n \u001b[90m 415 |\u001b[39m   expect(\u001b[33mNumber\u001b[39m\u001b[33m.\u001b[39misFinite(result1\u001b[33m.\u001b[39mefficiency))\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\u001b[0m"
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                        "column": 30,
+                        "line": 412
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m404\u001b[39m\n\n\u001b[0m \u001b[90m 410 |\u001b[39m   })\u001b[33m;\u001b[39m\n \u001b[90m 411 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 412 |\u001b[39m   expect(response1\u001b[33m.\u001b[39mstatus())\u001b[33m.\u001b[39mtoBe(\u001b[35m200\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                              \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 413 |\u001b[39m   \u001b[36mconst\u001b[39m result1 \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response1\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 414 |\u001b[39m   expect(result1\u001b[33m.\u001b[39mloss)\u001b[33m.\u001b[39mtoBe(\u001b[35m0\u001b[39m)\u001b[33m;\u001b[39m \u001b[90m// 0 * any rate = 0\u001b[39m\n \u001b[90m 415 |\u001b[39m   expect(\u001b[33mNumber\u001b[39m\u001b[33m.\u001b[39misFinite(result1\u001b[33m.\u001b[39mefficiency))\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js:412:30\u001b[22m"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:42:36.477Z",
+                  "annotations": [
+                    {
+                      "type": "test-id",
+                      "description": "TC-OIL-EDGE-01"
+                    }
+                  ],
+                  "attachments": [],
+                  "errorLocation": {
+                    "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\QA\\test-scripts\\e2e\\expanded-tests.spec.js",
+                    "column": 30,
+                    "line": 412
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "c13b828786708c37a931-d04fe6a766959cacbdc7",
+          "file": "expanded-tests.spec.js",
+          "line": 396,
+          "column": 1
+        },
+        {
+          "title": "Baseline: Application starts without errors",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 2985,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:42:51.284Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c13b828786708c37a931-b43e277317b176cc9ae8",
+          "file": "expanded-tests.spec.js",
+          "line": 591,
+          "column": 1
+        },
+        {
+          "title": "Baseline: API connectivity verified",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 30000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 9,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 1395,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-04-11T11:42:55.514Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "c13b828786708c37a931-3b8e139451700318b91c",
+          "file": "expanded-tests.spec.js",
+          "line": 608,
+          "column": 1
+        }
+      ],
       "suites": [
         {
-          "title": "API Integration",
-          "file": "api-integration.spec.js",
-          "line": 7,
+          "title": "UNIT TESTS: Calculation Logic",
+          "file": "expanded-tests.spec.js",
+          "line": 497,
           "column": 6,
           "specs": [
             {
-              "title": "TS-API-001 @smoke: health endpoint returns ok",
-              "ok": true,
-              "tags": [
-                "smoke:"
-              ],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 57,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:00.174Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "026ec64a5ba4d795099b-6bece4c94341b0567057",
-              "file": "api-integration.spec.js",
-              "line": 8,
-              "column": 3
-            },
-            {
-              "title": "TS-API-002 @smoke: login succeeds with valid credentials",
-              "ok": true,
-              "tags": [
-                "smoke:"
-              ],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 35,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:00.268Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "026ec64a5ba4d795099b-aaad3f5ced20c42251b4",
-              "file": "api-integration.spec.js",
-              "line": 14,
-              "column": 3
-            },
-            {
-              "title": "TS-API-003: login fails with invalid credentials",
+              "title": "UNIT-1: Oil loss calculates correctly (normal case)",
               "ok": true,
               "tags": [],
               "tests": [
@@ -223,15 +899,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 9,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 22,
+                      "duration": 59,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-04T10:49:00.321Z",
+                      "startTime": "2026-04-11T11:42:49.417Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -239,13 +915,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "026ec64a5ba4d795099b-8a35518aa27e249c6217",
-              "file": "api-integration.spec.js",
-              "line": 43,
+              "id": "c13b828786708c37a931-823edf2d7da339a24762",
+              "file": "expanded-tests.spec.js",
+              "line": 499,
               "column": 3
             },
             {
-              "title": "TS-API-004: wells endpoint returns seeded BSK wells",
+              "title": "UNIT-2: Oil loss handles zero production",
               "ok": true,
               "tags": [],
               "tests": [
@@ -257,15 +933,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 9,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 23,
+                      "duration": 9,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-04T10:49:00.357Z",
+                      "startTime": "2026-04-11T11:42:49.637Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -273,13 +949,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "026ec64a5ba4d795099b-5be24d3dfc2b0699a54e",
-              "file": "api-integration.spec.js",
-              "line": 57,
+              "id": "c13b828786708c37a931-3d70d8460fbf45e499b9",
+              "file": "expanded-tests.spec.js",
+              "line": 504,
               "column": 3
             },
             {
-              "title": "TS-API-005: 2-hour current and archive endpoints return data",
+              "title": "UNIT-3: Oil loss caps at production value",
               "ok": true,
               "tags": [],
               "tests": [
@@ -291,15 +967,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 9,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 44,
+                      "duration": 14,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-04T10:49:00.398Z",
+                      "startTime": "2026-04-11T11:42:49.754Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -307,66 +983,157 @@
                   "status": "expected"
                 }
               ],
-              "id": "026ec64a5ba4d795099b-c728aa2f4277a252061b",
-              "file": "api-integration.spec.js",
-              "line": 72,
+              "id": "c13b828786708c37a931-b2fb1996a1305aee8a69",
+              "file": "expanded-tests.spec.js",
+              "line": 509,
+              "column": 3
+            },
+            {
+              "title": "UNIT-4: Oil loss handles null production",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 51,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T11:42:49.834Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13b828786708c37a931-8fe467063a4287101e73",
+              "file": "expanded-tests.spec.js",
+              "line": 514,
+              "column": 3
+            },
+            {
+              "title": "UNIT-5: Efficiency calculates correctly (normal case)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 20,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T11:42:49.977Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13b828786708c37a931-74b791f8c0461f19d471",
+              "file": "expanded-tests.spec.js",
+              "line": 519,
+              "column": 3
+            },
+            {
+              "title": "UNIT-6: Efficiency handles zero production (no NaN)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 53,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T11:42:50.109Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13b828786708c37a931-5f4d08fa7e71e34eb33f",
+              "file": "expanded-tests.spec.js",
+              "line": 524,
+              "column": 3
+            },
+            {
+              "title": "UNIT-7: Efficiency with 100% loss equals 0%",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 7,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T11:42:50.255Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13b828786708c37a931-abde8695b9c3864be6af",
+              "file": "expanded-tests.spec.js",
+              "line": 530,
               "column": 3
             }
           ]
-        }
-      ]
-    },
-    {
-      "title": "auth.spec.js",
-      "file": "auth.spec.js",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
+        },
         {
-          "title": "Authentication",
-          "file": "auth.spec.js",
-          "line": 11,
+          "title": "UNIT TESTS: Date Validation",
+          "file": "expanded-tests.spec.js",
+          "line": 537,
           "column": 6,
           "specs": [
             {
-              "title": "TS-Auth-001 @smoke: login form is visible and usable",
-              "ok": true,
-              "tags": [
-                "smoke:"
-              ],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 1723,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:00.505Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "d5ed79a6b333c2ba7209-7b0f247017f7a3fd1f1a",
-              "file": "auth.spec.js",
-              "line": 18,
-              "column": 3
-            },
-            {
-              "title": "TS-Auth-002: invalid credentials are rejected",
+              "title": "UNIT-8: Valid date range accepted",
               "ok": true,
               "tags": [],
               "tests": [
@@ -378,15 +1145,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 9,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1463,
+                      "duration": 9,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-04T10:49:03.423Z",
+                      "startTime": "2026-04-11T11:42:50.316Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -394,49 +1161,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "d5ed79a6b333c2ba7209-1e65504621e924a387f0",
-              "file": "auth.spec.js",
-              "line": 26,
+              "id": "c13b828786708c37a931-c2dbcd9f46cd4fd85d14",
+              "file": "expanded-tests.spec.js",
+              "line": 539,
               "column": 3
             },
             {
-              "title": "TS-Auth-003 @smoke: valid login persists user in localStorage",
-              "ok": true,
-              "tags": [
-                "smoke:"
-              ],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 1812,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:04.904Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "d5ed79a6b333c2ba7209-ecb25dece9b3c79a8ad2",
-              "file": "auth.spec.js",
-              "line": 37,
-              "column": 3
-            },
-            {
-              "title": "TS-Auth-004: logout clears authenticated state",
+              "title": "UNIT-9: End date before start date rejected",
               "ok": true,
               "tags": [],
               "tests": [
@@ -448,15 +1179,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 9,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1619,
+                      "duration": 21,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-04T10:49:06.734Z",
+                      "startTime": "2026-04-11T11:42:50.416Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -464,34 +1195,91 @@
                   "status": "expected"
                 }
               ],
-              "id": "d5ed79a6b333c2ba7209-e9b923dde39bad9a574b",
-              "file": "auth.spec.js",
-              "line": 47,
+              "id": "c13b828786708c37a931-75908c3768ba3710203d",
+              "file": "expanded-tests.spec.js",
+              "line": 544,
+              "column": 3
+            },
+            {
+              "title": "UNIT-10: Same start and end date rejected",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T11:42:50.541Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13b828786708c37a931-1b02dfd48745c7353fda",
+              "file": "expanded-tests.spec.js",
+              "line": 550,
+              "column": 3
+            },
+            {
+              "title": "UNIT-11: Invalid date format rejected",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 8,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T11:42:50.676Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "c13b828786708c37a931-949567425665d442ecdf",
+              "file": "expanded-tests.spec.js",
+              "line": 555,
               "column": 3
             }
           ]
-        }
-      ]
-    },
-    {
-      "title": "charts.spec.js",
-      "file": "charts.spec.js",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
+        },
         {
-          "title": "Chart And Visualization",
-          "file": "charts.spec.js",
-          "line": 4,
+          "title": "UNIT TESTS: JWT Token Parsing",
+          "file": "expanded-tests.spec.js",
+          "line": 563,
           "column": 6,
           "specs": [
             {
-              "title": "TS-Chart-001 @smoke: chart renders and loads 2-hour data",
+              "title": "UNIT-12: Valid JWT token parsed correctly",
               "ok": true,
-              "tags": [
-                "smoke:"
-              ],
+              "tags": [],
               "tests": [
                 {
                   "timeout": 30000,
@@ -501,15 +1289,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 9,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1519,
+                      "duration": 20,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-04T10:49:08.395Z",
+                      "startTime": "2026-04-11T11:42:50.790Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -517,13 +1305,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "ef69006b3cdff26510af-22b7c68c83aa14d0f3df",
-              "file": "charts.spec.js",
-              "line": 9,
+              "id": "c13b828786708c37a931-78fcad01e5161d206d5d",
+              "file": "expanded-tests.spec.js",
+              "line": 565,
               "column": 3
             },
             {
-              "title": "TS-Chart-002: switching liquid and oil modes updates control state",
+              "title": "UNIT-13: Malformed JWT token returns null",
               "ok": true,
               "tags": [],
               "tests": [
@@ -535,15 +1323,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 9,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1653,
+                      "duration": 5,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-04T10:49:09.930Z",
+                      "startTime": "2026-04-11T11:42:50.877Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -551,13 +1339,13 @@
                   "status": "expected"
                 }
               ],
-              "id": "ef69006b3cdff26510af-7eca6ddbb04f7d348ba9",
-              "file": "charts.spec.js",
-              "line": 26,
+              "id": "c13b828786708c37a931-9c68c0d8aa7ff8a6858f",
+              "file": "expanded-tests.spec.js",
+              "line": 573,
               "column": 3
             },
             {
-              "title": "TS-Chart-003: accumulation toggle is interactive and preserves chart visibility",
+              "title": "UNIT-14: JWT with invalid base64 returns null",
               "ok": true,
               "tags": [],
               "tests": [
@@ -569,15 +1357,15 @@
                   "projectName": "chromium",
                   "results": [
                     {
-                      "workerIndex": 0,
+                      "workerIndex": 9,
                       "parallelIndex": 0,
                       "status": "passed",
-                      "duration": 1491,
+                      "duration": 107,
                       "errors": [],
                       "stdout": [],
                       "stderr": [],
                       "retry": 0,
-                      "startTime": "2026-04-04T10:49:11.598Z",
+                      "startTime": "2026-04-11T11:42:50.909Z",
                       "annotations": [],
                       "attachments": []
                     }
@@ -585,264 +1373,9 @@
                   "status": "expected"
                 }
               ],
-              "id": "ef69006b3cdff26510af-73a043dd32436c30beda",
-              "file": "charts.spec.js",
-              "line": 44,
-              "column": 3
-            },
-            {
-              "title": "TS-Chart-004: archive dates endpoint is reachable from chart view",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 1461,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:13.105Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "ef69006b3cdff26510af-0603598e67c24b3bcfe7",
-              "file": "charts.spec.js",
-              "line": 58,
-              "column": 3
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "title": "high-risk.spec.js",
-      "file": "high-risk.spec.js",
-      "column": 0,
-      "line": 0,
-      "specs": [],
-      "suites": [
-        {
-          "title": "High-Risk Coverage: Oil Loss and Excel Export",
-          "file": "high-risk.spec.js",
-          "line": 6,
-          "column": 6,
-          "specs": [
-            {
-              "title": "TS-Oil-001: oil-loss wells endpoint returns well list",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 33,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:14.619Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "c562e32cb5d594c9d22d-13bdb5566d51ac681b35",
-              "file": "high-risk.spec.js",
-              "line": 7,
-              "column": 3
-            },
-            {
-              "title": "TS-Oil-002: oil-loss endpoint returns dataset with required fields",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 55,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:14.663Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "c562e32cb5d594c9d22d-657c70ffbc46f5cc972d",
-              "file": "high-risk.spec.js",
-              "line": 26,
-              "column": 3
-            },
-            {
-              "title": "TS-Oil-003: oil-loss analysis validates payload and rejects empty input",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 11,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:14.731Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "c562e32cb5d594c9d22d-4906ea7ca0456ae09f97",
-              "file": "high-risk.spec.js",
-              "line": 62,
-              "column": 3
-            },
-            {
-              "title": "TS-Oil-004: oil-loss endpoint supports date-range filtering contract",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 147,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:14.756Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "c562e32cb5d594c9d22d-335ad5a9bb7c539d82c0",
-              "file": "high-risk.spec.js",
-              "line": 76,
-              "column": 3
-            },
-            {
-              "title": "TS-Export-001: CHRP archive report endpoint returns export-ready rows",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 12,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:14.914Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "c562e32cb5d594c9d22d-008bfccbd256d65fba2b",
-              "file": "high-risk.spec.js",
-              "line": 108,
-              "column": 3
-            },
-            {
-              "title": "TS-Export-002: AGZU archive report endpoint returns export-ready rows",
-              "ok": true,
-              "tags": [],
-              "tests": [
-                {
-                  "timeout": 30000,
-                  "annotations": [],
-                  "expectedStatus": "passed",
-                  "projectId": "chromium",
-                  "projectName": "chromium",
-                  "results": [
-                    {
-                      "workerIndex": 0,
-                      "parallelIndex": 0,
-                      "status": "passed",
-                      "duration": 42,
-                      "errors": [],
-                      "stdout": [],
-                      "stderr": [],
-                      "retry": 0,
-                      "startTime": "2026-04-04T10:49:14.942Z",
-                      "annotations": [],
-                      "attachments": []
-                    }
-                  ],
-                  "status": "expected"
-                }
-              ],
-              "id": "c562e32cb5d594c9d22d-181aedd840c35c32682c",
-              "file": "high-risk.spec.js",
-              "line": 137,
+              "id": "c13b828786708c37a931-e8d98fe1f9f753f3ecc3",
+              "file": "expanded-tests.spec.js",
+              "line": 579,
               "column": 3
             }
           ]
@@ -852,11 +1385,11 @@
   ],
   "errors": [],
   "stats": {
-    "startTime": "2026-04-04T10:48:57.712Z",
-    "duration": 17559.337,
-    "expected": 19,
+    "startTime": "2026-04-11T11:36:23.436Z",
+    "duration": 409144.748,
+    "expected": 16,
     "skipped": 0,
-    "unexpected": 0,
+    "unexpected": 9,
     "flaky": 0
   }
 }

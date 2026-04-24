@@ -1,0 +1,20 @@
+.gridContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 0.8fr));
+    gap: 5px;
+    max-height: 0px;
+    margin-bottom: 20px; /* Adds 20px of space below the grid */
+  }
+
+
+.green {
+  background-color: #00ff00;
+}
+
+.yellow {
+  background-color: #ffff00;
+}
+
+.red {
+  background-color: #ff0000;
+}

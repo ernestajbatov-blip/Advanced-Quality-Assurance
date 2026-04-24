@@ -1,0 +1,5 @@
+scenario,concurrency,durationSec,totalRequests,throughputRps,errorRatePct,avgResponseMs,medianResponseMs,p95ResponseMs,p99ResponseMs
+normal_load,5,20,718,35.9,0,139.72,155.77,185.64,251.67
+peak_load,20,20,741,37.05,0,547.74,564.71,613.75,648.97
+spike_load,50,10,412,41.2,0,1293.72,1366.04,1477.98,1492.18
+endurance_test,10,45,1578,35.07,0,286.14,267.47,365.88,425.77

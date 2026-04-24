@@ -1,48 +1,398 @@
-<testsuites id="" name="" tests="19" failures="0" skipped="0" errors="0" time="17.559337">
-<testsuite name="api-integration.spec.js" timestamp="2026-04-04T10:48:57.900Z" hostname="chromium" tests="5" failures="0" skipped="0" time="0.181" errors="0">
-<testcase name="API Integration › TS-API-001 @smoke: health endpoint returns ok" classname="api-integration.spec.js" time="0.057">
+<testsuites id="" name="" tests="25" failures="9" skipped="0" errors="0" time="409.14474800000005">
+<testsuite name="expanded-tests.spec.js" timestamp="2026-04-11T11:36:48.264Z" hostname="chromium" tests="25" failures="9" skipped="0" time="228.634" errors="0">
+<testcase name="TC-AUTH-FAILURE-01: Verify system rejects expired JWT tokens with 401" classname="expanded-tests.spec.js" time="0.415">
+<properties>
+<property name="test-id" value="TC-AUTH-FAILURE-01">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:37:1 TC-AUTH-FAILURE-01: Verify system rejects expired JWT tokens with 401" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:37:1 › TC-AUTH-FAILURE-01: Verify system rejects expired JWT tokens with 401 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 401
+    Received: 200
+
+      53 |
+      54 |   // Assertions
+    > 55 |   expect(response.status()).toBe(401);
+         |                             ^
+      56 |   const body = await response.json();
+      57 |   expect(body.message).toContain('Token expired');
+      58 |
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:55:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-AUTH-FAI-13870-expired-JWT-tokens-with-401-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-AUTH-FAI-13870-expired-JWT-tokens-with-401-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-AUTH-FAI-13870-expired-JWT-tokens-with-401-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-AUTH-FAI-13870-expired-JWT-tokens-with-401-chromium\video.webm]]
+]]>
+</system-out>
 </testcase>
-<testcase name="API Integration › TS-API-002 @smoke: login succeeds with valid credentials" classname="api-integration.spec.js" time="0.035">
+<testcase name="TC-API-FAILURE-01: Verify system handles API 500 errors gracefully" classname="expanded-tests.spec.js" time="12.053">
+<properties>
+<property name="test-id" value="TC-API-FAILURE-01">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:68:1 TC-API-FAILURE-01: Verify system handles API 500 errors gracefully" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:68:1 › TC-API-FAILURE-01: Verify system handles API 500 errors gracefully 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('text=Unable to load well data')
+    Expected: visible
+    Timeout: 10000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('text=Unable to load well data')
+
+
+      83 |   // Wait for error notification
+      84 |   const errorMessage = page.locator('text=Unable to load well data');
+    > 85 |   await expect(errorMessage).toBeVisible({ timeout: TIMEOUT });
+         |                              ^
+      86 |
+      87 |   // Verify retry logic is triggered
+      88 |   const retryButton = page.locator('button:has-text("Retry")');
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:85:30
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-API-FAIL-92776-s-API-500-errors-gracefully-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="API Integration › TS-API-003: login fails with invalid credentials" classname="api-integration.spec.js" time="0.022">
+<testcase name="TC-API-FAILURE-02: Verify system rejects invalid date range (end before start)" classname="expanded-tests.spec.js" time="0.184">
+<properties>
+<property name="test-id" value="TC-API-FAILURE-02">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:99:1 TC-API-FAILURE-02: Verify system rejects invalid date range (end before start)" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:99:1 › TC-API-FAILURE-02: Verify system rejects invalid date range (end before start) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 400
+    Received: 200
+
+      112 |
+      113 |   // Assert 400 Bad Request
+    > 114 |   expect(response.status()).toBe(400);
+          |                             ^
+      115 |   const body = await response.json();
+      116 |   expect(body.error).toContain('End date must be after start date');
+      117 |   expect(body.error).not.toContain('undefined');
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:114:29
+]]>
+</failure>
 </testcase>
-<testcase name="API Integration › TS-API-004: wells endpoint returns seeded BSK wells" classname="api-integration.spec.js" time="0.023">
+<testcase name="TC-CHART-EDGE-01: Verify chart renders with empty dataset" classname="expanded-tests.spec.js" time="56.453">
+<properties>
+<property name="test-id" value="TC-CHART-EDGE-01">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:123:1 TC-CHART-EDGE-01: Verify chart renders with empty dataset" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:123:1 › TC-CHART-EDGE-01: Verify chart renders with empty dataset 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[placeholder="Start Date"]')
+
+
+      139 |   const endDateInput = page.locator('input[placeholder="End Date"]');
+      140 |   
+    > 141 |   await startDateInput.fill('2025-01-01');
+          |                        ^
+      142 |   await endDateInput.fill('2025-01-02');
+      143 |   await page.locator('button:has-text("Apply Filter")').click();
+      144 |
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:141:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-CHART-ED-65620--renders-with-empty-dataset-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="API Integration › TS-API-005: 2-hour current and archive endpoints return data" classname="api-integration.spec.js" time="0.044">
+<testcase name="TC-CHART-EDGE-02: Verify chart handles 10k+ data points without crashing" classname="expanded-tests.spec.js" time="42.741">
+<properties>
+<property name="test-id" value="TC-CHART-EDGE-02">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:168:1 TC-CHART-EDGE-02: Verify chart handles 10k+ data points without crashing" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:168:1 › TC-CHART-EDGE-02: Verify chart handles 10k+ data points without crashing 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('button:has-text("Load Data")')
+
+
+      192 |   // Trigger chart load
+      193 |   const startTime = performance.now();
+    > 194 |   await page.locator('button:has-text("Load Data")').click();
+          |                                                      ^
+      195 |   
+      196 |   // Wait for chart to render
+      197 |   await page.waitForSelector('[class*="chart-canvas"]', { timeout: 5000 });
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:194:54
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-CHART-ED-070bc-ata-points-without-crashing-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-</testsuite>
-<testsuite name="auth.spec.js" timestamp="2026-04-04T10:48:57.900Z" hostname="chromium" tests="4" failures="0" skipped="0" time="6.617" errors="0">
-<testcase name="Authentication › TS-Auth-001 @smoke: login form is visible and usable" classname="auth.spec.js" time="1.723">
+<testcase name="TC-OILLOSS-CONCURRENT-01: Verify system handles concurrent filter changes without data corruption" classname="expanded-tests.spec.js" time="38.726">
+<properties>
+<property name="test-id" value="TC-OILLOSS-CONCURRENT-01">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:230:1 TC-OILLOSS-CONCURRENT-01: Verify system handles concurrent filter changes without data corruption" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:230:1 › TC-OILLOSS-CONCURRENT-01: Verify system handles concurrent filter changes without data corruption 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[name="dateFrom"]')
+
+
+      255 |   const wellSelect = page.locator('select[name="wellId"]');
+      256 |
+    > 257 |   await dateFromInput.fill('2026-01-01');
+          |                       ^
+      258 |   await dateToInput.fill('2026-01-31');
+      259 |   await page.locator('button:has-text("Filter")').click();
+      260 |
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:257:23
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-OILLOSS--5350a-ges-without-data-corruption-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication › TS-Auth-002: invalid credentials are rejected" classname="auth.spec.js" time="1.463">
+<testcase name="TC-AUTH-INVALID-BEHAVIOR-01: Verify system handles rapid logout→login without race condition" classname="expanded-tests.spec.js" time="37.079">
+<properties>
+<property name="test-id" value="TC-AUTH-INVALID-BEHAVIOR-01">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:288:1 TC-AUTH-INVALID-BEHAVIOR-01: Verify system handles rapid logout→login without race condition" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:288:1 › TC-AUTH-INVALID-BEHAVIOR-01: Verify system handles rapid logout→login without race condition 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('input[type="email"]')
+
+
+      298 |   const loginButton = page.locator('button:has-text("Login")');
+      299 |
+    > 300 |   await emailInput.fill('test@example.com');
+          |                    ^
+      301 |   await passwordInput.fill('password123');
+      302 |   await loginButton.click();
+      303 |
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:300:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-AUTH-INV-32b0f-ogin-without-race-condition-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication › TS-Auth-003 @smoke: valid login persists user in localStorage" classname="auth.spec.js" time="1.812">
+<testcase name="TC-EXPORT-EDGE-01: Verify export handles well names with special characters" classname="expanded-tests.spec.js" time="35.976">
+<properties>
+<property name="test-id" value="TC-EXPORT-EDGE-01">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:341:1 TC-EXPORT-EDGE-01: Verify export handles well names with special characters" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:341:1 › TC-EXPORT-EDGE-01: Verify export handles well names with special characters 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.selectOption: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('select[name="feedFormat"]')
+
+
+      362 |
+      363 |   // Select CHRP feed format
+    > 364 |   await page.locator('select[name="feedFormat"]').selectOption('CHRP');
+          |                                                   ^
+      365 |
+      366 |   // Intercept download
+      367 |   const downloadPromise = page.waitForEvent('download');
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:364:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    ..\..\..\test-results\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ..\..\..\test-results\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\test-failed-1.png]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\video.webm]]
+
+[[ATTACHMENT|..\..\..\test-results\expanded-tests-TC-EXPORT-E-bb6b6-mes-with-special-characters-chromium\error-context.md]]
+]]>
+</system-out>
 </testcase>
-<testcase name="Authentication › TS-Auth-004: logout clears authenticated state" classname="auth.spec.js" time="1.619">
+<testcase name="TC-OIL-EDGE-01: Verify oil loss calculations handle boundary values (0 and max)" classname="expanded-tests.spec.js" time="0.24">
+<properties>
+<property name="test-id" value="TC-OIL-EDGE-01">
+</property>
+</properties>
+<failure message="expanded-tests.spec.js:396:1 TC-OIL-EDGE-01: Verify oil loss calculations handle boundary values (0 and max)" type="FAILURE">
+<![CDATA[  [chromium] › expanded-tests.spec.js:396:1 › TC-OIL-EDGE-01: Verify oil loss calculations handle boundary values (0 and max) 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+      410 |   });
+      411 |
+    > 412 |   expect(response1.status()).toBe(200);
+          |                              ^
+      413 |   const result1 = await response1.json();
+      414 |   expect(result1.loss).toBe(0); // 0 * any rate = 0
+      415 |   expect(Number.isFinite(result1.efficiency)).toBeTruthy();
+        at C:\Users\Admin\Documents\uni\masters\third_trimester\advanced_qa\ada_oil_app-main\QA\test-scripts\e2e\expanded-tests.spec.js:412:30
+]]>
+</failure>
 </testcase>
-</testsuite>
-<testsuite name="charts.spec.js" timestamp="2026-04-04T10:48:57.900Z" hostname="chromium" tests="4" failures="0" skipped="0" time="6.124" errors="0">
-<testcase name="Chart And Visualization › TS-Chart-001 @smoke: chart renders and loads 2-hour data" classname="charts.spec.js" time="1.519">
+<testcase name="UNIT TESTS: Calculation Logic › UNIT-1: Oil loss calculates correctly (normal case)" classname="expanded-tests.spec.js" time="0.059">
 </testcase>
-<testcase name="Chart And Visualization › TS-Chart-002: switching liquid and oil modes updates control state" classname="charts.spec.js" time="1.653">
+<testcase name="UNIT TESTS: Calculation Logic › UNIT-2: Oil loss handles zero production" classname="expanded-tests.spec.js" time="0.009">
 </testcase>
-<testcase name="Chart And Visualization › TS-Chart-003: accumulation toggle is interactive and preserves chart visibility" classname="charts.spec.js" time="1.491">
+<testcase name="UNIT TESTS: Calculation Logic › UNIT-3: Oil loss caps at production value" classname="expanded-tests.spec.js" time="0.014">
 </testcase>
-<testcase name="Chart And Visualization › TS-Chart-004: archive dates endpoint is reachable from chart view" classname="charts.spec.js" time="1.461">
+<testcase name="UNIT TESTS: Calculation Logic › UNIT-4: Oil loss handles null production" classname="expanded-tests.spec.js" time="0.051">
 </testcase>
-</testsuite>
-<testsuite name="high-risk.spec.js" timestamp="2026-04-04T10:48:57.900Z" hostname="chromium" tests="6" failures="0" skipped="0" time="0.3" errors="0">
-<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-001: oil-loss wells endpoint returns well list" classname="high-risk.spec.js" time="0.033">
+<testcase name="UNIT TESTS: Calculation Logic › UNIT-5: Efficiency calculates correctly (normal case)" classname="expanded-tests.spec.js" time="0.02">
 </testcase>
-<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-002: oil-loss endpoint returns dataset with required fields" classname="high-risk.spec.js" time="0.055">
+<testcase name="UNIT TESTS: Calculation Logic › UNIT-6: Efficiency handles zero production (no NaN)" classname="expanded-tests.spec.js" time="0.053">
 </testcase>
-<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-003: oil-loss analysis validates payload and rejects empty input" classname="high-risk.spec.js" time="0.011">
+<testcase name="UNIT TESTS: Calculation Logic › UNIT-7: Efficiency with 100% loss equals 0%" classname="expanded-tests.spec.js" time="0.007">
 </testcase>
-<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Oil-004: oil-loss endpoint supports date-range filtering contract" classname="high-risk.spec.js" time="0.147">
+<testcase name="UNIT TESTS: Date Validation › UNIT-8: Valid date range accepted" classname="expanded-tests.spec.js" time="0.009">
 </testcase>
-<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Export-001: CHRP archive report endpoint returns export-ready rows" classname="high-risk.spec.js" time="0.012">
+<testcase name="UNIT TESTS: Date Validation › UNIT-9: End date before start date rejected" classname="expanded-tests.spec.js" time="0.021">
 </testcase>
-<testcase name="High-Risk Coverage: Oil Loss and Excel Export › TS-Export-002: AGZU archive report endpoint returns export-ready rows" classname="high-risk.spec.js" time="0.042">
+<testcase name="UNIT TESTS: Date Validation › UNIT-10: Same start and end date rejected" classname="expanded-tests.spec.js" time="0.004">
+</testcase>
+<testcase name="UNIT TESTS: Date Validation › UNIT-11: Invalid date format rejected" classname="expanded-tests.spec.js" time="0.008">
+</testcase>
+<testcase name="UNIT TESTS: JWT Token Parsing › UNIT-12: Valid JWT token parsed correctly" classname="expanded-tests.spec.js" time="0.02">
+</testcase>
+<testcase name="UNIT TESTS: JWT Token Parsing › UNIT-13: Malformed JWT token returns null" classname="expanded-tests.spec.js" time="0.005">
+</testcase>
+<testcase name="UNIT TESTS: JWT Token Parsing › UNIT-14: JWT with invalid base64 returns null" classname="expanded-tests.spec.js" time="0.107">
+</testcase>
+<testcase name="Baseline: Application starts without errors" classname="expanded-tests.spec.js" time="2.985">
+</testcase>
+<testcase name="Baseline: API connectivity verified" classname="expanded-tests.spec.js" time="1.395">
 </testcase>
 </testsuite>
 </testsuites>

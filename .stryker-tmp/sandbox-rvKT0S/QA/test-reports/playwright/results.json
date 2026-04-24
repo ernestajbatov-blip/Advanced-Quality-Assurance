@@ -1,0 +1,1126 @@
+{
+  "config": {
+    "configFile": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\playwright.config.js",
+    "rootDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/QA/test-scripts/e2e",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      },
+      {
+        "outputDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "Mobile Chrome",
+        "name": "Mobile Chrome",
+        "testDir": "C:/Users/Admin/Documents/uni/masters/third_trimester/advanced_qa/ada_oil_app-main/.stryker-tmp/sandbox-rvKT0S/QA/test-scripts/e2e",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "html",
+        {
+          "outputFolder": "QA/test-reports/playwright",
+          "open": "never"
+        }
+      ],
+      [
+        "json",
+        {
+          "outputFile": "QA/test-reports/playwright/results.json"
+        }
+      ],
+      [
+        "junit",
+        {
+          "outputFile": "QA/test-reports/playwright/results.xml"
+        }
+      ],
+      [
+        "list",
+        null
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "runAgents": "none",
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.58.2",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run build && npm run backend:start",
+      "url": "http://localhost:3000",
+      "reuseExistingServer": true,
+      "timeout": 180000
+    }
+  },
+  "suites": [
+    {
+      "title": "api-integration.spec.js",
+      "file": "api-integration.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "API Integration",
+          "file": "api-integration.spec.js",
+          "line": 8,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-API-001 @smoke: health endpoint returns ok",
+              "ok": true,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 206,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:57:24.628Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-6bece4c94341b0567057",
+              "file": "api-integration.spec.js",
+              "line": 9,
+              "column": 3
+            },
+            {
+              "title": "TS-API-002 @smoke: login succeeds with valid credentials",
+              "ok": true,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 45,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:57:25.074Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-aaad3f5ced20c42251b4",
+              "file": "api-integration.spec.js",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "TS-API-003: login fails with invalid credentials",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 26,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:57:25.196Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-8a35518aa27e249c6217",
+              "file": "api-integration.spec.js",
+              "line": 44,
+              "column": 3
+            },
+            {
+              "title": "TS-API-004: wells endpoint returns seeded BSK wells",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 39,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:57:25.297Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-5be24d3dfc2b0699a54e",
+              "file": "api-integration.spec.js",
+              "line": 58,
+              "column": 3
+            },
+            {
+              "title": "TS-API-005: 2-hour current and archive endpoints return data",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 139,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:57:25.363Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "026ec64a5ba4d795099b-c728aa2f4277a252061b",
+              "file": "api-integration.spec.js",
+              "line": 73,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "auth.spec.js",
+      "file": "auth.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Authentication",
+          "file": "auth.spec.js",
+          "line": 12,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-Auth-001 @smoke: login form is visible and usable",
+              "ok": false,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8338,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n\n    at gotoLogin (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:121:50)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\auth.spec.js:20:5",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                          "column": 50,
+                          "line": 121
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mutils\\test-helpers.js:121\n\n\u001b[0m \u001b[90m 119 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m gotoLogin(page) {\n \u001b[90m 120 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 121 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByText(\u001b[32m'Вход в систему'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                  \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 122 |\u001b[39m }\n \u001b[90m 123 |\u001b[39m\n \u001b[90m 124 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToApp(page\u001b[33m,\u001b[39m credentials \u001b[33m=\u001b[39m \u001b[33mTEST_USERS\u001b[39m\u001b[33m.\u001b[39mregular) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                            "column": 50,
+                            "line": 121
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n\n\n   at utils\\test-helpers.js:121\n\n  119 | export async function gotoLogin(page) {\n  120 |   await page.goto('/');\n> 121 |   await expect(page.getByText('Вход в систему')).toBeVisible();\n      |                                                  ^\n  122 | }\n  123 |\n  124 | export async function loginToApp(page, credentials = TEST_USERS.regular) {\n    at gotoLogin (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:121:50)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\auth.spec.js:20:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:57:26.164Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\auth-Authentication-TS-Aut-fbc2d--form-is-visible-and-usable-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                        "column": 50,
+                        "line": 121
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-7b0f247017f7a3fd1f1a",
+              "file": "auth.spec.js",
+              "line": 19,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-002: invalid credentials are rejected",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 6401,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n\n    at gotoLogin (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:121:50)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\auth.spec.js:28:5",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                          "column": 50,
+                          "line": 121
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mutils\\test-helpers.js:121\n\n\u001b[0m \u001b[90m 119 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m gotoLogin(page) {\n \u001b[90m 120 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 121 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByText(\u001b[32m'Вход в систему'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                  \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 122 |\u001b[39m }\n \u001b[90m 123 |\u001b[39m\n \u001b[90m 124 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToApp(page\u001b[33m,\u001b[39m credentials \u001b[33m=\u001b[39m \u001b[33mTEST_USERS\u001b[39m\u001b[33m.\u001b[39mregular) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                            "column": 50,
+                            "line": 121
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n\n\n   at utils\\test-helpers.js:121\n\n  119 | export async function gotoLogin(page) {\n  120 |   await page.goto('/');\n> 121 |   await expect(page.getByText('Вход в систему')).toBeVisible();\n      |                                                  ^\n  122 | }\n  123 |\n  124 | export async function loginToApp(page, credentials = TEST_USERS.regular) {\n    at gotoLogin (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:121:50)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\auth.spec.js:28:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:57:52.644Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\\video.webm"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\auth-Authentication-TS-Aut-7d567-id-credentials-are-rejected-chromium\\error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                        "column": 50,
+                        "line": 121
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-1e65504621e924a387f0",
+              "file": "auth.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-003 @smoke: valid login persists user in localStorage",
+              "ok": false,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 7683,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n\n    at gotoLogin (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:121:50)\n    at loginToApp (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:126:3)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\auth.spec.js:39:5",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                          "column": 50,
+                          "line": 121
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mutils\\test-helpers.js:121\n\n\u001b[0m \u001b[90m 119 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m gotoLogin(page) {\n \u001b[90m 120 |\u001b[39m   \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\u001b[33m;\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 121 |\u001b[39m   \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mgetByText(\u001b[32m'Вход в систему'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()\u001b[33m;\u001b[39m\n \u001b[90m     |\u001b[39m                                                  \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 122 |\u001b[39m }\n \u001b[90m 123 |\u001b[39m\n \u001b[90m 124 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m loginToApp(page\u001b[33m,\u001b[39m credentials \u001b[33m=\u001b[39m \u001b[33mTEST_USERS\u001b[39m\u001b[33m.\u001b[39mregular) {\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                            "column": 50,
+                            "line": 121
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: getByText('Вход в систему')\nExpected: visible\nTimeout: 5000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 5000ms\u001b[22m\n\u001b[2m  - waiting for getByText('Вход в систему')\u001b[22m\n\n\n   at utils\\test-helpers.js:121\n\n  119 | export async function gotoLogin(page) {\n  120 |   await page.goto('/');\n> 121 |   await expect(page.getByText('Вход в систему')).toBeVisible();\n      |                                                  ^\n  122 | }\n  123 |\n  124 | export async function loginToApp(page, credentials = TEST_USERS.regular) {\n    at gotoLogin (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:121:50)\n    at loginToApp (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:126:3)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\auth.spec.js:39:5"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:58:03.502Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\auth-Authentication-TS-Aut-a7688-rsists-user-in-localStorage-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\auth-Authentication-TS-Aut-a7688-rsists-user-in-localStorage-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                        "column": 50,
+                        "line": 121
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-ecb25dece9b3c79a8ad2",
+              "file": "auth.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "TS-Auth-004: logout clears authenticated state",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 6857,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:58:18.213Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "d5ed79a6b333c2ba7209-e9b923dde39bad9a574b",
+              "file": "auth.spec.js",
+              "line": 48,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "charts.spec.js",
+      "file": "charts.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Chart And Visualization",
+          "file": "charts.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-Chart-001 @smoke: chart renders and loads 2-hour data",
+              "ok": true,
+              "tags": [
+                "smoke:"
+              ],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 26870,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:58:25.918Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-22b7c68c83aa14d0f3df",
+              "file": "charts.spec.js",
+              "line": 10,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-002: switching liquid and oil modes updates control state",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1530,
+                      "error": {
+                        "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n\n    at ensureUserCredentials (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:24:42)\n    at loginToApp (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:125:9)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\charts.spec.js:7:11",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                          "column": 42,
+                          "line": 24
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mutils\\test-helpers.js:24\n\n\u001b[0m \u001b[90m 22 |\u001b[39m\n \u001b[90m 23 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m ensureUserCredentials(apiContext\u001b[33m,\u001b[39m credentials \u001b[33m=\u001b[39m \u001b[33mTEST_USERS\u001b[39m\u001b[33m.\u001b[39mregular) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 24 |\u001b[39m   \u001b[36mconst\u001b[39m loginResponse \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 25 |\u001b[39m     data\u001b[33m:\u001b[39m {\n \u001b[90m 26 |\u001b[39m       login\u001b[33m:\u001b[39m credentials\u001b[33m.\u001b[39mlogin\u001b[33m,\u001b[39m\n \u001b[90m 27 |\u001b[39m       password\u001b[33m:\u001b[39m credentials\u001b[33m.\u001b[39mpassword\u001b[33m,\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                            "column": 42,
+                            "line": 24
+                          },
+                          "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n\n\n   at utils\\test-helpers.js:24\n\n  22 |\n  23 | export async function ensureUserCredentials(apiContext, credentials = TEST_USERS.regular) {\n> 24 |   const loginResponse = await apiContext.post('/api/auth/login', {\n     |                                          ^\n  25 |     data: {\n  26 |       login: credentials.login,\n  27 |       password: credentials.password,\n    at ensureUserCredentials (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:24:42)\n    at loginToApp (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:125:9)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\charts.spec.js:7:11"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:58:52.823Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\charts-Chart-And-Visualiza-e6ab7-modes-updates-control-state-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\charts-Chart-And-Visualiza-e6ab7-modes-updates-control-state-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                        "column": 42,
+                        "line": 24
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-7eca6ddbb04f7d348ba9",
+              "file": "charts.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-003: accumulation toggle is interactive and preserves chart visibility",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1330,
+                      "error": {
+                        "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n\n    at ensureUserCredentials (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:24:42)\n    at loginToApp (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:125:9)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\charts.spec.js:7:11",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                          "column": 42,
+                          "line": 24
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mutils\\test-helpers.js:24\n\n\u001b[0m \u001b[90m 22 |\u001b[39m\n \u001b[90m 23 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m ensureUserCredentials(apiContext\u001b[33m,\u001b[39m credentials \u001b[33m=\u001b[39m \u001b[33mTEST_USERS\u001b[39m\u001b[33m.\u001b[39mregular) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 24 |\u001b[39m   \u001b[36mconst\u001b[39m loginResponse \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 25 |\u001b[39m     data\u001b[33m:\u001b[39m {\n \u001b[90m 26 |\u001b[39m       login\u001b[33m:\u001b[39m credentials\u001b[33m.\u001b[39mlogin\u001b[33m,\u001b[39m\n \u001b[90m 27 |\u001b[39m       password\u001b[33m:\u001b[39m credentials\u001b[33m.\u001b[39mpassword\u001b[33m,\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                            "column": 42,
+                            "line": 24
+                          },
+                          "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n\n\n   at utils\\test-helpers.js:24\n\n  22 |\n  23 | export async function ensureUserCredentials(apiContext, credentials = TEST_USERS.regular) {\n> 24 |   const loginResponse = await apiContext.post('/api/auth/login', {\n     |                                          ^\n  25 |     data: {\n  26 |       login: credentials.login,\n  27 |       password: credentials.password,\n    at ensureUserCredentials (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:24:42)\n    at loginToApp (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:125:9)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\charts.spec.js:7:11"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:58:59.170Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\charts-Chart-And-Visualiza-2bb50--preserves-chart-visibility-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\charts-Chart-And-Visualiza-2bb50--preserves-chart-visibility-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                        "column": 42,
+                        "line": 24
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-73a043dd32436c30beda",
+              "file": "charts.spec.js",
+              "line": 45,
+              "column": 3
+            },
+            {
+              "title": "TS-Chart-004: archive dates endpoint is reachable from chart view",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1418,
+                      "error": {
+                        "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n\n    at ensureUserCredentials (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:24:42)\n    at loginToApp (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:125:9)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\charts.spec.js:7:11",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                          "column": 42,
+                          "line": 24
+                        },
+                        "snippet": "\u001b[90m   at \u001b[39mutils\\test-helpers.js:24\n\n\u001b[0m \u001b[90m 22 |\u001b[39m\n \u001b[90m 23 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36masync\u001b[39m \u001b[36mfunction\u001b[39m ensureUserCredentials(apiContext\u001b[33m,\u001b[39m credentials \u001b[33m=\u001b[39m \u001b[33mTEST_USERS\u001b[39m\u001b[33m.\u001b[39mregular) {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 24 |\u001b[39m   \u001b[36mconst\u001b[39m loginResponse \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m apiContext\u001b[33m.\u001b[39mpost(\u001b[32m'/api/auth/login'\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 25 |\u001b[39m     data\u001b[33m:\u001b[39m {\n \u001b[90m 26 |\u001b[39m       login\u001b[33m:\u001b[39m credentials\u001b[33m.\u001b[39mlogin\u001b[33m,\u001b[39m\n \u001b[90m 27 |\u001b[39m       password\u001b[33m:\u001b[39m credentials\u001b[33m.\u001b[39mpassword\u001b[33m,\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                            "column": 42,
+                            "line": 24
+                          },
+                          "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/auth/login\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 46\u001b[22m\n\n\n   at utils\\test-helpers.js:24\n\n  22 |\n  23 | export async function ensureUserCredentials(apiContext, credentials = TEST_USERS.regular) {\n> 24 |   const loginResponse = await apiContext.post('/api/auth/login', {\n     |                                          ^\n  25 |     data: {\n  26 |       login: credentials.login,\n  27 |       password: credentials.password,\n    at ensureUserCredentials (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:24:42)\n    at loginToApp (C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js:125:9)\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\charts.spec.js:7:11"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:59:05.900Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\charts-Chart-And-Visualiza-b0bb0-s-reachable-from-chart-view-chromium\\test-failed-1.png"
+                        },
+                        {
+                          "name": "video",
+                          "contentType": "video/webm",
+                          "path": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\test-results\\charts-Chart-And-Visualiza-b0bb0-s-reachable-from-chart-view-chromium\\video.webm"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\utils\\test-helpers.js",
+                        "column": 42,
+                        "line": 24
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ef69006b3cdff26510af-0603598e67c24b3bcfe7",
+              "file": "charts.spec.js",
+              "line": 59,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "high-risk.spec.js",
+      "file": "high-risk.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "High-Risk Coverage: Oil Loss and Excel Export",
+          "file": "high-risk.spec.js",
+          "line": 7,
+          "column": 6,
+          "specs": [
+            {
+              "title": "TS-Oil-001: oil-loss wells endpoint returns well list",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 397,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://localhost:3000/api/oil-loss/wells\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://localhost:3000/api/oil-loss/wells\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js:9:36",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                          "column": 36,
+                          "line": 9
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  7 |\u001b[39m test\u001b[33m.\u001b[39mdescribe(\u001b[32m'High-Risk Coverage: Oil Loss and Excel Export'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m  8 |\u001b[39m   test(\u001b[32m'TS-Oil-001: oil-loss wells endpoint returns well list'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ request }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  9 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m`${API}/oil-loss/wells`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 10 |\u001b[39m     expect(response\u001b[33m.\u001b[39mok())\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m 11 |\u001b[39m\n \u001b[90m 12 |\u001b[39m     \u001b[36mconst\u001b[39m body \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m response\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                            "column": 36,
+                            "line": 9
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://localhost:3000/api/oil-loss/wells\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n   7 | test.describe('High-Risk Coverage: Oil Loss and Excel Export', () => {\n   8 |   test('TS-Oil-001: oil-loss wells endpoint returns well list', async ({ request }) => {\n>  9 |     const response = await request.get(`${API}/oil-loss/wells`);\n     |                                    ^\n  10 |     expect(response.ok()).toBeTruthy();\n  11 |\n  12 |     const body = await response.json();\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js:9:36"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:59:12.694Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                        "column": 36,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-13bdb5566d51ac681b35",
+              "file": "high-risk.spec.js",
+              "line": 8,
+              "column": 3
+            },
+            {
+              "title": "TS-Oil-002: oil-loss endpoint returns dataset with required fields",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 378,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://localhost:3000/api/oil-loss/wells\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://localhost:3000/api/oil-loss/wells\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js:28:41",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                          "column": 41,
+                          "line": 28
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 26 |\u001b[39m\n \u001b[90m 27 |\u001b[39m   test(\u001b[32m'TS-Oil-002: oil-loss endpoint returns dataset with required fields'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ request }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 28 |\u001b[39m     \u001b[36mconst\u001b[39m wellsResponse \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39m\u001b[36mget\u001b[39m(\u001b[32m`${API}/oil-loss/wells`\u001b[39m)\u001b[33m;\u001b[39m\n \u001b[90m    |\u001b[39m                                         \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 29 |\u001b[39m     expect(wellsResponse\u001b[33m.\u001b[39mok())\u001b[33m.\u001b[39mtoBeTruthy()\u001b[33m;\u001b[39m\n \u001b[90m 30 |\u001b[39m     \u001b[36mconst\u001b[39m wellsBody \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m wellsResponse\u001b[33m.\u001b[39mjson()\u001b[33m;\u001b[39m\n \u001b[90m 31 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                            "column": 41,
+                            "line": 28
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → GET http://localhost:3000/api/oil-loss/wells\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n  26 |\n  27 |   test('TS-Oil-002: oil-loss endpoint returns dataset with required fields', async ({ request }) => {\n> 28 |     const wellsResponse = await request.get(`${API}/oil-loss/wells`);\n     |                                         ^\n  29 |     expect(wellsResponse.ok()).toBeTruthy();\n  30 |     const wellsBody = await wellsResponse.json();\n  31 |\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js:28:41"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:59:17.458Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                        "column": 41,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-657c70ffbc46f5cc972d",
+              "file": "high-risk.spec.js",
+              "line": 27,
+              "column": 3
+            },
+            {
+              "title": "TS-Oil-003: oil-loss analysis validates payload and rejects empty input",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 377,
+                      "error": {
+                        "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/oil-loss/analysis\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 2\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/oil-loss/analysis\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 2\u001b[22m\n\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js:64:36",
+                        "location": {
+                          "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                          "column": 36,
+                          "line": 64
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 62 |\u001b[39m\n \u001b[90m 63 |\u001b[39m   test(\u001b[32m'TS-Oil-003: oil-loss analysis validates payload and rejects empty input'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ request }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 64 |\u001b[39m     \u001b[36mconst\u001b[39m response \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m request\u001b[33m.\u001b[39mpost(\u001b[32m`${API}/oil-loss/analysis`\u001b[39m\u001b[33m,\u001b[39m {\n \u001b[90m    |\u001b[39m                                    \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 65 |\u001b[39m       data\u001b[33m:\u001b[39m {}\u001b[33m,\u001b[39m\n \u001b[90m 66 |\u001b[39m     })\u001b[33m;\u001b[39m\n \u001b[90m 67 |\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                            "column": 36,
+                            "line": 64
+                          },
+                          "message": "Error: apiRequestContext.post: connect ECONNREFUSED 127.0.0.1:3000\nCall log:\n\u001b[2m  - → POST http://localhost:3000/api/oil-loss/analysis\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.7632.6 Safari/537.36\u001b[22m\n\u001b[2m    - accept: */*\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\u001b[2m    - content-type: application/json\u001b[22m\n\u001b[2m    - content-length: 2\u001b[22m\n\n\n  62 |\n  63 |   test('TS-Oil-003: oil-loss analysis validates payload and rejects empty input', async ({ request }) => {\n> 64 |     const response = await request.post(`${API}/oil-loss/analysis`, {\n     |                                    ^\n  65 |       data: {},\n  66 |     });\n  67 |\n    at C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js:64:36"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:59:21.859Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Users\\Admin\\Documents\\uni\\masters\\third_trimester\\advanced_qa\\ada_oil_app-main\\.stryker-tmp\\sandbox-rvKT0S\\QA\\test-scripts\\e2e\\high-risk.spec.js",
+                        "column": 36,
+                        "line": 64
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-4906ea7ca0456ae09f97",
+              "file": "high-risk.spec.js",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "TS-Oil-004: oil-loss endpoint supports date-range filtering contract",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "interrupted",
+                      "duration": 260,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-04-11T10:59:26.446Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-335ad5a9bb7c539d82c0",
+              "file": "high-risk.spec.js",
+              "line": 77,
+              "column": 3
+            },
+            {
+              "title": "TS-Export-001: CHRP archive report endpoint returns export-ready rows",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-008bfccbd256d65fba2b",
+              "file": "high-risk.spec.js",
+              "line": 109,
+              "column": 3
+            },
+            {
+              "title": "TS-Export-002: AGZU archive report endpoint returns export-ready rows",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [],
+                  "status": "skipped"
+                }
+              ],
+              "id": "c562e32cb5d594c9d22d-181aedd840c35c32682c",
+              "file": "high-risk.spec.js",
+              "line": 138,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-04-11T10:56:45.401Z",
+    "duration": 161646.00999999998,
+    "expected": 7,
+    "skipped": 3,
+    "unexpected": 9,
+    "flaky": 0
+  }
+}

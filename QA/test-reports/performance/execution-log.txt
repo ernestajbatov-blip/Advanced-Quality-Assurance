@@ -1,0 +1,8 @@
+[2026-04-24T16:49:38.001Z] Scenario 'normal_load' started (concurrency=5, duration=20s)
+[2026-04-24T16:49:58.153Z] Scenario 'normal_load' finished requests=718, errors=0, p95=185.64ms
+[2026-04-24T16:50:00.157Z] Scenario 'peak_load' started (concurrency=20, duration=20s)
+[2026-04-24T16:50:20.743Z] Scenario 'peak_load' finished requests=741, errors=0, p95=613.75ms
+[2026-04-24T16:50:22.747Z] Scenario 'spike_load' started (concurrency=50, duration=10s)
+[2026-04-24T16:50:34.077Z] Scenario 'spike_load' finished requests=412, errors=0, p95=1477.98ms
+[2026-04-24T16:50:36.077Z] Scenario 'endurance_test' started (concurrency=10, duration=45s)
+[2026-04-24T16:51:21.377Z] Scenario 'endurance_test' finished requests=1578, errors=0, p95=365.88ms

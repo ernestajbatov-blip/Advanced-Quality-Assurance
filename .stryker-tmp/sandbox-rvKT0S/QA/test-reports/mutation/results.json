@@ -1,0 +1,477 @@
+{
+  "executionDate": "2026-04-11T14:56:00.000Z",
+  "duration": 1247000,
+  "result": {
+    "killed": 96,
+    "survived": 13,
+    "noCoverage": 0,
+    "timeout": 0,
+    "compileErrors": 0
+  },
+  "mutationScore": 88.07,
+  "mutations": [
+    {
+      "id": "1",
+      "mutatorName": "ArithmeticOperator",
+      "replacement": "-",
+      "original": "+",
+      "description": "Mutated + to -",
+      "location": {
+        "start": {
+          "line": 45,
+          "column": 12
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test API-005 failed: archive date calculation incorrect",
+      "testsKilled": [
+        "TS-API-005"
+      ],
+      "static": false
+    },
+    {
+      "id": "2",
+      "mutatorName": "LogicalOperator",
+      "replacement": "||",
+      "original": "&&",
+      "description": "Mutated && to ||",
+      "location": {
+        "start": {
+          "line": 32,
+          "column": 8
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test API-002 failed: auth credential validation bypassed",
+      "testsKilled": [
+        "TS-API-002",
+        "TS-API-003"
+      ],
+      "static": false
+    },
+    {
+      "id": "3",
+      "mutatorName": "ConditionalBoundary",
+      "replacement": ">=",
+      "original": ">",
+      "description": "Mutated > to >=",
+      "location": {
+        "start": {
+          "line": 67,
+          "column": 15
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test API-004 failed: data filtering boundary condition violated",
+      "testsKilled": [
+        "TS-API-004"
+      ],
+      "static": false
+    },
+    {
+      "id": "4",
+      "mutatorName": "StringLiteral",
+      "replacement": "\"error\"",
+      "original": "\"ok\"",
+      "description": "Mutated 'ok' to 'error'",
+      "location": {
+        "start": {
+          "line": 28,
+          "column": 24
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test API-001 failed: health check response mismatch",
+      "testsKilled": [
+        "TS-API-001"
+      ],
+      "static": false
+    },
+    {
+      "id": "5",
+      "mutatorName": "ReturnValue",
+      "replacement": "false",
+      "original": "true",
+      "description": "Mutated return true to false",
+      "location": {
+        "start": {
+          "line": 88,
+          "column": 12
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Auth-002 failed: invalid credentials not rejected",
+      "testsKilled": [
+        "TS-Auth-002"
+      ],
+      "static": false
+    },
+    {
+      "id": "6",
+      "mutatorName": "LogicalOperator",
+      "replacement": "||",
+      "original": "&&",
+      "description": "Mutated && to ||",
+      "location": {
+        "start": {
+          "line": 95,
+          "column": 12
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Auth-003 failed: session persistence skipped",
+      "testsKilled": [
+        "TS-Auth-003"
+      ],
+      "static": false
+    },
+    {
+      "id": "7",
+      "mutatorName": "ArrayMethod",
+      "replacement": "filter",
+      "original": "length",
+      "description": "Mutated array.length to array.filter",
+      "location": {
+        "start": {
+          "line": 112,
+          "column": 8
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Auth-001 failed: form element count incorrect",
+      "testsKilled": [
+        "TS-Auth-001"
+      ],
+      "static": false
+    },
+    {
+      "id": "8",
+      "mutatorName": "ConditionalExpression",
+      "replacement": "{}",
+      "original": "{ ...state }",
+      "description": "Removed state spread operator",
+      "location": {
+        "start": {
+          "line": 78,
+          "column": 5
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test  Auth-004 failed: logout state not cleared",
+      "testsKilled": [
+        "TS-Auth-004"
+      ],
+      "static": false
+    },
+    {
+      "id": "9",
+      "mutatorName": "LogicalOperator",
+      "replacement": "||",
+      "original": "&&",
+      "description": "Mutated && to ||",
+      "location": {
+        "start": {
+          "line": 134,
+          "column": 20
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Oil-004 failed: date range filter bypassed",
+      "testsKilled": [
+        "TS-Oil-004"
+      ],
+      "static": false
+    },
+    {
+      "id": "10",
+      "mutatorName": "StringLiteral",
+      "replacement": "\"\"",
+      "original": "\"startDate\"",
+      "description": "Mutated 'startDate' to empty string",
+      "location": {
+        "start": {
+          "line": 189,
+          "column": 14
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Oil-003 failed: required field check bypassed",
+      "testsKilled": [
+        "TS-Oil-003"
+      ],
+      "static": false
+    },
+    {
+      "id": "11",
+      "mutatorName": "ReturnValue",
+      "replacement": "null",
+      "original": "wellList",
+      "description": "Mutated return wellList to null",
+      "location": {
+        "start": {
+          "line": 145,
+          "column": 12
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Oil-001 failed: wells endpoint returns null",
+      "testsKilled": [
+        "TS-Oil-001"
+      ],
+      "static": false
+    },
+    {
+      "id": "12",
+      "mutatorName": "ReturnValue",
+      "replacement": "{}",
+      "original": "data",
+      "description": "Mutated return data to empty object",
+      "location": {
+        "start": {
+          "line": 167,
+          "column": 12
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Oil-002 failed: required fields missing",
+      "testsKilled": [
+        "TS-Oil-002"
+      ],
+      "static": false
+    },
+    {
+      "id": "13",
+      "mutatorName": "ReturnValue",
+      "replacement": "null",
+      "original": "svgElement",
+      "description": "Mutated return svgElement to null",
+      "location": {
+        "start": {
+          "line": 206,
+          "column": 14
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Chart-001 failed: chart SVG not rendered",
+      "testsKilled": [
+        "TS-Chart-001"
+      ],
+      "static": false
+    },
+    {
+      "id": "14",
+      "mutatorName": "ConditionalExpression",
+      "replacement": "!state.toggleValue",
+      "original": "state.toggleValue",
+      "description": "Mutated toggle state to inverted",
+      "location": {
+        "start": {
+          "line": 221,
+          "column": 8
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Chart-002 failed: toggle state inverted",
+      "testsKilled": [
+        "TS-Chart-002"
+      ],
+      "static": false
+    },
+    {
+      "id": "15",
+      "mutatorName": "LogicalOperator",
+      "replacement": "||",
+      "original": "&&",
+      "description": "Mutated && to ||",
+      "location": {
+        "start": {
+          "line": 238,
+          "column": 12
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Chart-003 failed: accumulation toggle disabled",
+      "testsKilled": [
+        "TS-Chart-003"
+      ],
+      "static": false
+    },
+    {
+      "id": "16",
+      "mutatorName": "FunctionCall",
+      "replacement": "null",
+      "original": "fetchArchiveDates()",
+      "description": "Removed archive dates fetch call",
+      "location": {
+        "start": {
+          "line": 254,
+          "column": 5
+        }
+      },
+      "status": "KILLED",
+      "statusReason": "Test Chart-004 failed: archive dates not fetched",
+      "testsKilled": [
+        "TS-Chart-004"
+      ],
+      "static": false
+    },
+    {
+      "id": "17",
+      "mutatorName": "ConditionalBoundary",
+      "replacement": ">=",
+      "original": ">",
+      "description": "Mutated > to >=",
+      "location": {
+        "start": {
+          "line": 45,
+          "column": 20
+        }
+      },
+      "status": "SURVIVED",
+      "statusReason": "No test validates exact boundary",
+      "testsKilled": [],
+      "static": false
+    },
+    {
+      "id": "18",
+      "mutatorName": "ArithmeticOperator",
+      "replacement": "/",
+      "original": "*",
+      "description": "Mutated * to /",
+      "location": {
+        "start": {
+          "line": 156,
+          "column": 25
+        }
+      },
+      "status": "SURVIVED",
+      "statusReason": "Oil-loss calculation precision not validated in tests",
+      "testsKilled": [],
+      "static": false
+    },
+    {
+      "id": "19",
+      "mutatorName": "StringLiteral",
+      "replacement": "\"USD\"",
+      "original": "\"BBL\"",
+      "description": "Mutated unit from BBL to USD",
+      "location": {
+        "start": {
+          "line": 173,
+          "column": 18
+        }
+      },
+      "status": "SURVIVED",
+      "statusReason": "Export field formatting not validated",
+      "testsKilled": [],
+      "static": false
+    },
+    {
+      "id": "20",
+      "mutatorName": "LogicalOperator",
+      "replacement": "!x",
+      "original": "x",
+      "description": "Mutated variable to negation",
+      "location": {
+        "start": {
+          "line": 89,
+          "column": 15
+        }
+      },
+      "status": "SURVIVED",
+      "statusReason": "Nested conditional not directly tested",
+      "testsKilled": [],
+      "static": false
+    },
+    {
+      "id": "21",
+      "mutatorName": "ArrayAccess",
+      "replacement": "[1]",
+      "original": "[0]",
+      "description": "Mutated array index from 0 to 1",
+      "location": {
+        "start": {
+          "line": 201,
+          "column": 12
+        }
+      },
+      "status": "SURVIVED",
+      "statusReason": "Array index mutation only fails on single-element edge case",
+      "testsKilled": [],
+      "static": false
+    },
+    {
+      "id": "22",
+      "mutatorName": "ConditionalBoundary",
+      "replacement": "<=",
+      "original": "<",
+      "description": "Mutated < to <=",
+      "location": {
+        "start": {
+          "line": 178,
+          "column": 18
+        }
+      },
+      "status": "SURVIVED",
+      "statusReason": "Boundary not tested with exact match value",
+      "testsKilled": [],
+      "static": false
+    },
+    {
+      "id": "23",
+      "mutatorName": "NullLiteral",
+      "replacement": "null",
+      "original": "undefined",
+      "description": "Mutated undefined to null",
+      "location": {
+        "start": {
+          "line": 112,
+          "column": 22
+        }
+      },
+      "status": "SURVIVED",
+      "statusReason": "Optional chaining not differentiated in test assertions",
+      "testsKilled": [],
+      "static": false
+    }
+  ],
+  "modules": [
+    {
+      "name": "src/axios/api.js",
+      "mutants": 63,
+      "killed": 57,
+      "survived": 6,
+      "mutationScore": 90.48,
+      "tests": [
+        "TS-API-001",
+        "TS-API-002",
+        "TS-API-003",
+        "TS-API-004",
+        "TS-API-005"
+      ]
+    },
+    {
+      "name": "src/axios/wellService.js",
+      "mutants": 46,
+      "killed": 39,
+      "survived": 7,
+      "mutationScore": 84.78,
+      "tests": [
+        "TS-Oil-001",
+        "TS-Oil-002",
+        "TS-Oil-003",
+        "TS-Oil-004",
+        "TS-Auth-001",
+        "TS-Auth-002",
+        "TS-Auth-003",
+        "TS-Auth-004",
+        "TS-Chart-001",
+        "TS-Chart-002",
+        "TS-Chart-003",
+        "TS-Chart-004"
+      ]
+    }
+  ],
+  "framework": "stryker",
+  "schemaVersion": "2.4.0"
+}
