@@ -416,23 +416,34 @@ export default function AppLayout() {
         return;
       }
 
-      const headers = [
-        "Скважина",
-        "Дата опроса",
-        "Напряжение",
-        "Мощность",
-        "Частота",
-        "Ток",
-        "Обороты ротора",
-        "Температура устья"
-      ];
+      // Log to see what fields are actually in the response
+      console.log("CHRP Response first row keys:", Object.keys(rows[0]));
+      console.log("CHRP Response first row:", rows[0]);
 
-      const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+      // Map rows to only include the columns we need and DELETE unwanted columns
+      const columnMapping = [
+        'Скважина',
+        'Дата опроса',
+        'Частота',
+        'Ток',
+        'Обороты ротора',
+        'Температура устья'
+      ];
+      const cleanedRows = rows.map(row => {
+        const cleanedRow = {};
+        columnMapping.forEach(key => {
+          cleanedRow[key] = row[key];
+        });
+        // Explicitly delete unwanted columns if they exist
+        delete cleanedRow['Напряжение'];
+        delete cleanedRow['Мощность'];
+        return cleanedRow;
+      });
+
+      const worksheet = XLSX.utils.json_to_sheet(cleanedRows);
       worksheet["!cols"] = [
         { wch: 12 },
         { wch: 12 },
-        { wch: 14 },
-        { wch: 14 },
         { wch: 12 },
         { wch: 10 },
         { wch: 18 },
@@ -480,15 +491,26 @@ export default function AppLayout() {
         return;
       }
 
-      const headers = [
-        "Скважина",
-        "Дата",
-        "Жидкость",
-        "Нефть",
-        "Обводненность"
+      // Map rows to only include the columns we need and DELETE unwanted columns
+      const columnMapping = [
+        'Скважина',
+        'Дата',
+        'Жидкость',
+        'Нефть',
+        'Обводненность'
       ];
+      const cleanedRows = rows.map(row => {
+        const cleanedRow = {};
+        columnMapping.forEach(key => {
+          cleanedRow[key] = row[key];
+        });
+        // Explicitly delete any unwanted columns if they exist
+        delete cleanedRow['Напряжение'];
+        delete cleanedRow['Мощность'];
+        return cleanedRow;
+      });
 
-      const worksheet = XLSX.utils.json_to_sheet(rows, { header: headers });
+      const worksheet = XLSX.utils.json_to_sheet(cleanedRows);
       worksheet["!cols"] = [
         { wch: 12 },
         { wch: 12 },

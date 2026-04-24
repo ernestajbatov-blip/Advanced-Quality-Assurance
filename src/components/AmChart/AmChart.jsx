@@ -556,6 +556,30 @@ const AmChart = ({ wellData, onReset }) => {
     return dateStr;
   };
 
+  const handleReset = () => {
+    // Reset the time point to the latest
+    if (timePoints.length > 0) {
+      const latestTimePoint = timePoints[timePoints.length - 1];
+      setCurrentTimePoint(latestTimePoint);
+      setSelectedDate(parseISO(latestTimePoint));
+    }
+    // Reset axes to default range
+    if (chartRef.current) {
+      const xAxis = chartRef.current.xAxes.getIndex(0);
+      const yAxis = chartRef.current.yAxes.getIndex(0);
+      if (xAxis && yAxis) {
+        xAxis.set("min", -15);
+        xAxis.set("max", 15);
+        yAxis.set("min", -15);
+        yAxis.set("max", 15);
+      }
+    }
+    // Call the parent onReset if provided
+    if (onReset) {
+      onReset();
+    }
+  };
+
   return (
     <div className={styles.chartWrapper}>
       <div className={styles.chartHeader}>
@@ -589,7 +613,7 @@ const AmChart = ({ wellData, onReset }) => {
           />
           
           {onReset && (
-            <button onClick={onReset} className={styles.resetButton}>
+            <button onClick={handleReset} className={styles.resetButton}>
               ↻
             </button>
           )}
