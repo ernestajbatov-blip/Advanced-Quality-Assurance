@@ -8,6 +8,7 @@
     "!src/states/UniversalActivityTracker.jsx",
     "!src/**/__tests__/**"
   ],
+  "plugins": ["@stryker-mutator/vitest-runner"],
   "testRunner": "vitest",
   "vitest": {
     "configFile": "vitest.stryker.config.js"
