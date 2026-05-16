@@ -8,14 +8,11 @@
     "!src/states/UniversalActivityTracker.jsx",
     "!src/**/__tests__/**"
   ],
-  "plugins": ["@stryker-mutator/vitest-runner"],
-  "testRunner": "vitest",
-  "vitest": {
-    "configFile": "vitest.stryker.config.js",
-    "related": false
+
+  "testRunner": "command",
+  "commandRunner": {
+    "command": "npm run test:unit"
   },
-  "reporters": [
-    "html",
     "json",
     "clear-text",
     "progress"
