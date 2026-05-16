@@ -1,4 +1,4 @@
-# ADA Oil App — QA Project
+# Intellectual Oil Field App — QA Project
 
 > A comprehensive Quality Assurance suite for an oil-field production monitoring web application. The project covers the full QA spectrum: unit testing, end-to-end (E2E) testing, mutation testing, performance testing, chaos engineering, and test case prioritization (APFD).
 
