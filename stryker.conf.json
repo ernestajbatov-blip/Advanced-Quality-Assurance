@@ -29,5 +29,6 @@
   "timeoutMS": 30000,
   "timeoutFactor": 1.5,
   "concurrency": 2,
-  "disableTypeChecks": true
+  "disableTypeChecks": true,
+  "inPlace": true
 }
