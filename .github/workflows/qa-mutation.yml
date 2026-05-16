@@ -30,6 +30,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Force install test dependencies
+        # The project's package-lock.json is incomplete from a yarn migration.
+        # Force install vitest and jsdom to prevent npx from downloading an isolated
+        # cache version that fails to resolve local modules during forks worker spawn.
+        run: npm install --no-save vitest@4.1.6 jsdom
+
 
 
       - name: Run mutation tests (Stryker)
