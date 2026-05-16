@@ -40,7 +40,8 @@ jobs:
         # Stryker's vitest-runner hardcodes `pool: 'threads'` in its source. 
         # Node's worker threads + dynamic ESM injection is notoriously unstable in 
         # Linux CI environments. We patch the source code directly to use 'forks'.
-        run: sed -i "s/pool: 'threads'/pool: 'forks'/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+        run: |
+          sed -i "s/pool: 'threads'/pool: 'forks'/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
 
       - name: Run mutation tests (Stryker)
         env:
