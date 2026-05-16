@@ -1,5 +1,5 @@
 scenario,affectedModule,faultType,durationSec,totalChecks,failures,availabilityPct,avgLatencyMs,p95LatencyMs,mttrSec,propagatedErrors
-api_downtime_simulation,API Integration,API downtime,20,20,20,0,0,0,2.11,{"InjectedDowntime":20}
-database_failure_simulation,Oil Loss Analysis,Database slow/unavailable simulation (aggressive timeout),20,36,36,0,47.5,49.13,2.24,{"AbortError":36}
-network_latency_packet_loss,Charts / API Integration,Network latency + packet loss,25,24,8,66.67,224.79,896,2.02,{"InjectedPacketLoss":8}
-resource_exhaustion_spike,API Integration,Resource exhaustion via high concurrency,20,7750,106,98.63,182.55,536.38,2.58,{"TypeError":106}
+api_downtime_simulation,API Integration,API downtime,20,20,20,0,0,0,2.1,{"InjectedDowntime":20}
+database_failure_simulation,Oil Loss Analysis,Database slow/unavailable simulation (aggressive timeout),20,36,36,0,48.05,51.7,2.28,{"AbortError":36}
+network_latency_packet_loss,Charts / API Integration,Network latency + packet loss,25,24,3,87.5,106.67,889,2.02,{"InjectedPacketLoss":3}
+resource_exhaustion_spike,API Integration,Resource exhaustion via high concurrency,20,6717,88,98.69,214.89,621.68,2.34,{"TypeError":88}

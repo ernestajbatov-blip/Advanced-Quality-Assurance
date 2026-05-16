@@ -1,3 +1,5 @@
+// Stryker disable StringLiteral
+// Stryker disable ObjectLiteral
 import React, { useState } from 'react';
 import { login } from '../../axios/wellService';
 

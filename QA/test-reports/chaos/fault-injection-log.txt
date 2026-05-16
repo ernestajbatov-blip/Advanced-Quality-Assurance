@@ -1,10 +1,10 @@
-[2026-04-24T17:09:05.122Z] Chaos testing run started
-[2026-04-24T17:09:05.123Z] Starting api_downtime_simulation for 20s
-[2026-04-24T17:09:27.443Z] Finished api_downtime_simulation: availability=0%, mttr=2.11s
-[2026-04-24T17:09:29.449Z] Starting database_failure_simulation for 20s
-[2026-04-24T17:09:51.795Z] Finished database_failure_simulation: availability=0%, mttr=2.24s
-[2026-04-24T17:09:53.798Z] Starting network_latency_packet_loss for 25s
-[2026-04-24T17:10:21.028Z] Finished network_latency_packet_loss: availability=66.67%, mttr=2.02s
-[2026-04-24T17:10:23.038Z] Starting resource_exhaustion_spike for 20s with 70 concurrent workers
-[2026-04-24T17:10:46.179Z] Finished resource_exhaustion_spike: availability=98.63%, mttr=2.58s
-[2026-04-24T17:10:46.179Z] Chaos testing run finished
+[2026-05-07T14:54:04.740Z] Chaos testing run started
+[2026-05-07T14:54:04.740Z] Starting api_downtime_simulation for 20s
+[2026-05-07T14:54:27.033Z] Finished api_downtime_simulation: availability=0%, mttr=2.1s
+[2026-05-07T14:54:29.048Z] Starting database_failure_simulation for 20s
+[2026-05-07T14:54:51.459Z] Finished database_failure_simulation: availability=0%, mttr=2.28s
+[2026-05-07T14:54:53.462Z] Starting network_latency_packet_loss for 25s
+[2026-05-07T14:55:20.864Z] Finished network_latency_packet_loss: availability=87.5%, mttr=2.02s
+[2026-05-07T14:55:22.866Z] Starting resource_exhaustion_spike for 20s with 70 concurrent workers
+[2026-05-07T14:55:47.044Z] Finished resource_exhaustion_spike: availability=98.69%, mttr=2.34s
+[2026-05-07T14:55:47.044Z] Chaos testing run finished

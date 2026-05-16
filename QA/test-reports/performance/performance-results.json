@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-24T16:51:23.379Z",
+  "generatedAt": "2026-05-07T14:53:53.155Z",
   "tool": "Custom Node.js Load Runner",
   "baseUrl": "http://localhost:3000",
   "highRiskModules": [
@@ -7,1648 +7,1663 @@
     "API Integration",
     "Oil Loss Analysis"
   ],
-  "overallStartedAt": "2026-04-24T16:49:38.000Z",
-  "overallEndedAt": "2026-04-24T16:51:23.378Z",
+  "overallStartedAt": "2026-05-07T14:52:06.979Z",
+  "overallEndedAt": "2026-05-07T14:53:53.154Z",
   "scenarios": [
     {
       "scenario": "normal_load",
-      "startedAt": "2026-04-24T16:49:38.001Z",
-      "endedAt": "2026-04-24T16:49:58.153Z",
+      "startedAt": "2026-05-07T14:52:06.979Z",
+      "endedAt": "2026-05-07T14:52:27.076Z",
       "concurrency": 5,
       "durationSec": 20,
-      "totalRequests": 718,
-      "successfulRequests": 718,
+      "totalRequests": 676,
+      "successfulRequests": 676,
       "failedRequests": 0,
       "errorRatePct": 0,
-      "throughputRps": 35.9,
+      "throughputRps": 33.8,
       "responseTimeMs": {
-        "average": 139.72,
-        "median": 155.77,
-        "p95": 185.64,
-        "p99": 251.67,
-        "min": 43.89,
-        "max": 278.58
+        "average": 147.87,
+        "median": 167.38,
+        "p95": 190.54,
+        "p99": 200.79,
+        "min": 80.1,
+        "max": 264.19
       },
       "moduleBreakdown": [
         {
           "module": "Authentication",
           "endpoint": "/api/auth/login",
-          "requests": 240,
+          "requests": 226,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 162.78
+          "avgLatencyMs": 169.47
         },
         {
           "module": "API Integration",
           "endpoint": "/api/wells",
-          "requests": 239,
+          "requests": 225,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 89.32
+          "avgLatencyMs": 98.26
         },
         {
           "module": "Oil Loss Analysis",
           "endpoint": "/api/oil-loss",
-          "requests": 239,
+          "requests": 225,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 166.95
+          "avgLatencyMs": 175.78
         }
       ],
       "throughputSamples": [
         {
           "scenario": "normal_load",
           "second": 1,
-          "requestsPerSec": 36,
+          "requestsPerSec": 26,
           "errorsPerSec": 0,
-          "avgLatencyMs": 122.88
+          "avgLatencyMs": 167.06
         },
         {
           "scenario": "normal_load",
           "second": 2,
-          "requestsPerSec": 35,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 139.55
+          "avgLatencyMs": 157.81
         },
         {
           "scenario": "normal_load",
           "second": 3,
-          "requestsPerSec": 39,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 133.42
+          "avgLatencyMs": 153.45
         },
         {
           "scenario": "normal_load",
           "second": 4,
-          "requestsPerSec": 39,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 129.57
+          "avgLatencyMs": 151.01
         },
         {
           "scenario": "normal_load",
           "second": 5,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 138.04
+          "avgLatencyMs": 147.02
         },
         {
           "scenario": "normal_load",
           "second": 6,
-          "requestsPerSec": 30,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 160.15
+          "avgLatencyMs": 150.78
         },
         {
           "scenario": "normal_load",
           "second": 7,
-          "requestsPerSec": 39,
+          "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 138.03
+          "avgLatencyMs": 141.74
         },
         {
           "scenario": "normal_load",
           "second": 8,
-          "requestsPerSec": 31,
+          "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 152.22
+          "avgLatencyMs": 146.51
         },
         {
           "scenario": "normal_load",
           "second": 9,
-          "requestsPerSec": 35,
+          "requestsPerSec": 34,
           "errorsPerSec": 0,
-          "avgLatencyMs": 148.94
+          "avgLatencyMs": 142.7
         },
         {
           "scenario": "normal_load",
           "second": 10,
-          "requestsPerSec": 36,
+          "requestsPerSec": 32,
           "errorsPerSec": 0,
-          "avgLatencyMs": 138.2
+          "avgLatencyMs": 155.49
         },
         {
           "scenario": "normal_load",
           "second": 11,
-          "requestsPerSec": 39,
+          "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 134.42
+          "avgLatencyMs": 145.39
         },
         {
           "scenario": "normal_load",
           "second": 12,
           "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 134.96
+          "avgLatencyMs": 140.34
         },
         {
           "scenario": "normal_load",
           "second": 13,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 143.5
+          "avgLatencyMs": 146.68
         },
         {
           "scenario": "normal_load",
           "second": 14,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 137.66
+          "avgLatencyMs": 148.63
         },
         {
           "scenario": "normal_load",
           "second": 15,
-          "requestsPerSec": 39,
+          "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 135.02
+          "avgLatencyMs": 141.09
         },
         {
           "scenario": "normal_load",
           "second": 16,
           "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 134.86
+          "avgLatencyMs": 144.33
         },
         {
           "scenario": "normal_load",
           "second": 17,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 142.94
+          "avgLatencyMs": 149.87
         },
         {
           "scenario": "normal_load",
           "second": 18,
-          "requestsPerSec": 30,
+          "requestsPerSec": 34,
           "errorsPerSec": 0,
-          "avgLatencyMs": 162.73
+          "avgLatencyMs": 147.28
         },
         {
           "scenario": "normal_load",
           "second": 19,
-          "requestsPerSec": 36,
+          "requestsPerSec": 35,
           "errorsPerSec": 0,
-          "avgLatencyMs": 141.24
-        },
-        {
-          "scenario": "normal_load",
-          "second": 20,
-          "requestsPerSec": 36,
-          "errorsPerSec": 0,
-          "avgLatencyMs": 136.24
+          "avgLatencyMs": 140.13
         }
       ],
       "resourceSamples": [
         {
           "scenario": "normal_load",
           "second": 1,
-          "cpuUsagePct": 33.66,
-          "memoryUsagePct": 84.45,
+          "cpuUsagePct": 56.18,
+          "memoryUsagePct": 89.67,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 2,
-          "cpuUsagePct": 43.08,
-          "memoryUsagePct": 84.57,
+          "cpuUsagePct": 61.66,
+          "memoryUsagePct": 90.27,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 3,
-          "cpuUsagePct": 32.51,
-          "memoryUsagePct": 84.19,
+          "cpuUsagePct": 50.28,
+          "memoryUsagePct": 90.24,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 4,
-          "cpuUsagePct": 27.6,
-          "memoryUsagePct": 84.53,
+          "cpuUsagePct": 54.02,
+          "memoryUsagePct": 90.49,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 5,
-          "cpuUsagePct": 46.92,
-          "memoryUsagePct": 84.89,
+          "cpuUsagePct": 51.07,
+          "memoryUsagePct": 89.99,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 6,
-          "cpuUsagePct": 53.36,
-          "memoryUsagePct": 85.05,
+          "cpuUsagePct": 47.38,
+          "memoryUsagePct": 89.66,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 7,
-          "cpuUsagePct": 32.88,
-          "memoryUsagePct": 85.19,
+          "cpuUsagePct": 49.31,
+          "memoryUsagePct": 90.17,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 8,
-          "cpuUsagePct": 52.38,
-          "memoryUsagePct": 85.06,
+          "cpuUsagePct": 50.3,
+          "memoryUsagePct": 90.68,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 9,
-          "cpuUsagePct": 39.98,
-          "memoryUsagePct": 85.39,
+          "cpuUsagePct": 40.45,
+          "memoryUsagePct": 90.86,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 10,
-          "cpuUsagePct": 30.48,
-          "memoryUsagePct": 84.64,
+          "cpuUsagePct": 62.86,
+          "memoryUsagePct": 90.09,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 11,
-          "cpuUsagePct": 37.83,
-          "memoryUsagePct": 84.95,
+          "cpuUsagePct": 43.72,
+          "memoryUsagePct": 90.38,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 12,
-          "cpuUsagePct": 44.18,
-          "memoryUsagePct": 85.05,
+          "cpuUsagePct": 39.52,
+          "memoryUsagePct": 90.76,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 13,
-          "cpuUsagePct": 42.88,
-          "memoryUsagePct": 85.25,
+          "cpuUsagePct": 45.8,
+          "memoryUsagePct": 90.7,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 14,
-          "cpuUsagePct": 30.91,
-          "memoryUsagePct": 84.66,
+          "cpuUsagePct": 50,
+          "memoryUsagePct": 90.37,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 15,
-          "cpuUsagePct": 38.48,
-          "memoryUsagePct": 84.91,
+          "cpuUsagePct": 38.3,
+          "memoryUsagePct": 90.56,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 16,
-          "cpuUsagePct": 33.23,
-          "memoryUsagePct": 85.04,
+          "cpuUsagePct": 55.53,
+          "memoryUsagePct": 90.51,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 17,
-          "cpuUsagePct": 41.84,
-          "memoryUsagePct": 84.31,
+          "cpuUsagePct": 44.54,
+          "memoryUsagePct": 90.11,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 18,
-          "cpuUsagePct": 56.79,
-          "memoryUsagePct": 84.5,
+          "cpuUsagePct": 48.09,
+          "memoryUsagePct": 90.23,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "normal_load",
           "second": 19,
-          "cpuUsagePct": 44.96,
-          "memoryUsagePct": 84.78,
-          "fsReadDelta": 0,
-          "fsWriteDelta": 0
-        },
-        {
-          "scenario": "normal_load",
-          "second": 20,
-          "cpuUsagePct": 30.13,
-          "memoryUsagePct": 84.48,
+          "cpuUsagePct": 45.09,
+          "memoryUsagePct": 90.63,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         }
       ],
       "executionLog": [
-        "[2026-04-24T16:49:38.001Z] Scenario 'normal_load' started (concurrency=5, duration=20s)",
-        "[2026-04-24T16:49:58.153Z] Scenario 'normal_load' finished requests=718, errors=0, p95=185.64ms"
+        "[2026-05-07T14:52:06.980Z] Scenario 'normal_load' started (concurrency=5, duration=20s)",
+        "[2026-05-07T14:52:27.077Z] Scenario 'normal_load' finished requests=676, errors=0, p95=190.54ms"
       ]
     },
     {
       "scenario": "peak_load",
-      "startedAt": "2026-04-24T16:50:00.157Z",
-      "endedAt": "2026-04-24T16:50:20.742Z",
+      "startedAt": "2026-05-07T14:52:29.089Z",
+      "endedAt": "2026-05-07T14:52:49.642Z",
       "concurrency": 20,
       "durationSec": 20,
-      "totalRequests": 741,
-      "successfulRequests": 741,
+      "totalRequests": 643,
+      "successfulRequests": 643,
       "failedRequests": 0,
       "errorRatePct": 0,
-      "throughputRps": 37.05,
+      "throughputRps": 32.15,
       "responseTimeMs": {
-        "average": 547.74,
-        "median": 564.71,
-        "p95": 613.75,
-        "p99": 648.97,
-        "min": 5.49,
-        "max": 673.69
+        "average": 630.19,
+        "median": 616.1,
+        "p95": 806.94,
+        "p99": 1176.48,
+        "min": 16.46,
+        "max": 1192.27
       },
       "moduleBreakdown": [
         {
           "module": "Authentication",
           "endpoint": "/api/auth/login",
-          "requests": 247,
+          "requests": 215,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 572.26
+          "avgLatencyMs": 659.45
         },
         {
           "module": "API Integration",
           "endpoint": "/api/wells",
-          "requests": 247,
+          "requests": 214,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 497.12
+          "avgLatencyMs": 572.68
         },
         {
           "module": "Oil Loss Analysis",
           "endpoint": "/api/oil-loss",
-          "requests": 247,
+          "requests": 214,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 573.83
+          "avgLatencyMs": 658.31
         }
       ],
       "throughputSamples": [
         {
           "scenario": "peak_load",
           "second": 1,
-          "requestsPerSec": 38,
+          "requestsPerSec": 29,
           "errorsPerSec": 0,
-          "avgLatencyMs": 393.25
+          "avgLatencyMs": 503.71
         },
         {
           "scenario": "peak_load",
           "second": 2,
-          "requestsPerSec": 35,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 569.3
+          "avgLatencyMs": 613.66
         },
         {
           "scenario": "peak_load",
           "second": 3,
-          "requestsPerSec": 37,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 541.45
+          "avgLatencyMs": 703.41
         },
         {
           "scenario": "peak_load",
           "second": 4,
-          "requestsPerSec": 39,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 533.78
+          "avgLatencyMs": 622.55
         },
         {
           "scenario": "peak_load",
           "second": 5,
-          "requestsPerSec": 36,
+          "requestsPerSec": 27,
           "errorsPerSec": 0,
-          "avgLatencyMs": 535.77
+          "avgLatencyMs": 705.66
         },
         {
           "scenario": "peak_load",
           "second": 6,
           "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 556.2
+          "avgLatencyMs": 585.47
         },
         {
           "scenario": "peak_load",
           "second": 7,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 578.4
+          "avgLatencyMs": 589.21
         },
         {
           "scenario": "peak_load",
           "second": 8,
-          "requestsPerSec": 36,
+          "requestsPerSec": 15,
           "errorsPerSec": 0,
-          "avgLatencyMs": 544.51
+          "avgLatencyMs": 1100.62
         },
         {
           "scenario": "peak_load",
           "second": 9,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 551.39
+          "avgLatencyMs": 717.04
         },
         {
           "scenario": "peak_load",
           "second": 10,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 566.87
+          "avgLatencyMs": 619.39
         },
         {
           "scenario": "peak_load",
           "second": 11,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 556.6
+          "avgLatencyMs": 628.07
         },
         {
           "scenario": "peak_load",
           "second": 12,
-          "requestsPerSec": 36,
+          "requestsPerSec": 35,
           "errorsPerSec": 0,
-          "avgLatencyMs": 547.38
+          "avgLatencyMs": 580.07
         },
         {
           "scenario": "peak_load",
           "second": 13,
-          "requestsPerSec": 37,
+          "requestsPerSec": 34,
           "errorsPerSec": 0,
-          "avgLatencyMs": 554.68
+          "avgLatencyMs": 565.36
         },
         {
           "scenario": "peak_load",
           "second": 14,
-          "requestsPerSec": 38,
+          "requestsPerSec": 27,
           "errorsPerSec": 0,
-          "avgLatencyMs": 546.37
+          "avgLatencyMs": 707.21
         },
         {
           "scenario": "peak_load",
           "second": 15,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 546.48
+          "avgLatencyMs": 643.36
         },
         {
           "scenario": "peak_load",
           "second": 16,
           "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 568.32
+          "avgLatencyMs": 578.88
         },
         {
           "scenario": "peak_load",
           "second": 17,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 563.11
+          "avgLatencyMs": 584.94
         },
         {
           "scenario": "peak_load",
           "second": 18,
-          "requestsPerSec": 33,
+          "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 607.82
+          "avgLatencyMs": 579.79
         },
         {
           "scenario": "peak_load",
           "second": 19,
-          "requestsPerSec": 36,
+          "requestsPerSec": 26,
           "errorsPerSec": 0,
-          "avgLatencyMs": 548.47
+          "avgLatencyMs": 735.98
         },
         {
           "scenario": "peak_load",
           "second": 20,
-          "requestsPerSec": 36,
+          "requestsPerSec": 37,
           "errorsPerSec": 0,
-          "avgLatencyMs": 545.37
+          "avgLatencyMs": 579.34
         }
       ],
       "resourceSamples": [
         {
           "scenario": "peak_load",
           "second": 1,
-          "cpuUsagePct": 44.47,
-          "memoryUsagePct": 84.68,
+          "cpuUsagePct": 73.98,
+          "memoryUsagePct": 91.55,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 2,
-          "cpuUsagePct": 39.07,
-          "memoryUsagePct": 83.85,
+          "cpuUsagePct": 71.71,
+          "memoryUsagePct": 93.32,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 3,
-          "cpuUsagePct": 31.52,
-          "memoryUsagePct": 84.06,
+          "cpuUsagePct": 65.09,
+          "memoryUsagePct": 94.14,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 4,
-          "cpuUsagePct": 32.45,
-          "memoryUsagePct": 84.36,
+          "cpuUsagePct": 54.75,
+          "memoryUsagePct": 94.33,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 5,
-          "cpuUsagePct": 34.53,
-          "memoryUsagePct": 83.89,
+          "cpuUsagePct": 67.86,
+          "memoryUsagePct": 91.42,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 6,
-          "cpuUsagePct": 36.84,
-          "memoryUsagePct": 83.94,
+          "cpuUsagePct": 52.42,
+          "memoryUsagePct": 91.47,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 7,
-          "cpuUsagePct": 40.31,
-          "memoryUsagePct": 84.11,
+          "cpuUsagePct": 50.18,
+          "memoryUsagePct": 91.98,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 8,
-          "cpuUsagePct": 34.71,
-          "memoryUsagePct": 84.4,
+          "cpuUsagePct": 93.55,
+          "memoryUsagePct": 92.25,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 9,
-          "cpuUsagePct": 35.59,
-          "memoryUsagePct": 83.69,
+          "cpuUsagePct": 53.3,
+          "memoryUsagePct": 91.66,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 10,
-          "cpuUsagePct": 40.28,
-          "memoryUsagePct": 83.91,
+          "cpuUsagePct": 56.57,
+          "memoryUsagePct": 91.91,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 11,
-          "cpuUsagePct": 31.43,
-          "memoryUsagePct": 84.21,
+          "cpuUsagePct": 55.45,
+          "memoryUsagePct": 92.42,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 12,
-          "cpuUsagePct": 37.05,
-          "memoryUsagePct": 84.51,
+          "cpuUsagePct": 46.31,
+          "memoryUsagePct": 92.76,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 13,
-          "cpuUsagePct": 39.66,
-          "memoryUsagePct": 83.92,
+          "cpuUsagePct": 50.66,
+          "memoryUsagePct": 92.39,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 14,
-          "cpuUsagePct": 39.04,
-          "memoryUsagePct": 84.18,
+          "cpuUsagePct": 60.62,
+          "memoryUsagePct": 92.4,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 15,
-          "cpuUsagePct": 30.16,
-          "memoryUsagePct": 84.36,
+          "cpuUsagePct": 53.31,
+          "memoryUsagePct": 92.92,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 16,
-          "cpuUsagePct": 41.52,
-          "memoryUsagePct": 83.84,
+          "cpuUsagePct": 41.95,
+          "memoryUsagePct": 93.04,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 17,
-          "cpuUsagePct": 37.4,
-          "memoryUsagePct": 83.72,
+          "cpuUsagePct": 55.45,
+          "memoryUsagePct": 93.6,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 18,
-          "cpuUsagePct": 41.05,
-          "memoryUsagePct": 84.02,
+          "cpuUsagePct": 46.72,
+          "memoryUsagePct": 93.83,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 19,
-          "cpuUsagePct": 38.51,
-          "memoryUsagePct": 84.33,
+          "cpuUsagePct": 73.71,
+          "memoryUsagePct": 93.09,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "peak_load",
           "second": 20,
-          "cpuUsagePct": 41.09,
-          "memoryUsagePct": 83.79,
+          "cpuUsagePct": 48.28,
+          "memoryUsagePct": 93.22,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         }
       ],
       "executionLog": [
-        "[2026-04-24T16:50:00.157Z] Scenario 'peak_load' started (concurrency=20, duration=20s)",
-        "[2026-04-24T16:50:20.743Z] Scenario 'peak_load' finished requests=741, errors=0, p95=613.75ms"
+        "[2026-05-07T14:52:29.097Z] Scenario 'peak_load' started (concurrency=20, duration=20s)",
+        "[2026-05-07T14:52:49.642Z] Scenario 'peak_load' finished requests=643, errors=0, p95=806.94ms"
       ]
     },
     {
       "scenario": "spike_load",
-      "startedAt": "2026-04-24T16:50:22.746Z",
-      "endedAt": "2026-04-24T16:50:34.076Z",
+      "startedAt": "2026-05-07T14:52:51.656Z",
+      "endedAt": "2026-05-07T14:53:03.737Z",
       "concurrency": 50,
       "durationSec": 10,
-      "totalRequests": 412,
-      "successfulRequests": 412,
+      "totalRequests": 370,
+      "successfulRequests": 370,
       "failedRequests": 0,
       "errorRatePct": 0,
-      "throughputRps": 41.2,
+      "throughputRps": 37,
       "responseTimeMs": {
-        "average": 1293.72,
-        "median": 1366.04,
-        "p95": 1477.98,
-        "p99": 1492.18,
-        "min": 27.02,
-        "max": 1496.47
+        "average": 1494.46,
+        "median": 1533.56,
+        "p95": 2125.01,
+        "p99": 2239.29,
+        "min": 15.46,
+        "max": 2244.38
       },
       "moduleBreakdown": [
         {
           "module": "Authentication",
           "endpoint": "/api/auth/login",
-          "requests": 138,
+          "requests": 124,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 1355
+          "avgLatencyMs": 1551.82
         },
         {
           "module": "API Integration",
           "endpoint": "/api/wells",
-          "requests": 137,
+          "requests": 123,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 1229.95
+          "avgLatencyMs": 1421.77
         },
         {
           "module": "Oil Loss Analysis",
           "endpoint": "/api/oil-loss",
-          "requests": 137,
+          "requests": 123,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 1295.77
+          "avgLatencyMs": 1509.34
         }
       ],
       "throughputSamples": [
         {
           "scenario": "spike_load",
           "second": 1,
-          "requestsPerSec": 25,
+          "requestsPerSec": 28,
           "errorsPerSec": 0,
-          "avgLatencyMs": 516.67
+          "avgLatencyMs": 473.71
         },
         {
           "scenario": "spike_load",
           "second": 2,
-          "requestsPerSec": 49,
+          "requestsPerSec": 43,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1210.32
+          "avgLatencyMs": 1316.64
         },
         {
           "scenario": "spike_load",
           "second": 3,
-          "requestsPerSec": 39,
+          "requestsPerSec": 34,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1197.08
+          "avgLatencyMs": 1239.38
         },
         {
           "scenario": "spike_load",
           "second": 4,
           "requestsPerSec": 35,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1351.44
+          "avgLatencyMs": 1493.26
         },
         {
           "scenario": "spike_load",
           "second": 5,
-          "requestsPerSec": 37,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1400.93
+          "avgLatencyMs": 1506.96
         },
         {
           "scenario": "spike_load",
           "second": 6,
-          "requestsPerSec": 37,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1363.3
+          "avgLatencyMs": 1583.38
         },
         {
           "scenario": "spike_load",
           "second": 7,
-          "requestsPerSec": 38,
+          "requestsPerSec": 34,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1342.54
+          "avgLatencyMs": 1592.29
         },
         {
           "scenario": "spike_load",
           "second": 8,
-          "requestsPerSec": 33,
+          "requestsPerSec": 32,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1406.73
+          "avgLatencyMs": 1565.18
         },
         {
           "scenario": "spike_load",
           "second": 9,
-          "requestsPerSec": 39,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1437.56
+          "avgLatencyMs": 1559.88
         },
         {
           "scenario": "spike_load",
           "second": 10,
-          "requestsPerSec": 34,
+          "requestsPerSec": 22,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1383.12
+          "avgLatencyMs": 1762.38
         },
         {
           "scenario": "spike_load",
           "second": 11,
-          "requestsPerSec": 38,
+          "requestsPerSec": 23,
           "errorsPerSec": 0,
-          "avgLatencyMs": 1400.21
+          "avgLatencyMs": 2009.68
+        },
+        {
+          "scenario": "spike_load",
+          "second": 12,
+          "requestsPerSec": 24,
+          "errorsPerSec": 0,
+          "avgLatencyMs": 2129.74
         }
       ],
       "resourceSamples": [
         {
           "scenario": "spike_load",
           "second": 1,
-          "cpuUsagePct": 36.67,
-          "memoryUsagePct": 84.02,
+          "cpuUsagePct": 40.18,
+          "memoryUsagePct": 93.82,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 2,
-          "cpuUsagePct": 38.85,
-          "memoryUsagePct": 84.33,
+          "cpuUsagePct": 59.59,
+          "memoryUsagePct": 93.31,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 3,
-          "cpuUsagePct": 36.62,
-          "memoryUsagePct": 84.64,
+          "cpuUsagePct": 59.77,
+          "memoryUsagePct": 93.46,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 4,
-          "cpuUsagePct": 38.4,
-          "memoryUsagePct": 83.92,
+          "cpuUsagePct": 55.61,
+          "memoryUsagePct": 94.04,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 5,
-          "cpuUsagePct": 51.51,
-          "memoryUsagePct": 84.02,
+          "cpuUsagePct": 58.57,
+          "memoryUsagePct": 94.38,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 6,
-          "cpuUsagePct": 33.79,
-          "memoryUsagePct": 84.28,
+          "cpuUsagePct": 60.25,
+          "memoryUsagePct": 93.89,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 7,
-          "cpuUsagePct": 32.59,
-          "memoryUsagePct": 84.54,
+          "cpuUsagePct": 63.87,
+          "memoryUsagePct": 94.11,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 8,
-          "cpuUsagePct": 49.79,
-          "memoryUsagePct": 83.63,
+          "cpuUsagePct": 53.49,
+          "memoryUsagePct": 94.37,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 9,
-          "cpuUsagePct": 31.81,
-          "memoryUsagePct": 83.96,
+          "cpuUsagePct": 64.08,
+          "memoryUsagePct": 94.81,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 10,
-          "cpuUsagePct": 40.05,
-          "memoryUsagePct": 84.36,
+          "cpuUsagePct": 83.53,
+          "memoryUsagePct": 95.54,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "spike_load",
           "second": 11,
-          "cpuUsagePct": 32.18,
-          "memoryUsagePct": 84.57,
+          "cpuUsagePct": 89.94,
+          "memoryUsagePct": 94.76,
+          "fsReadDelta": 0,
+          "fsWriteDelta": 0
+        },
+        {
+          "scenario": "spike_load",
+          "second": 12,
+          "cpuUsagePct": 81.13,
+          "memoryUsagePct": 95.52,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         }
       ],
       "executionLog": [
-        "[2026-04-24T16:50:22.747Z] Scenario 'spike_load' started (concurrency=50, duration=10s)",
-        "[2026-04-24T16:50:34.077Z] Scenario 'spike_load' finished requests=412, errors=0, p95=1477.98ms"
+        "[2026-05-07T14:52:51.656Z] Scenario 'spike_load' started (concurrency=50, duration=10s)",
+        "[2026-05-07T14:53:03.738Z] Scenario 'spike_load' finished requests=370, errors=0, p95=2125.01ms"
       ]
     },
     {
       "scenario": "endurance_test",
-      "startedAt": "2026-04-24T16:50:36.076Z",
-      "endedAt": "2026-04-24T16:51:21.375Z",
+      "startedAt": "2026-05-07T14:53:05.744Z",
+      "endedAt": "2026-05-07T14:53:51.144Z",
       "concurrency": 10,
       "durationSec": 45,
-      "totalRequests": 1578,
-      "successfulRequests": 1578,
+      "totalRequests": 1290,
+      "successfulRequests": 1290,
       "failedRequests": 0,
       "errorRatePct": 0,
-      "throughputRps": 35.07,
+      "throughputRps": 28.67,
       "responseTimeMs": {
-        "average": 286.14,
-        "median": 267.47,
-        "p95": 365.88,
-        "p99": 425.77,
-        "min": 4.09,
-        "max": 521.81
+        "average": 350.2,
+        "median": 335.93,
+        "p95": 509.51,
+        "p99": 619.72,
+        "min": 4.85,
+        "max": 752.64
       },
       "moduleBreakdown": [
         {
           "module": "Authentication",
           "endpoint": "/api/auth/login",
-          "requests": 526,
+          "requests": 430,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 259.39
+          "avgLatencyMs": 318.51
         },
         {
           "module": "API Integration",
           "endpoint": "/api/wells",
-          "requests": 526,
+          "requests": 430,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 260.63
+          "avgLatencyMs": 321.24
         },
         {
           "module": "Oil Loss Analysis",
           "endpoint": "/api/oil-loss",
-          "requests": 526,
+          "requests": 430,
           "errors": 0,
           "errorRatePct": 0,
-          "avgLatencyMs": 338.41
+          "avgLatencyMs": 410.84
         }
       ],
       "throughputSamples": [
         {
           "scenario": "endurance_test",
           "second": 1,
-          "requestsPerSec": 38,
+          "requestsPerSec": 37,
           "errorsPerSec": 0,
-          "avgLatencyMs": 228.13
+          "avgLatencyMs": 240.36
         },
         {
           "scenario": "endurance_test",
           "second": 2,
-          "requestsPerSec": 39,
+          "requestsPerSec": 29,
           "errorsPerSec": 0,
-          "avgLatencyMs": 263
+          "avgLatencyMs": 295.96
         },
         {
           "scenario": "endurance_test",
           "second": 3,
-          "requestsPerSec": 36,
+          "requestsPerSec": 38,
           "errorsPerSec": 0,
-          "avgLatencyMs": 274.87
+          "avgLatencyMs": 302.51
         },
         {
           "scenario": "endurance_test",
           "second": 4,
           "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 302.55
+          "avgLatencyMs": 306.15
         },
         {
           "scenario": "endurance_test",
           "second": 5,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 284.21
+          "avgLatencyMs": 300.2
         },
         {
           "scenario": "endurance_test",
           "second": 6,
-          "requestsPerSec": 39,
+          "requestsPerSec": 36,
           "errorsPerSec": 0,
-          "avgLatencyMs": 264.24
+          "avgLatencyMs": 287.52
         },
         {
           "scenario": "endurance_test",
           "second": 7,
-          "requestsPerSec": 36,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 270.2
+          "avgLatencyMs": 331.52
         },
         {
           "scenario": "endurance_test",
           "second": 8,
-          "requestsPerSec": 39,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 266.8
+          "avgLatencyMs": 327.95
         },
         {
           "scenario": "endurance_test",
           "second": 9,
-          "requestsPerSec": 36,
+          "requestsPerSec": 24,
           "errorsPerSec": 0,
-          "avgLatencyMs": 279.54
+          "avgLatencyMs": 402.39
         },
         {
           "scenario": "endurance_test",
           "second": 10,
-          "requestsPerSec": 37,
+          "requestsPerSec": 28,
           "errorsPerSec": 0,
-          "avgLatencyMs": 270.03
+          "avgLatencyMs": 373.3
         },
         {
           "scenario": "endurance_test",
           "second": 11,
-          "requestsPerSec": 35,
+          "requestsPerSec": 29,
           "errorsPerSec": 0,
-          "avgLatencyMs": 278.41
+          "avgLatencyMs": 342.09
         },
         {
           "scenario": "endurance_test",
           "second": 12,
-          "requestsPerSec": 36,
+          "requestsPerSec": 27,
           "errorsPerSec": 0,
-          "avgLatencyMs": 292.49
+          "avgLatencyMs": 349.55
         },
         {
           "scenario": "endurance_test",
           "second": 13,
-          "requestsPerSec": 33,
+          "requestsPerSec": 27,
           "errorsPerSec": 0,
-          "avgLatencyMs": 282.99
+          "avgLatencyMs": 391.54
         },
         {
           "scenario": "endurance_test",
           "second": 14,
-          "requestsPerSec": 37,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 289.55
+          "avgLatencyMs": 318.66
         },
         {
           "scenario": "endurance_test",
           "second": 15,
-          "requestsPerSec": 35,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 284.73
+          "avgLatencyMs": 302.22
         },
         {
           "scenario": "endurance_test",
           "second": 16,
-          "requestsPerSec": 33,
+          "requestsPerSec": 32,
           "errorsPerSec": 0,
-          "avgLatencyMs": 316.63
+          "avgLatencyMs": 317.9
         },
         {
           "scenario": "endurance_test",
           "second": 17,
-          "requestsPerSec": 36,
+          "requestsPerSec": 31,
           "errorsPerSec": 0,
-          "avgLatencyMs": 271.61
+          "avgLatencyMs": 319.06
         },
         {
           "scenario": "endurance_test",
           "second": 18,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 276.43
+          "avgLatencyMs": 305.15
         },
         {
           "scenario": "endurance_test",
           "second": 19,
-          "requestsPerSec": 34,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 302.45
+          "avgLatencyMs": 317.93
         },
         {
           "scenario": "endurance_test",
           "second": 20,
-          "requestsPerSec": 32,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 315.48
+          "avgLatencyMs": 310.54
         },
         {
           "scenario": "endurance_test",
           "second": 21,
-          "requestsPerSec": 37,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 274.89
+          "avgLatencyMs": 319.54
         },
         {
           "scenario": "endurance_test",
           "second": 22,
-          "requestsPerSec": 36,
+          "requestsPerSec": 31,
           "errorsPerSec": 0,
-          "avgLatencyMs": 279.54
+          "avgLatencyMs": 303.76
         },
         {
           "scenario": "endurance_test",
           "second": 23,
-          "requestsPerSec": 38,
+          "requestsPerSec": 17,
           "errorsPerSec": 0,
-          "avgLatencyMs": 274.13
+          "avgLatencyMs": 538.85
         },
         {
           "scenario": "endurance_test",
           "second": 24,
-          "requestsPerSec": 36,
+          "requestsPerSec": 21,
           "errorsPerSec": 0,
-          "avgLatencyMs": 280.36
+          "avgLatencyMs": 471.29
         },
         {
           "scenario": "endurance_test",
           "second": 25,
-          "requestsPerSec": 36,
+          "requestsPerSec": 21,
           "errorsPerSec": 0,
-          "avgLatencyMs": 281.43
+          "avgLatencyMs": 491.9
         },
         {
           "scenario": "endurance_test",
           "second": 26,
-          "requestsPerSec": 36,
+          "requestsPerSec": 24,
           "errorsPerSec": 0,
-          "avgLatencyMs": 269.71
+          "avgLatencyMs": 438.74
         },
         {
           "scenario": "endurance_test",
           "second": 27,
-          "requestsPerSec": 36,
+          "requestsPerSec": 24,
           "errorsPerSec": 0,
-          "avgLatencyMs": 276.47
+          "avgLatencyMs": 423.04
         },
         {
           "scenario": "endurance_test",
           "second": 28,
-          "requestsPerSec": 36,
+          "requestsPerSec": 21,
           "errorsPerSec": 0,
-          "avgLatencyMs": 296.64
+          "avgLatencyMs": 452.46
         },
         {
           "scenario": "endurance_test",
           "second": 29,
-          "requestsPerSec": 31,
+          "requestsPerSec": 18,
           "errorsPerSec": 0,
-          "avgLatencyMs": 311.86
+          "avgLatencyMs": 500.23
         },
         {
           "scenario": "endurance_test",
           "second": 30,
-          "requestsPerSec": 37,
+          "requestsPerSec": 24,
           "errorsPerSec": 0,
-          "avgLatencyMs": 276.97
+          "avgLatencyMs": 520
         },
         {
           "scenario": "endurance_test",
           "second": 31,
-          "requestsPerSec": 28,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 352.14
+          "avgLatencyMs": 330.94
         },
         {
           "scenario": "endurance_test",
           "second": 32,
-          "requestsPerSec": 33,
+          "requestsPerSec": 27,
           "errorsPerSec": 0,
-          "avgLatencyMs": 298.4
+          "avgLatencyMs": 354.25
         },
         {
           "scenario": "endurance_test",
           "second": 33,
-          "requestsPerSec": 30,
+          "requestsPerSec": 24,
           "errorsPerSec": 0,
-          "avgLatencyMs": 345.26
+          "avgLatencyMs": 396.95
         },
         {
           "scenario": "endurance_test",
           "second": 34,
-          "requestsPerSec": 33,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 307.17
+          "avgLatencyMs": 369.27
         },
         {
           "scenario": "endurance_test",
           "second": 35,
-          "requestsPerSec": 33,
+          "requestsPerSec": 27,
           "errorsPerSec": 0,
-          "avgLatencyMs": 295.85
+          "avgLatencyMs": 362.68
         },
         {
           "scenario": "endurance_test",
           "second": 36,
           "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 331.19
+          "avgLatencyMs": 335.88
         },
         {
           "scenario": "endurance_test",
           "second": 37,
-          "requestsPerSec": 36,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 292.12
+          "avgLatencyMs": 326.03
         },
         {
           "scenario": "endurance_test",
           "second": 38,
-          "requestsPerSec": 36,
+          "requestsPerSec": 33,
           "errorsPerSec": 0,
-          "avgLatencyMs": 283.02
+          "avgLatencyMs": 315.6
         },
         {
           "scenario": "endurance_test",
           "second": 39,
-          "requestsPerSec": 34,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 284.06
+          "avgLatencyMs": 328.63
         },
         {
           "scenario": "endurance_test",
           "second": 40,
-          "requestsPerSec": 35,
+          "requestsPerSec": 24,
           "errorsPerSec": 0,
-          "avgLatencyMs": 286.66
+          "avgLatencyMs": 409.21
         },
         {
           "scenario": "endurance_test",
           "second": 41,
-          "requestsPerSec": 36,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 288.32
+          "avgLatencyMs": 346.73
         },
         {
           "scenario": "endurance_test",
           "second": 42,
-          "requestsPerSec": 33,
+          "requestsPerSec": 30,
           "errorsPerSec": 0,
-          "avgLatencyMs": 286.99
+          "avgLatencyMs": 331.7
         },
         {
           "scenario": "endurance_test",
           "second": 43,
-          "requestsPerSec": 36,
+          "requestsPerSec": 27,
           "errorsPerSec": 0,
-          "avgLatencyMs": 287.81
+          "avgLatencyMs": 378.09
         },
         {
           "scenario": "endurance_test",
           "second": 44,
-          "requestsPerSec": 37,
+          "requestsPerSec": 27,
           "errorsPerSec": 0,
-          "avgLatencyMs": 276.08
+          "avgLatencyMs": 374.24
+        },
+        {
+          "scenario": "endurance_test",
+          "second": 45,
+          "requestsPerSec": 30,
+          "errorsPerSec": 0,
+          "avgLatencyMs": 340.59
         }
       ],
       "resourceSamples": [
         {
           "scenario": "endurance_test",
           "second": 1,
-          "cpuUsagePct": 43.09,
-          "memoryUsagePct": 83.92,
+          "cpuUsagePct": 58.44,
+          "memoryUsagePct": 91.67,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 2,
-          "cpuUsagePct": 30.22,
-          "memoryUsagePct": 83.95,
+          "cpuUsagePct": 63.41,
+          "memoryUsagePct": 92.33,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 3,
-          "cpuUsagePct": 34.17,
-          "memoryUsagePct": 84.24,
+          "cpuUsagePct": 56.46,
+          "memoryUsagePct": 91.65,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 4,
-          "cpuUsagePct": 46.55,
-          "memoryUsagePct": 84.51,
+          "cpuUsagePct": 50.88,
+          "memoryUsagePct": 91.14,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 5,
-          "cpuUsagePct": 39.69,
-          "memoryUsagePct": 83.89,
+          "cpuUsagePct": 48.03,
+          "memoryUsagePct": 89.77,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 6,
-          "cpuUsagePct": 28.07,
-          "memoryUsagePct": 84.15,
+          "cpuUsagePct": 46.68,
+          "memoryUsagePct": 90.16,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 7,
-          "cpuUsagePct": 32.96,
-          "memoryUsagePct": 84.39,
+          "cpuUsagePct": 68.46,
+          "memoryUsagePct": 90.72,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 8,
-          "cpuUsagePct": 32,
-          "memoryUsagePct": 84.67,
+          "cpuUsagePct": 66.8,
+          "memoryUsagePct": 90.13,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 9,
-          "cpuUsagePct": 40.3,
-          "memoryUsagePct": 84.06,
+          "cpuUsagePct": 89.82,
+          "memoryUsagePct": 90.13,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 10,
-          "cpuUsagePct": 35.36,
-          "memoryUsagePct": 84.27,
+          "cpuUsagePct": 79.88,
+          "memoryUsagePct": 90.45,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 11,
-          "cpuUsagePct": 41.57,
-          "memoryUsagePct": 84.54,
+          "cpuUsagePct": 71.65,
+          "memoryUsagePct": 91,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 12,
-          "cpuUsagePct": 43.51,
-          "memoryUsagePct": 84.02,
+          "cpuUsagePct": 68.72,
+          "memoryUsagePct": 91.08,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 13,
-          "cpuUsagePct": 43.61,
-          "memoryUsagePct": 84.18,
+          "cpuUsagePct": 85.1,
+          "memoryUsagePct": 90.72,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 14,
-          "cpuUsagePct": 33.26,
-          "memoryUsagePct": 84.43,
+          "cpuUsagePct": 71.54,
+          "memoryUsagePct": 90.72,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 15,
-          "cpuUsagePct": 42.78,
-          "memoryUsagePct": 84.68,
+          "cpuUsagePct": 55.6,
+          "memoryUsagePct": 90.92,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 16,
-          "cpuUsagePct": 45.71,
-          "memoryUsagePct": 83.87,
+          "cpuUsagePct": 60.58,
+          "memoryUsagePct": 91.24,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 17,
-          "cpuUsagePct": 36.91,
-          "memoryUsagePct": 84.05,
+          "cpuUsagePct": 61.67,
+          "memoryUsagePct": 90.9,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 18,
-          "cpuUsagePct": 36.75,
-          "memoryUsagePct": 84.26,
+          "cpuUsagePct": 60.11,
+          "memoryUsagePct": 91.33,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 19,
-          "cpuUsagePct": 49.72,
-          "memoryUsagePct": 84.41,
+          "cpuUsagePct": 68.87,
+          "memoryUsagePct": 91.23,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 20,
-          "cpuUsagePct": 48.18,
-          "memoryUsagePct": 83.71,
+          "cpuUsagePct": 62.46,
+          "memoryUsagePct": 91.16,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 21,
-          "cpuUsagePct": 35.42,
-          "memoryUsagePct": 83.96,
+          "cpuUsagePct": 66.15,
+          "memoryUsagePct": 90.87,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 22,
-          "cpuUsagePct": 45.06,
-          "memoryUsagePct": 84.27,
+          "cpuUsagePct": 63.82,
+          "memoryUsagePct": 91.1,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 23,
-          "cpuUsagePct": 42.06,
-          "memoryUsagePct": 84.44,
+          "cpuUsagePct": 96.12,
+          "memoryUsagePct": 91.87,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 24,
-          "cpuUsagePct": 35.57,
-          "memoryUsagePct": 83.86,
+          "cpuUsagePct": 88,
+          "memoryUsagePct": 92.7,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 25,
-          "cpuUsagePct": 34.29,
-          "memoryUsagePct": 84.09,
+          "cpuUsagePct": 91.36,
+          "memoryUsagePct": 93.05,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 26,
-          "cpuUsagePct": 45.93,
-          "memoryUsagePct": 84.29,
+          "cpuUsagePct": 87.17,
+          "memoryUsagePct": 93.22,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 27,
-          "cpuUsagePct": 43.34,
-          "memoryUsagePct": 83.85,
+          "cpuUsagePct": 87.7,
+          "memoryUsagePct": 93.4,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 28,
-          "cpuUsagePct": 42.96,
-          "memoryUsagePct": 83.92,
+          "cpuUsagePct": 86.11,
+          "memoryUsagePct": 94.04,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 29,
-          "cpuUsagePct": 44.59,
-          "memoryUsagePct": 84.13,
+          "cpuUsagePct": 92.93,
+          "memoryUsagePct": 94.23,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 30,
-          "cpuUsagePct": 37.56,
-          "memoryUsagePct": 84.34,
+          "cpuUsagePct": 83.37,
+          "memoryUsagePct": 93.92,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 31,
-          "cpuUsagePct": 58.35,
-          "memoryUsagePct": 83.91,
+          "cpuUsagePct": 61.08,
+          "memoryUsagePct": 93.78,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 32,
-          "cpuUsagePct": 46.64,
-          "memoryUsagePct": 84.03,
+          "cpuUsagePct": 73.83,
+          "memoryUsagePct": 93.14,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 33,
-          "cpuUsagePct": 68.82,
-          "memoryUsagePct": 84.66,
+          "cpuUsagePct": 71.97,
+          "memoryUsagePct": 93.49,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 34,
-          "cpuUsagePct": 45.16,
-          "memoryUsagePct": 84.82,
+          "cpuUsagePct": 73.33,
+          "memoryUsagePct": 93.6,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 35,
-          "cpuUsagePct": 41.5,
-          "memoryUsagePct": 85.12,
+          "cpuUsagePct": 64.38,
+          "memoryUsagePct": 93.75,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 36,
-          "cpuUsagePct": 50.2,
-          "memoryUsagePct": 84.47,
+          "cpuUsagePct": 74.47,
+          "memoryUsagePct": 93.61,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 37,
-          "cpuUsagePct": 40.11,
-          "memoryUsagePct": 84.71,
+          "cpuUsagePct": 59.97,
+          "memoryUsagePct": 93.35,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 38,
-          "cpuUsagePct": 42.33,
-          "memoryUsagePct": 84.96,
+          "cpuUsagePct": 56,
+          "memoryUsagePct": 93.7,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 39,
-          "cpuUsagePct": 38.22,
-          "memoryUsagePct": 84.46,
+          "cpuUsagePct": 59.84,
+          "memoryUsagePct": 93.8,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 40,
-          "cpuUsagePct": 52.09,
-          "memoryUsagePct": 84.5,
+          "cpuUsagePct": 82.92,
+          "memoryUsagePct": 94.33,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 41,
-          "cpuUsagePct": 55.21,
-          "memoryUsagePct": 84.91,
+          "cpuUsagePct": 60.16,
+          "memoryUsagePct": 93.89,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 42,
-          "cpuUsagePct": 58.67,
-          "memoryUsagePct": 85.06,
+          "cpuUsagePct": 63.31,
+          "memoryUsagePct": 94.16,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 43,
-          "cpuUsagePct": 41.74,
-          "memoryUsagePct": 84.48,
+          "cpuUsagePct": 78.83,
+          "memoryUsagePct": 94.47,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         },
         {
           "scenario": "endurance_test",
           "second": 44,
-          "cpuUsagePct": 32.38,
-          "memoryUsagePct": 84.72,
+          "cpuUsagePct": 64.75,
+          "memoryUsagePct": 94.85,
+          "fsReadDelta": 0,
+          "fsWriteDelta": 0
+        },
+        {
+          "scenario": "endurance_test",
+          "second": 45,
+          "cpuUsagePct": 62.08,
+          "memoryUsagePct": 94.38,
           "fsReadDelta": 0,
           "fsWriteDelta": 0
         }
       ],
       "executionLog": [
-        "[2026-04-24T16:50:36.077Z] Scenario 'endurance_test' started (concurrency=10, duration=45s)",
-        "[2026-04-24T16:51:21.377Z] Scenario 'endurance_test' finished requests=1578, errors=0, p95=365.88ms"
+        "[2026-05-07T14:53:05.744Z] Scenario 'endurance_test' started (concurrency=10, duration=45s)",
+        "[2026-05-07T14:53:51.145Z] Scenario 'endurance_test' finished requests=1290, errors=0, p95=509.51ms"
       ]
     }
   ],
@@ -1657,49 +1672,49 @@
       "scenario": "normal_load",
       "concurrency": 5,
       "durationSec": 20,
-      "totalRequests": 718,
-      "throughputRps": 35.9,
+      "totalRequests": 676,
+      "throughputRps": 33.8,
       "errorRatePct": 0,
-      "avgResponseMs": 139.72,
-      "medianResponseMs": 155.77,
-      "p95ResponseMs": 185.64,
-      "p99ResponseMs": 251.67
+      "avgResponseMs": 147.87,
+      "medianResponseMs": 167.38,
+      "p95ResponseMs": 190.54,
+      "p99ResponseMs": 200.79
     },
     {
       "scenario": "peak_load",
       "concurrency": 20,
       "durationSec": 20,
-      "totalRequests": 741,
-      "throughputRps": 37.05,
+      "totalRequests": 643,
+      "throughputRps": 32.15,
       "errorRatePct": 0,
-      "avgResponseMs": 547.74,
-      "medianResponseMs": 564.71,
-      "p95ResponseMs": 613.75,
-      "p99ResponseMs": 648.97
+      "avgResponseMs": 630.19,
+      "medianResponseMs": 616.1,
+      "p95ResponseMs": 806.94,
+      "p99ResponseMs": 1176.48
     },
     {
       "scenario": "spike_load",
       "concurrency": 50,
       "durationSec": 10,
-      "totalRequests": 412,
-      "throughputRps": 41.2,
+      "totalRequests": 370,
+      "throughputRps": 37,
       "errorRatePct": 0,
-      "avgResponseMs": 1293.72,
-      "medianResponseMs": 1366.04,
-      "p95ResponseMs": 1477.98,
-      "p99ResponseMs": 1492.18
+      "avgResponseMs": 1494.46,
+      "medianResponseMs": 1533.56,
+      "p95ResponseMs": 2125.01,
+      "p99ResponseMs": 2239.29
     },
     {
       "scenario": "endurance_test",
       "concurrency": 10,
       "durationSec": 45,
-      "totalRequests": 1578,
-      "throughputRps": 35.07,
+      "totalRequests": 1290,
+      "throughputRps": 28.67,
       "errorRatePct": 0,
-      "avgResponseMs": 286.14,
-      "medianResponseMs": 267.47,
-      "p95ResponseMs": 365.88,
-      "p99ResponseMs": 425.77
+      "avgResponseMs": 350.2,
+      "medianResponseMs": 335.93,
+      "p95ResponseMs": 509.51,
+      "p99ResponseMs": 619.72
     }
   ]
 }

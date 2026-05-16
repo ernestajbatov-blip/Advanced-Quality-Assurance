@@ -170,11 +170,11 @@ export const fetchNotificationCount = (params = {}) => {
 };
 
 export const checkWellStatus = () => {
-  return axiosInstance.get('/wells/check-status');
+  return api.get('/wells/check-status');
 };
 
 export const createNotification = (notificationData) => {
-  return axiosInstance.post('/notifications/create', notificationData);
+  return api.post('/notifications/create', notificationData);
 };
 
 export const updateNotificationStatus = (notificationId, status) => {

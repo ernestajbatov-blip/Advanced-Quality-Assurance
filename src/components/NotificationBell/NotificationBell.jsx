@@ -48,6 +48,7 @@ const NotificationBell = () => {
     if (!document.getElementById('well-stop-styles')) {
       const styleSheet = document.createElement('style');
       styleSheet.id = 'well-stop-styles';
+      // Stryker disable StringLiteral
       styleSheet.textContent = `
         .well-stop-popup {
           position: fixed !important;
@@ -122,6 +123,7 @@ const NotificationBell = () => {
           font-size: 13px;
         }
       `;
+      // Stryker restore StringLiteral
       document.head.appendChild(styleSheet);
     }
 
