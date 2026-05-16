@@ -1,22 +1,31 @@
 {
-  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-js/master/packages/api/schema/mutation-testing-elements.json",
+  "$schema": "https://raw.githubusercontent.com/stryker-mutator/stryker-js/master/packages/api/schema/stryker-core.json",
   "mutate": [
-    "src/axios/**/*.js"
+    "src/axios/**/*.js",
+    "src/states/**/*.{js,jsx}",
+    "src/components/Login/**/*.jsx",
+    "src/components/NotificationBell/**/*.jsx",
+    "!src/states/UniversalActivityTracker.jsx",
+    "!src/**/__tests__/**"
   ],
-  "testRunner": "command",
-  "commandRunner": {
-    "command": "npm run test:e2e:assignment2"
+  "testRunner": "vitest",
+  "vitest": {
+    "configFile": "vitest.stryker.config.js"
   },
   "reporters": [
     "html",
     "json",
-    "clear-text"
+    "clear-text",
+    "progress"
   ],
   "htmlReporter": {
     "fileName": "QA/test-reports/mutation/index.html"
   },
-  "timeoutMS": 120000,
-  "plugins": [
-    "@stryker-mutator/typescript-checker"
-  ]
+  "jsonReporter": {
+    "fileName": "QA/test-reports/mutation/results.json"
+  },
+  "timeoutMS": 30000,
+  "timeoutFactor": 1.5,
+  "concurrency": 4,
+  "disableTypeChecks": true
 }

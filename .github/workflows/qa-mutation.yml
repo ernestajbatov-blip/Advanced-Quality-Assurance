@@ -30,6 +30,7 @@ jobs:
       - name: Run mutation tests (Stryker)
         env:
           CI: true
+          PW_NO_WEBSERVER: '1'
         run: npm run mutation:test
 
       - name: Upload mutation report
