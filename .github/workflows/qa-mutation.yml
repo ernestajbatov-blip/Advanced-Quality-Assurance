@@ -36,11 +36,20 @@ jobs:
         # plugin loader can find @stryker-mutator/vitest-runner at runtime.
         run: npm install --no-save @stryker-mutator/vitest-runner@9.6.1 @stryker-mutator/core@9.6.1 @stryker-mutator/api@9.6.1
 
+      - name: Patch Stryker Vitest Runner to use forks correctly
+        # Node's worker threads + dynamic ESM injection is notoriously unstable in 
+        # Linux CI environments. We patch the source code directly to use 'forks',
+        # taking care to rename poolOptions so that Vitest tinypool initializes.
+        run: |
+          sed -i "s/pool: 'threads'/pool: 'forks'/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+          sed -i "s/threads: {/forks: {/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+          sed -i "s/maxThreads: 1/maxForks: 1/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+          sed -i "s/minThreads: 1/minForks: 1/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+
       - name: Run mutation tests (Stryker)
         env:
           CI: true
           PW_NO_WEBSERVER: '1'
-          VITEST_POOL: 'forks'
           NODE_OPTIONS: '--max-old-space-size=4096'
         run: npm run mutation:test
 
