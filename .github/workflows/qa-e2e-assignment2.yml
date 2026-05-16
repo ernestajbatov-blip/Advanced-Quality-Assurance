@@ -1,18 +1,15 @@
-name: QA Nightly Full
+name: QA E2E — Assignment 2
 
 on:
   push:
     branches:
       - main
-      - qa/assignment-1-testing
-  schedule:
-    - cron: '0 2 * * *'
   workflow_dispatch:
 
 jobs:
-  full-regression:
+  e2e-assignment2:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 30
 
     services:
       mysql:
@@ -47,8 +44,8 @@ jobs:
       - name: Install MySQL client
         run: sudo apt-get update && sudo apt-get install -y mysql-client
 
-      - name: Install Playwright browsers
-        run: npx playwright install --with-deps
+      - name: Install Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
 
       - name: Wait for MySQL and seed database
         run: |
@@ -82,40 +79,19 @@ jobs:
             sleep 2
           done
           curl -sf http://localhost:3000/api/health
-          curl -sf http://localhost:3000 > /dev/null
 
-      - name: Run full E2E suite
+      - name: Run Assignment 2 E2E tests
         env:
           CI: true
           PW_NO_WEBSERVER: 1
-        run: npm run test:e2e:full
+        run: npm run test:e2e:assignment2
 
-      - name: Run performance tests
-        env:
-          PERF_BASE_URL: http://localhost:3000
-        run: npm run performance:test
-
-      - name: Run chaos tests
-        env:
-          CHAOS_BASE_URL: http://localhost:3000
-        run: npm run chaos:test
-
-      - name: Run mutation tests
-        env:
-          CI: true
-          PW_NO_WEBSERVER: 1
-        run: npm run mutation:test
-
-      - name: Measure APFD
-        run: npm run apfd:measure
-
-      - name: Upload full regression artifacts
+      - name: Upload E2E artifacts
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: nightly-playwright-report
+          name: e2e-assignment2-report
           path: |
             QA/test-reports
-            reports
             playwright-report
           if-no-files-found: warn
