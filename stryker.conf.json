@@ -11,7 +11,8 @@
   "plugins": ["@stryker-mutator/vitest-runner"],
   "testRunner": "vitest",
   "vitest": {
-    "configFile": "vitest.stryker.config.js"
+    "configFile": "vitest.stryker.config.js",
+    "related": false
   },
   "reporters": [
     "html",
