@@ -27,7 +27,13 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
+
+      - name: Ensure Stryker plugins are installed
+        # The resolved entries for Stryker packages are missing from package-lock.json
+        # because they were originally installed via yarn. Force-install them so the
+        # plugin loader can find @stryker-mutator/vitest-runner at runtime.
+        run: npm install --no-save @stryker-mutator/vitest-runner@9.6.1 @stryker-mutator/core@9.6.1 @stryker-mutator/api@9.6.1
 
       - name: Run mutation tests (Stryker)
         env:
