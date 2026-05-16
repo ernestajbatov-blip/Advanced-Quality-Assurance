@@ -18,10 +18,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Stryker + @stryker-mutator/vitest-runner v9 are not yet compatible with
+      # Node.js 24's stricter ESM loader. Pin to Node 20 (LTS, proven to work).
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 24
+          node-version: 20
           cache: npm
 
       - name: Install dependencies
