@@ -34,7 +34,7 @@ jobs:
         # The project's package-lock.json is incomplete from a yarn migration.
         # Force install vitest and jsdom to prevent npx from downloading an isolated
         # cache version that fails to resolve local modules during forks worker spawn.
-        run: npm install --no-save vitest@4.1.6 jsdom
+        run: npm install --no-save vitest@4.1.6 jsdom @testing-library/jest-dom @testing-library/react @testing-library/user-event
 
 
 
