@@ -11,7 +11,7 @@
 
   "testRunner": "command",
   "commandRunner": {
-    "command": "npm run test:unit"
+    "command": "npx vitest run --config vitest.stryker.config.js"
   },
   "reporters": [
     "html",
