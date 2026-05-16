@@ -11,7 +11,9 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/__tests__/setup.js'],
-    // Only unit tests — explicitly excludes QA/e2e specs
+    // Use forks pool — Stryker's ESM-instrumented code cannot load in
+    // worker threads (threads pool). Forked processes handle it correctly.
+    pool: 'forks',
     include: [
       'src/**/__tests__/**/*.test.{js,jsx}',
       'src/**/*.test.{js,jsx}',
