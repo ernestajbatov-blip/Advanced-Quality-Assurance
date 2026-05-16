@@ -39,6 +39,7 @@ jobs:
         env:
           CI: true
           PW_NO_WEBSERVER: '1'
+          VITEST_POOL: 'forks'
         run: npm run mutation:test
 
       - name: Upload mutation report
