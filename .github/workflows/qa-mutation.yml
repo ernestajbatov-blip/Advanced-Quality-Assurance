@@ -36,19 +36,22 @@ jobs:
         # plugin loader can find @stryker-mutator/vitest-runner at runtime.
         run: npm install --no-save @stryker-mutator/vitest-runner@9.6.1 @stryker-mutator/core@9.6.1 @stryker-mutator/api@9.6.1
 
-      - name: Patch Stryker Vitest Runner to bypass pool workers
-        # Vitest's tinypool workers (both threads and forks) crash on startup in 
-        # this Ubuntu CI environment due to ESM/memory limits with Stryker. 
-        # By patching `singleThread: true`, we force Vitest to run tests synchronously 
-        # in the main process, bypassing the worker pool entirely.
+      - name: Patch Stryker Vitest Runner to use forks correctly
+        # Vitest's tinypool threads worker crashes on Ubuntu runners due to ESM.
+        # We must patch Stryker to use 'forks', but also correctly map the poolOptions
+        # from 'threads' to 'forks' so that tinypool initializes successfully.
         run: |
-          sed -i "s/singleThread: false/singleThread: true/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+          sed -i "s/pool: 'threads'/pool: 'forks'/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+          sed -i "s/threads: {/forks: {/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+          sed -i "s/maxThreads:/maxForks:/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
+          sed -i "s/minThreads:/minForks:/g" node_modules/@stryker-mutator/vitest-runner/dist/src/vitest-test-runner.js
 
       - name: Run mutation tests (Stryker)
         env:
           CI: true
           PW_NO_WEBSERVER: '1'
           VITEST_POOL: 'forks'
+          NODE_OPTIONS: '--max-old-space-size=4096'
         run: npm run mutation:test
 
       - name: Upload mutation report
