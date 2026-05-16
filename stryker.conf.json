@@ -13,6 +13,8 @@
   "commandRunner": {
     "command": "npm run test:unit"
   },
+  "reporters": [
+    "html",
     "json",
     "clear-text",
     "progress"
